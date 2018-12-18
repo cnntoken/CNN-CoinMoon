@@ -5,6 +5,7 @@
  * @format
  * @flow
  */
+
 import React from 'react';
 import { Linking, Button, StyleSheet, Text, View } from 'react-native';
 import Auth from '@aws-amplify/auth';
