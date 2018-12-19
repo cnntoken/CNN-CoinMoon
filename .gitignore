@@ -55,7 +55,8 @@ buck-out/
 # Bundle artifact
 *.jsbundle
 
-
+# vscoe
+.vscode/
 
 # Amplify
 /amplify

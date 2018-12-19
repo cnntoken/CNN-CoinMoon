@@ -12,10 +12,10 @@ import configureStore from 'app/store/configureStore';
 
 import getTheme from "./theme/components";
 import variables from "./theme/variables/commonColor";
-
+import appServices from './services/app'
 
 const {persistor, store} = configureStore();
-
+appServices(store)
 export default class Index extends Component {
     render() {
         return (
@@ -34,3 +34,4 @@ export default class Index extends Component {
         );
     }
 }
+

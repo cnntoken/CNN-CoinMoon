@@ -11,3 +11,9 @@ export const LOGIN_FAILED = 'LOGIN_FAILED';
 // List
 export const GET_LIST = 'GET_LIST';
 export const GET_LIST_OK = 'GET_LIST_OK';
+
+// User
+export const SET_USER_INFO = 'USER/SET_INFO';
+
+// APP
+export const APP_INIT = 'APP/INIT';

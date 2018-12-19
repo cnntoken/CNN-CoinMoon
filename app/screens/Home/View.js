@@ -17,16 +17,20 @@ import {
     Icon
 } from "native-base";
 
+import {checkLogin} from '../../services/app'
 class View extends Component {
 
     constructor(props) {
         super(props);
     }
-
+    goMine = ()=>{
+        if(checkLogin()){
+            this.props.navigation.navigate('Mine')
+        }
+    }
     render() {
         return (
             <Container>
-
                 <Header>
                     <Left>
                         <Button transparent onPress={() => this.props.navigation.goBack()}>
@@ -41,6 +45,9 @@ class View extends Component {
 
                 <Content padder>
                     <Text>Home Content </Text>
+                    <Button onPress={this.goMine}>
+                        <Text>go to mine!</Text>
+                    </Button>
                 </Content>
 
                 <Footer>

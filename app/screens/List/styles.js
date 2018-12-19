@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     mb: {
         marginBottom: 15
     },
-    height: 100
+    // height: 100
 });
 
 export default styles;

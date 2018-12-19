@@ -4,6 +4,7 @@ import {createStackNavigator} from 'react-navigation';
 import Login from 'app/screens/Login';
 import Home from 'app/screens/Home';
 import List from 'app/screens/List';
+import Mine from 'app/screens/Mine';
 
 const RNApp = createStackNavigator(
     {
@@ -25,10 +26,17 @@ const RNApp = createStackNavigator(
                 gesturesEnabled: false
             }
         },
+        Mine : {
+            screen: Mine,
+            // navigationOptions: {
+            //     header: null,
+            //     gesturesEnabled: false
+            // }
+        }
     },
 
     {
-        initialRouteName: 'Login'
+        initialRouteName: 'Home'
     }
 );
 

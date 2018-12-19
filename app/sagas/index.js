@@ -5,10 +5,12 @@ import {takeEvery, all, take} from 'redux-saga/effects';
 import * as types from '../actions/types';
 import loginSaga from './loginSaga';
 import listSaga from './listSaga';
+import appSaga from './appSaga';
 
 export default function* watch() {
     yield all([
         takeEvery(types.LOGIN_REQUEST, loginSaga),
-        takeEvery(types.GET_LIST, listSaga)
+        takeEvery(types.GET_LIST, listSaga),
+        takeEvery(types.APP_INIT, appSaga)
     ]);
 }

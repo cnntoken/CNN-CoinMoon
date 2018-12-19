@@ -33,6 +33,7 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  NSLog(@"NSHomeDirectory = %@",NSHomeDirectory());
   return YES;
 }
 

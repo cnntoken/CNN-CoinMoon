@@ -4,5 +4,6 @@
 import * as loadingReducer from './loadingReducer';
 import * as loginReducer from './loginReducer';
 import * as listReducer from './listReducer';
+import * as userReducer from './userReducer';
 
-export default Object.assign(loginReducer, loadingReducer, listReducer);
+export default Object.assign(loginReducer, loadingReducer, listReducer, userReducer);
