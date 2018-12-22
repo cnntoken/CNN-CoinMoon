@@ -28,6 +28,14 @@ class View extends Component {
             this.props.navigation.navigate('Mine')
         }
     }
+    goPublish = ()=>{
+        if(checkLogin()){
+            this.props.navigation.navigate('Publish')
+        }
+    }
+    componentDidMount(){
+        
+    }
     render() {
         return (
             <Container>
@@ -47,6 +55,9 @@ class View extends Component {
                     <Text>Home Content </Text>
                     <Button onPress={this.goMine}>
                         <Text>go to mine!</Text>
+                    </Button>
+                    <Button onPress={this.goPublish}>
+                        <Text>go publish!</Text>
                     </Button>
                 </Content>
 

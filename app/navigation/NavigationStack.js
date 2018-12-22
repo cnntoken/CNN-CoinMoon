@@ -5,6 +5,7 @@ import Login from 'app/screens/Login';
 import Home from 'app/screens/Home';
 import List from 'app/screens/List';
 import Mine from 'app/screens/Mine';
+import Publish from 'app/screens/Publish';
 
 const RNApp = createStackNavigator(
     {
@@ -32,6 +33,9 @@ const RNApp = createStackNavigator(
             //     header: null,
             //     gesturesEnabled: false
             // }
+        },
+        Mine : {
+            screen: Publish,
         }
     },
 
