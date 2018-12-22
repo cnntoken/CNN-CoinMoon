@@ -27,6 +27,7 @@ export default function* appInit() {
         }
         yield put({type: Types.SET_USER_INFO, info: info})
     }catch(e){
+        yield put({type: Types.SET_USER_INFO, info: {}})
         console.log('Auth.currentAuthenticatedUser fail')
         console.log(e);
     }

@@ -19,11 +19,36 @@ class View extends Component {
     constructor(props) {
         super(props);
     }
-    getlist = ()=>{
-
+    getItem = (_id='d0625830-05e0-11e9-b91b-874c58b887de')=>{
+        API.get('stark',`/feed/object/${_id}`).then(response => {
+            // Add your code here
+            console.log(response)
+        }).catch(error => {
+            console.log(error)
+        });
     }
-    create = ()=>{
-        API.post('starkd724777a','/feed')
+    getlist = ()=>{
+        API.get('stark','/feed/news').then(response => {
+            // Add your code here
+            console.log(response)
+        }).catch(error => {
+            console.log(error)
+        });
+    }
+    create = async ()=>{
+        API.post('stark','/feed',{
+            body:{
+                category: 'news',
+                title: 'ofo小黄车排队',
+                content: '哎, 谁没拍过队伍吗',
+                type: 'text'
+            }
+        }).then(response => {
+            // Add your code here
+            console.log(response)
+        }).catch(error => {
+            console.log(error)
+        });
     }
     update = ()=>{
         
@@ -49,6 +74,9 @@ class View extends Component {
                     <Right/>
                 </Header>
                 <Content padder>
+                    <Button onPress={this.getItem}>
+                        <Text>get feed Item</Text>
+                    </Button>
                     <Button onPress={this.getlist}>
                         <Text>get feed list</Text>
                     </Button>

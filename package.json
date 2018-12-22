@@ -12,14 +12,15 @@
     "aws-amplify": "^1.1.17",
     "aws-amplify-react-native": "^2.1.5",
     "native-base": "^2.8.2",
-    "react-navigation": "^2.18.3",
     "react": "16.6.3",
     "react-native": "0.57.8",
+    "react-navigation": "^2.18.3",
     "react-redux": "^5.1.1",
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
     "redux-persist": "^5.10.0",
-    "redux-saga": "^0.16.2"
+    "redux-saga": "^0.16.2",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.2.1",
