@@ -11,7 +11,16 @@ export default function* appInit() {
     console.log('=====  初始化Amplify配置 =====')
     Amplify.configure(awsconfig);
     // retrieve temporary AWS credentials and sign requests
-    Auth.configure(awsconfig);
+    Auth.configure({...awsconfig,...{
+        API: {
+            endpoints: [
+                {
+                    name: "stark",
+                    endpoint: "http://10.0.1.169:3000"
+                }
+            ]
+        }
+    }});
     // yield call(Auth.currentAuthenticatedUser, {bypassCache: false})
     // check the current user when the App component is loaded
     try{

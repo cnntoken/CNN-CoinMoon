@@ -1,9 +1,10 @@
 {
     "env": {
-        "es7": true,
+        "es6": true,
         "browser": true,
         "node": true,
-        "jest": true
+        "jest": true,
+        "commonjs": true
     },
     "parser": "babel-eslint",
     "extends": [
@@ -12,34 +13,21 @@
         "plugin:react-native/all"
     ],
     "parserOptions": {
+        "ecmaVersion": 7,
         "ecmaFeatures": {
             "jsx": true
         },
-        "sourceType": "module"
+        "sourceType":"module"
     },
     "plugins": [
         "react",
         "react-native"
     ],
     "rules": {
-        "indent": [
-            "error",
-            4
-        ],
+        "no-console": 0,
         "linebreak-style": [
             "error",
             "unix"
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
-        "no-var": [
-            "error"
         ],
         "eqeqeq": [
             "error"
