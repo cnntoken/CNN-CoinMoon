@@ -19,7 +19,9 @@ class View extends Component {
     constructor(props) {
         super(props);
     }
-    getItem = (_id='d0625830-05e0-11e9-b91b-874c58b887de')=>{
+    getItem = ()=>{
+        const _id = '12676dc0-077f-11e9-974c-997f54c60621'
+        console.log(`/feed/object/${_id}`)
         API.get('stark',`/feed/object/${_id}`).then(response => {
             // Add your code here
             console.log(response)
