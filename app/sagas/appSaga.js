@@ -17,7 +17,7 @@ export default function* appInit() {
             endpoints: [
                 {
                     name: "stark",
-                    endpoint: "http://10.0.1.170:3000",
+                    endpoint: "http://192.168.8.209:3000",
                     "region": "us-east-1"
                 }
             ]

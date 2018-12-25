@@ -20,9 +20,9 @@ class View extends Component {
         super(props);
     }
     getItem = ()=>{
-        const _id = '12676dc0-077f-11e9-974c-997f54c60621'
-        console.log(`/feed/object/${_id}`)
-        API.get('stark',`/feed/object/${_id}`).then(response => {
+        const _id = '2054d9d0-0848-11e9-8885-756863356dda'
+        console.log(`/feed/${_id}`)
+        API.get('stark',`/feed/${_id}`).then(response => {
             // Add your code here
             console.log(response)
         }).catch(error => {
@@ -30,7 +30,7 @@ class View extends Component {
         });
     }
     getlist = ()=>{
-        API.get('stark','/feed/news').then(response => {
+        API.get('stark','/feed/list/news').then(response => {
             // Add your code here
             console.log(response)
         }).catch(error => {
@@ -53,10 +53,34 @@ class View extends Component {
         });
     }
     update = ()=>{
-        
+        const _id = '2054d9d0-0848-11e9-8885-756863356dda'
+        API.put('stark',`/feed/${_id}`,{
+            body:{
+                category: 'news',
+                title: 'ofo小黄车排队',
+                content: '哎, 谁没拍过队伍吗' + new Date().getTime()
+            }
+        }).then(response => {
+            // Add your code here
+            console.log(response)
+        }).catch(error => {
+            console.log(error)
+        });
     }
     remove = ()=>{
-        
+        const _id = '2054d9d0-0848-11e9-8885-756863356dda'
+        API.del('stark',`/feed/${_id}`,{
+            body:{
+                category: 'news',
+                title: 'ofo小黄车排队',
+                content: '哎, 谁没拍过队伍吗' + new Date().getTime()
+            }
+        }).then(response => {
+            // Add your code here
+            console.log(response)
+        }).catch(error => {
+            console.log(error)
+        });
     }
     componentDidMount(){
         
