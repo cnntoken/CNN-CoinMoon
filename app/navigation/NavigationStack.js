@@ -27,16 +27,16 @@ const RNApp = createStackNavigator(
                 gesturesEnabled: false
             }
         },
-        Mine : {
-            screen: Mine,
-            // navigationOptions: {
-            //     header: null,
-            //     gesturesEnabled: false
-            // }
-        },
         // Mine : {
-        //     screen: Publish,
-        // }
+        //     screen: Mine,
+        //     // navigationOptions: {
+        //     //     header: null,
+        //     //     gesturesEnabled: false
+        //     // }
+        // },
+        Mine : {
+            screen: Publish,
+        }
     },
 
     {

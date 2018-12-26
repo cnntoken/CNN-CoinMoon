@@ -19,25 +19,28 @@ class View extends Component {
     constructor(props) {
         super(props);
     }
-    getItem = (_id='d0625830-05e0-11e9-b91b-874c58b887de')=>{
-        API.get('stark',`/feed/object/${_id}`).then(response => {
+
+    getItem = () => {
+        const _id = '2054d9d0-0848-11e9-8885-756863356dda'
+        console.log(`/feed/${_id}`)
+        API.get('stark', `/feed/${_id}`).then(response => {
             // Add your code here
             console.log(response)
         }).catch(error => {
             console.log(error)
         });
     }
-    getlist = ()=>{
-        API.get('stark','/feed/news').then(response => {
+    getlist = () => {
+        API.get('stark', '/feed/list/news').then(response => {
             // Add your code here
             console.log(response)
         }).catch(error => {
             console.log(error)
         });
     }
-    create = async ()=>{
-        API.post('stark','/feed',{
-            body:{
+    create = async () => {
+        API.post('stark', '/feed', {
+            body: {
                 category: 'news',
                 title: 'ofo小黄车排队',
                 content: '哎, 谁没拍过队伍吗',
@@ -50,15 +53,41 @@ class View extends Component {
             console.log(error)
         });
     }
-    update = ()=>{
-        
+    update = () => {
+        const _id = '2054d9d0-0848-11e9-8885-756863356dda'
+        API.put('stark', `/feed/${_id}`, {
+            body: {
+                category: 'news',
+                title: 'ofo小黄车排队',
+                content: '哎, 谁没拍过队伍吗' + new Date().getTime()
+            }
+        }).then(response => {
+            // Add your code here
+            console.log(response)
+        }).catch(error => {
+            console.log(error)
+        });
     }
-    remove = ()=>{
-        
+    remove = () => {
+        const _id = '2054d9d0-0848-11e9-8885-756863356dda'
+        API.del('stark', `/feed/${_id}`, {
+            body: {
+                category: 'news',
+                title: 'ofo小黄车排队',
+                content: '哎, 谁没拍过队伍吗' + new Date().getTime()
+            }
+        }).then(response => {
+            // Add your code here
+            console.log(response)
+        }).catch(error => {
+            console.log(error)
+        });
     }
-    componentDidMount(){
-        
+
+    componentDidMount() {
+
     }
+
     render() {
         return (
             <Container>
@@ -69,7 +98,7 @@ class View extends Component {
                         </Button>
                     </Left>
                     <Body>
-                    <Title>Publish</Title>
+                        <Title>Publish</Title>
                     </Body>
                     <Right/>
                 </Header>

@@ -66,4 +66,3 @@ amplify/\#current-cloud-backend
 amplify/.config
 amplify/backend/function/**/*.zip
 awsconfiguration.json
-
