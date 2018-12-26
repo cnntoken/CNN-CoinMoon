@@ -34,9 +34,9 @@ const RNApp = createStackNavigator(
             //     gesturesEnabled: false
             // }
         },
-        Mine : {
-            screen: Publish,
-        }
+        // Mine : {
+        //     screen: Publish,
+        // }
     },
 
     {
