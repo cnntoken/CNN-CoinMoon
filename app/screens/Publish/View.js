@@ -20,7 +20,7 @@ class View extends Component {
         super(props);
     }
     getItem = ()=>{
-        const _id = '2054d9d0-0848-11e9-8885-756863356dda'
+        const _id = '702947b0-08e4-11e9-bacb-0b5cf1594f1e'
         console.log(`/feed/${_id}`)
         API.get('stark',`/feed/${_id}`).then(response => {
             // Add your code here
@@ -53,7 +53,7 @@ class View extends Component {
         });
     }
     update = ()=>{
-        const _id = '2054d9d0-0848-11e9-8885-756863356dda'
+        const _id = '6d318b80-08e4-11e9-bacb-0b5cf1594f1e'
         API.put('stark',`/feed/${_id}`,{
             body:{
                 category: 'news',
@@ -68,7 +68,7 @@ class View extends Component {
         });
     }
     remove = ()=>{
-        const _id = '2054d9d0-0848-11e9-8885-756863356dda'
+        const _id = '6d318b80-08e4-11e9-bacb-0b5cf1594f1e'
         API.del('stark',`/feed/${_id}`,{
             body:{
                 category: 'news',
