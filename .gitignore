@@ -67,6 +67,3 @@ amplify/.config
 amplify/backend/function/**/*.zip
 awsconfiguration.json
 
-android
-
-ios
