@@ -19,9 +19,8 @@ class View extends Component {
     constructor(props) {
         super(props);
     }
-
-    getItem = () => {
-        const _id = '2054d9d0-0848-11e9-8885-756863356dda'
+    getItem = ()=>{
+        const _id = '702947b0-08e4-11e9-bacb-0b5cf1594f1e'
         console.log(`/feed/${_id}`)
         API.get('stark', `/feed/${_id}`).then(response => {
             // Add your code here
@@ -53,10 +52,10 @@ class View extends Component {
             console.log(error)
         });
     }
-    update = () => {
-        const _id = '2054d9d0-0848-11e9-8885-756863356dda'
-        API.put('stark', `/feed/${_id}`, {
-            body: {
+    update = ()=>{
+        const _id = '6d318b80-08e4-11e9-bacb-0b5cf1594f1e'
+        API.put('stark',`/feed/${_id}`,{
+            body:{
                 category: 'news',
                 title: 'ofo小黄车排队',
                 content: '哎, 谁没拍过队伍吗' + new Date().getTime()
@@ -68,10 +67,10 @@ class View extends Component {
             console.log(error)
         });
     }
-    remove = () => {
-        const _id = '2054d9d0-0848-11e9-8885-756863356dda'
-        API.del('stark', `/feed/${_id}`, {
-            body: {
+    remove = ()=>{
+        const _id = '6d318b80-08e4-11e9-bacb-0b5cf1594f1e'
+        API.del('stark',`/feed/${_id}`,{
+            body:{
                 category: 'news',
                 title: 'ofo小黄车排队',
                 content: '哎, 谁没拍过队伍吗' + new Date().getTime()

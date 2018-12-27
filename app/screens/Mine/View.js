@@ -13,17 +13,21 @@ import {
 import styles from './styles';
 
 
-
 class View extends Component {
 
     render() {
         return (
-            <Header>
-                <Body>
+            <Container>
+                <Header>
+                    <Body>
                     <Title>Mine</Title>
-                </Body>
-                <Right/>
-            </Header>
+                    </Body>
+                </Header>
+                <Content>
+                    <Text>test</Text>
+                </Content>
+            </Container>
+
         );
     }
 }

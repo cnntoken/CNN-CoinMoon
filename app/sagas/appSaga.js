@@ -17,13 +17,13 @@ export default function* appInit() {
             endpoints: [
                 {
                     name: "stark",
-                    endpoint: "http://192.168.8.209:3000",
+                    endpoint: "http://127.0.0.1:3000",
                     "region": "us-east-1"
                 }
             ]
         }
     }});
-    Auth.configure(awsconfig);
+    // Auth.configure(awsconfig);
     // yield call(Auth.currentAuthenticatedUser, {bypassCache: false})
     // check the current user when the App component is loaded
     try{
@@ -48,9 +48,9 @@ export default function* appInit() {
     // }).then(user => {
     //     console.log('Auth.currentAuthenticatedUser success')
     //     console.log(user);
-        
+
     // }).catch(e => {
-       
+
     // });
 }
 
