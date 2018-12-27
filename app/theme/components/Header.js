@@ -367,8 +367,9 @@ export default (variables /*: * */ = variable) => {
     backgroundColor: variables.toolbarDefaultBg,
     flexDirection: "row",
     // paddingHorizontal: 10,
-    paddingLeft:
-      platform === "ios" && variables.platformStyle !== "material" ? 6 : 10,
+    // paddingLeft:
+    //   platform === "ios" && variables.platformStyle !== "material" ? 6 : 10,
+    paddingLeft: 16,
     paddingRight: 10,
     justifyContent: "center",
     paddingTop: platform === "ios" ? 18 : 0,

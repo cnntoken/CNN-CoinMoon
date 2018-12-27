@@ -1,17 +1,36 @@
 // 所有导航信息都会加到这里来
-import {createStackNavigator} from 'react-navigation';
+import {createAppContainer,createStackNavigator} from 'react-navigation';
 
-import Login from 'app/screens/Login';
+import Login from '../screens/Auth/Login';
+import Register from '../screens/Auth/Register';
+import Verify from '../screens/Auth/Verify';
 import Home from 'app/screens/Home';
 import List from 'app/screens/List';
 import Mine from 'app/screens/Mine';
 import Publish from 'app/screens/Publish';
 
-const RNApp = createStackNavigator(
+const AppNavigator = createStackNavigator(
     {
         Login: {
             screen: Login,
-            navigationOptions: {header: null, gesturesEnabled: true}
+            navigationOptions: {
+                header: null,
+                gesturesEnabled: true
+            }
+        },
+        Register: {
+            screen: Register,
+            navigationOptions: {
+                header: null,
+                gesturesEnabled: true
+            }
+        },
+        Verify: {
+            screen: Verify,
+            navigationOptions: {
+                header: null,
+                gesturesEnabled: true
+            }
         },
         Home: {
             screen: Home,
@@ -34,14 +53,14 @@ const RNApp = createStackNavigator(
             //     gesturesEnabled: false
             // }
         },
-        Mine : {
+        Publish : {
             screen: Publish,
         }
     },
 
     {
-        initialRouteName: 'Home'
+        initialRouteName: 'Verify'
     }
 );
 
-export default RNApp;
+export default createAppContainer(AppNavigator);
