@@ -3,7 +3,6 @@ import { delay } from 'redux-saga';
 import * as Types from '../actions/types'
 import awsconfig from '../../aws-exports';
 import Amplify, {Auth, Hub} from 'aws-amplify';
-
 /**
  * 初始化Amplify配置
  */

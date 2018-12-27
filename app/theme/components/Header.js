@@ -365,32 +365,41 @@ export default (variables /*: * */ = variable) => {
             flexDirection: "row",
             justifyContent: "flex-end"
         },
-        backgroundColor: variables.toolbarDefaultBg,
-        flexDirection: "row",
-        // paddingHorizontal: 10,
-        paddingLeft:
-            platform === "ios" && variables.platformStyle !== "material" ? 6 : 10,
-        paddingRight: 10,
-        justifyContent: "center",
-        paddingTop: platform === "ios" ? 18 : 0,
-        borderBottomWidth:
-            platform === "ios" ? 1 / PixelRatio.getPixelSizeForLayoutSize(1) : 0,
-        borderBottomColor: variables.toolbarDefaultBorder,
-        height:
-            variables.platform === "ios" && variables.platformStyle === "material"
-                ? variables.toolbarHeight + StatusBar.height
-                : variables.toolbarHeight,
-        elevation: 3,
-        shadowColor: platformStyle === "material" ? "#000" : undefined,
-        shadowOffset:
-            platformStyle === "material" ? {width: 0, height: 2} : undefined,
-        shadowOpacity: platformStyle === "material" ? 0.2 : undefined,
-        shadowRadius: platformStyle === "material" ? 1.2 : undefined,
-        top: 0,
-        left: 0,
-        right: 0,
-
-    };
+        alignSelf: null,
+        paddingHorizontal: variables.buttonPadding
+      },
+      flex: 1,
+      alignSelf: "center",
+      alignItems: "flex-end",
+      flexDirection: "row",
+      justifyContent: "flex-end"
+    },
+    backgroundColor: variables.toolbarDefaultBg,
+    flexDirection: "row",
+    // paddingHorizontal: 10,
+    // paddingLeft:
+    //   platform === "ios" && variables.platformStyle !== "material" ? 6 : 10,
+    paddingLeft: 16,
+    paddingRight: 10,
+    justifyContent: "center",
+    paddingTop: platform === "ios" ? 18 : 0,
+    borderBottomWidth:
+      platform === "ios" ? 1 / PixelRatio.getPixelSizeForLayoutSize(1) : 0,
+    borderBottomColor: variables.toolbarDefaultBorder,
+    height:
+      variables.platform === "ios" && variables.platformStyle === "material"
+        ? variables.toolbarHeight + StatusBar.height
+        : variables.toolbarHeight,
+    elevation: 3,
+    shadowColor: platformStyle === "material" ? "#000" : undefined,
+    shadowOffset:
+      platformStyle === "material" ? { width: 0, height: 2 } : undefined,
+    shadowOpacity: platformStyle === "material" ? 0.2 : undefined,
+    shadowRadius: platformStyle === "material" ? 1.2 : undefined,
+    top: 0,
+    left: 0,
+    right: 0
+  };
 
     return headerTheme;
 };
