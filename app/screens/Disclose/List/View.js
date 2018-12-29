@@ -10,57 +10,40 @@ import {
     Right,
     Body,
     Title,
-    FooterTab,
-    Footer
+    Footer,
+    List,
+    ListItem, Icon, Switch, Thumbnail
 } from "native-base";
 
 import {API} from 'aws-amplify';
+
 
 class View extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            tab1: false,
-            tab2: true,
-            tab3: false,
-        };
     }
 
     toggleTab1 = () => {
-        this.setState({
-            tab1: true,
-            tab2: false,
-            tab3: false,
-        });
-        this.props.navigation.navigate('DiscloseList');
-    };
-
-    toggleTab2 = () => {
-        this.setState({
-            tab1: false,
-            tab2: true,
-            tab3: false,
-        });
         this.props.navigation.navigate('DiscloseDetail');
     };
 
-    toggleTab3 = () => {
-        this.setState({
-            tab1: false,
-            tab2: false,
-            tab3: true,
-        });
+    toggleTab2 = () => {
         this.props.navigation.navigate('DisclosePublish');
     };
+
 
     componentDidMount() {
 
     }
 
     render() {
+
+        let {list} = this.props;
+
         return (
             <Container>
+
                 <Header>
                     <Left/>
                     <Body>
@@ -72,11 +55,47 @@ class View extends Component {
                         </Button>
                     </Right>
                 </Header>
+
                 <Content>
-                    <Button onPress={this.toggleTab1}><Text>Disclose 1</Text></Button>
-                    <Button onPress={this.toggleTab2.bind(this)}><Text>Disclose 2</Text></Button>
-                    <Button onPress={this.toggleTab3}><Text>Disclose 3</Text></Button>
+                    {/*<Button onPress={this.toggleTab1.bind(this)}><Text>Detail</Text></Button>*/}
+                    <Button onPress={this.toggleTab2.bind(this)}><Text>Publish</Text></Button>
+
+
+                    <List
+                        dataArray={list}
+                        renderRow={item =>
+                            <ListItem avatar>
+                                <Left>
+                                    <Thumbnail small source={item.source}/>
+                                </Left>
+                                <Body>
+                                <Text>
+                                    <Text>{item.userName}</Text>{item.time}
+                                </Text>
+                                <Text>
+                                    {item.title}
+                                </Text>
+                                <Content>
+                                    {
+                                        item.images.map((i, idx) => {
+                                            return <Thumbnail key={idx} large source={{uri: i}}/>
+                                        })
+                                    }
+                                </Content>
+                                </Body>
+
+                                {/*<Right>*/}
+                                {/*<Text note>*/}
+                                {/*{item.time.toString()}*/}
+                                {/*</Text>*/}
+                                {/*</Right>*/}
+                            </ListItem>}
+                    />
+
                 </Content>
+
+                <Footer/>
+
             </Container>
         );
     }
