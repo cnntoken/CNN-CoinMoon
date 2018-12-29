@@ -166,4 +166,4 @@ const RNApp = createAppContainer(
     })
 );
 
-export default RNApp;
+export default createAppContainer(RNApp);

@@ -9,6 +9,7 @@
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+#import "RNSplashScreen.h"
 
 @implementation AppDelegate
 
@@ -34,6 +35,10 @@
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   NSLog(@"NSHomeDirectory = %@",NSHomeDirectory());
+  
+  // rn主动hide启动图
+  // https://github.com/crazycodeboy/react-native-splash-screen
+  [RNSplashScreen show];
   return YES;
 }
 

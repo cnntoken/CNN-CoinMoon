@@ -1,28 +1,16 @@
 import { put, call, select } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
 import * as Types from '../actions/types'
-import awsconfig from '../../aws-exports';
+import awsconfig from '../config/aws.conf';
 import Amplify, {Auth, Hub} from 'aws-amplify';
 /**
  * 初始化Amplify配置
  */
 export default function* appInit() {
     console.log('=====  初始化Amplify配置 =====')
-    // Amplify.configure(awsconfig);
+    Amplify.configure(awsconfig);
     // retrieve temporary AWS credentials and sign requests
-    // Auth.configure(awsconfig);
-    Amplify.configure({...awsconfig,...{
-        API: {
-            endpoints: [
-                {
-                    name: "stark",
-                    endpoint: "http://127.0.0.1:3000",
-                    "region": "us-east-1"
-                }
-            ]
-        }
-    }});
-    // Auth.configure(awsconfig);
+    Auth.configure(awsconfig);
     // yield call(Auth.currentAuthenticatedUser, {bypassCache: false})
     // check the current user when the App component is loaded
     try{

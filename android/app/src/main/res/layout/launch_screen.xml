@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shape_gradient"
+    android:gravity="center"
+    >
+<ImageView
+    android:layout_width="166dp"
+    android:layout_height="90dp"
+    android:src="@drawable/logo_white"
+    android:layout_marginTop="-60dp"
+    />
+</LinearLayout>

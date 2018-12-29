@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.imagepicker.ImagePickerPackage;
+
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.amazonaws.RNAWSCognitoPackage;
 import com.facebook.react.ReactNativeHost;
@@ -27,6 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new ImagePickerPackage(),
+            new SplashScreenReactPackage(),
             new RNGestureHandlerPackage(),
             new RNAWSCognitoPackage()
       );
@@ -45,7 +48,6 @@ public class MainApplication extends Application implements ReactApplication {
 
   @Override
   public void onCreate() {
-    super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
   }
 }
