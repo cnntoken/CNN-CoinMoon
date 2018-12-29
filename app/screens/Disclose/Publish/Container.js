@@ -1,19 +1,21 @@
-import React, { Component } from 'react';
-import View from './View';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import Screen from './Screen';
+import {connect} from 'react-redux';
 
 class Container extends Component {
     constructor(props) {
         super(props);
     }
+
     render() {
-        return <View {...this.props} />;
+        return <Screen {...this.props} />;
     }
 }
 
 function mapStateToProps() {
     return {};
 }
+
 function mapDispatchToProps() {
     return {};
 }

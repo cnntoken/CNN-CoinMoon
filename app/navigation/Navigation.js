@@ -113,6 +113,13 @@ const TabNavigator = createBottomTabNavigator({
 
 
 const HomeStack = createStackNavigator({
+    // DisclosePublish: {
+    //     screen: DisclosePublish,
+    //     navigationOptions: {
+    //         header: null,
+    //         tabBarVisible: false,
+    //     }
+    // },
     // 底部Bottom Tabs
     Tabs: {
         screen: TabNavigator,

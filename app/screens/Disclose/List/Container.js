@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import View from './View';
+import Page from './View';
 import {connect} from 'react-redux';
 
 const moment = require('moment');
@@ -10,7 +10,7 @@ class Container extends Component {
     }
 
     render() {
-        return <View {...this.props} />;
+        return <Page {...this.props} />;
     }
 }
 

@@ -34,7 +34,7 @@ class View extends Component {
         }
     }
     componentDidMount(){
-        
+
     }
     render() {
         return (

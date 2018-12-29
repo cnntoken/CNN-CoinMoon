@@ -16,7 +16,7 @@ import {
 
 import {API} from 'aws-amplify';
 
-class View extends Component {
+class Page extends Component {
 
     constructor(props) {
         super(props);
@@ -39,4 +39,4 @@ class View extends Component {
     }
 }
 
-export default View;
+export default Page;

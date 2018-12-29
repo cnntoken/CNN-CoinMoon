@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import View from './View';
+import Page from './View';
 import { connect } from 'react-redux';
 
 class Container extends Component {
@@ -7,7 +7,7 @@ class Container extends Component {
         super(props);
     }
     render() {
-        return <View {...this.props} />;
+        return <Page {...this.props} />;
     }
 }
 
