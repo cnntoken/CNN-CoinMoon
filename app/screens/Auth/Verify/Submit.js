@@ -19,7 +19,9 @@ class ViewControl extends Component {
         })
     }
     onSubmit = ()=>{
-        this.props.onSubmit(this.state.code)
+        if(this.state.code){
+            this.props.onSubmit(this.state.code)
+        } 
     }
     render() {
         const { disabled } = this.props;
@@ -36,7 +38,7 @@ class ViewControl extends Component {
                     textContentType='emailAddress'
                  />
                 <Button block full rounded style={[styles.btn,styles.codebtn, disabled && styles.btnDisabled]} disabled={disabled} onPress={this.onSubmit}>
-                    <Text>发送验证码</Text>
+                    <Text>提交</Text>
                 </Button>
             </View>
         );
