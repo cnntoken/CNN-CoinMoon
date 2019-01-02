@@ -4,7 +4,7 @@
  */
 import React, {Component} from 'react';
 import {ActivityIndicator} from 'react-native';
-import {StyleProvider, Root,Text} from "native-base";
+import {StyleProvider, Root} from "native-base";
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import Navigator from 'app/navigation';
@@ -17,8 +17,12 @@ import variables from "./theme/variables/commonColor";
 import appServices from './services/app'
 
 const {persistor, store} = configureStore();
-appServices(store)
+
 export default class Index extends Component {
+    constructor(){
+        super()
+        appServices(store)
+    }
     componentDidMount(){
         SplashScreen.hide()  
     }

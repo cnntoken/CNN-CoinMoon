@@ -14,6 +14,16 @@ export const GET_LIST_OK = 'GET_LIST_OK';
 
 // User
 export const SET_USER_INFO = 'USER/SET_INFO';
+export const CLEAR_USER_INFO = 'USER/CLEAR_INFO';
 
 // APP
 export const APP_INIT = 'APP/INIT';
+
+
+// Auth
+export const AUTH_REGISTER = 'AUTH/REGISTER';
+export const AUTH_LOGIN = 'AUTH/LOGIN';
+export const AUTH_LOGOUT = 'AUTH/LOGOUT';
+export const AUTH_VERIFY = 'AUTH/VERIFY';
+export const AUTH_RESEND = 'AUTH/RESEND';
+export const AUTH_REFRESH = 'AUTH/AUTH_REFRESH';

@@ -42,7 +42,9 @@ import DisclosePublish from 'app/screens/Disclose/Publish';
 import Mine from 'app/screens/Mine';
 
 // Auth
-import Login from 'app/screens/Auth/Login';
+import Login from '../screens/Auth/Login';
+import Register from '../screens/Auth/Register';
+import Verify from '../screens/Auth/Verify';
 
 const TabNavigator = createBottomTabNavigator({
         News: {
@@ -160,7 +162,31 @@ const HomeStack = createStackNavigator({
     }
 });
 
-
+const AuthStack = createStackNavigator({
+    Login: {
+        screen: Login,
+        navigationOptions: {
+            header: null,
+            gesturesEnabled: false
+        }
+    },
+    Verify: {
+        screen: Verify,
+        navigationOptions: {
+            header: null,
+            gesturesEnabled: false
+        }
+    },
+    Register: {
+        screen: Register,
+        navigationOptions: {
+            header: null,
+            gesturesEnabled: false
+        }
+    },
+},{
+    initialRouteName: 'Login'
+})
 const RNApp = createAppContainer(
     createSwitchNavigator({
         Home: {
@@ -169,7 +195,14 @@ const RNApp = createAppContainer(
                 header: null
             }
         },
-        Auth: Login,
+        Auth: {
+            screen: AuthStack,
+            navigationOptions: {
+                header: null
+            }
+        }
+    },{
+        initialRouteName: 'Home'
     })
 );
 

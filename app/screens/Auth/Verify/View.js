@@ -7,47 +7,63 @@ import Send from './Send'
 import Submit from './Submit'
 import Done from './Done'
 
-  
+
 class ViewControl extends Component {
     static propTypes = {
-        navigation: PropTypes.object.isRequired
+        navigation: PropTypes.object.isRequired,
+        onSend2email: PropTypes.func.isRequired,
+        onSubmitCode: PropTypes.func.isRequired
     }
-    state = {
-        stage: 'send',
-        sendBtnDisabled: false,
-        submitBtnDisabled: false
+    constructor(props){
+        super(props)
+        this.state = {
+            // stage: 'send',
+            stage: 'submit',
+            sendBtnDisabled: false,
+            submitBtnDisabled: false,
+            email: props.navigation.getParam('email', '')
+        }
     }
     onSend = ()=>{
+        const {email} = this.state;
         console.log('go send verify code')
-        this.setState({
-            stage: 'submit'
+        this.props.onSend2email({email},()=>{
+            this.setState({
+                stage: 'submit'
+            })
         })
     }
-    onSubmit = ()=>{
+    onSubmit = (code)=>{
+        const {email} = this.state;
         console.log('submit verify code')
-        this.setState({
-            stage: 'done'
+        this.props.onSubmitCode({email,code},()=>{
+            this.setState({
+                stage: 'done'
+            })
         })
     }
     goBack = ()=>{
         console.log('goback')
         this.props.navigation.pop()
     }
-    goSettings = ()=>{
-        console.log('go settings')
-    }
-    goBrowse = ()=>{
-        console.log('go goBrowse')
+    // goSettings = ()=>{
+    //     console.log('go settings')
+    // }
+    // goBrowse = ()=>{
+    //     console.log('go goBrowse')
+    // }
+    goLogin = ()=>{
+        this.goBack()
     }
     render() {
-        const {stage,sendBtnDisabled,submitBtnDisabled} = this.state;
+        const {stage,sendBtnDisabled,submitBtnDisabled,email} = this.state;
         return (
             <Container>
                 <CustomHeader onCancel={this.goBack}/>
                 <View style={styles.container}>
-                    {stage === 'send' && <Send onSubmit={this.onSend} disabled={sendBtnDisabled}/>}
+                    {stage === 'send' && <Send onSubmit={this.onSend} disabled={sendBtnDisabled} email={email}/>}
                     {stage === 'submit' && <Submit onSubmit={this.onSubmit} disabled={submitBtnDisabled}/>}
-                    {stage === 'done' && <Done onBrowse={this.goBrowse} onSet={this.goSettings}/>}
+                    {stage === 'done' && <Done onSubmit={this.goLogin}/>}
                 </View>
             </Container>
         );

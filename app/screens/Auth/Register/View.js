@@ -1,15 +1,17 @@
 import React, {Component} from 'react';
 import styles from './styles';
 import {Image,KeyboardAvoidingView,TouchableOpacity} from 'react-native';
-import { Container, Content, Form, Item, Input, View, Text,Button, Label} from 'native-base';
+import { Container,View, Text,Button} from 'native-base';
 import PropTypes from 'prop-types'
 import CustomHeader from '../Components/Header'
 import FocusInput from '../Components/InputFocus'
+import {$toast} from 'app/utils'
 
   
 class ViewControl extends Component {
     static propTypes = {
-        navigation: PropTypes.object.isRequired
+        navigation: PropTypes.object.isRequired,
+        onRegister: PropTypes.func.isRequired
     }
     state = {
         info: {},
@@ -36,9 +38,29 @@ class ViewControl extends Component {
             info: {...info}
         })
     }
-    onRegister = ()=>{
+    check = ()=>{
         const {info} = this.state;
-        console.log(info)
+        if(!/\w+@\w+\.\w+/.test(info.email)){
+            $toast('邮箱格式不对')
+            return false
+        }
+        if(!info.password || info.password.length < 8){
+            $toast('密码不能少于8位')
+            return false
+        }
+        if(info.password !== info.password2){
+            $toast('密码不一致')
+            return false
+        }
+        return true;
+    }
+    onRegister = ()=>{
+        if(this.check()){
+            console.log('all right')
+            const {info} = this.state;
+            this.props.onRegister({email: info.email, password: info.password});
+            $toast('正在提交, 请稍后!!!')
+        }
     }
     goBack = ()=>{
         console.log('goback')

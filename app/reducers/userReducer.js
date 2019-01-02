@@ -11,5 +11,8 @@ const initialState = {
 export const userReducer = createReducer(initialState, {
     [types.SET_USER_INFO](state, action) {
         return {...state, ...{info: action.info}}
+    },
+    [types.CLEAR_USER_INFO]() {
+        return {info: {}}
     }
 });
