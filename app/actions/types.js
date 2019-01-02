@@ -26,3 +26,4 @@ export const AUTH_LOGIN = 'AUTH/LOGIN';
 export const AUTH_LOGOUT = 'AUTH/LOGOUT';
 export const AUTH_VERIFY = 'AUTH/VERIFY';
 export const AUTH_RESEND = 'AUTH/RESEND';
+export const AUTH_REFRESH = 'AUTH/AUTH_REFRESH';

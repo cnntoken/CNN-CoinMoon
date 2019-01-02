@@ -1,6 +1,29 @@
 import { put, call, select } from 'redux-saga/effects';
 import { Auth } from 'aws-amplify';
 import { $toast } from '../utils'
+import * as Types from '../actions/types'
+
+
+export function* refresh(){
+    try{
+        const user = yield Auth.currentAuthenticatedUser({
+            bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+        });
+        console.log('Auth.currentAuthenticatedUser success',user)
+        console.log(user.getUserContextData());
+        const info = {
+            attributes: user.attributes,
+            username: user.username,
+            userDataKey: user.userDataKey
+        }
+        yield put({type: Types.SET_USER_INFO, info: info})
+    }catch(e){
+        yield put({type: Types.SET_USER_INFO, info: {}})
+        console.log('Auth.currentAuthenticatedUser fail')
+        console.log(e);
+    }
+}
+
 
 export function* login({payload,callback}) {
     // check the current user when the App component is loaded
@@ -10,6 +33,13 @@ export function* login({payload,callback}) {
         const user = yield Auth.signIn(email, password);
         console.log('user', user)
         $toast('登录成功')
+        const info = {
+            attributes: user.attributes,
+            username: user.username,
+            userDataKey: user.userDataKey,
+            payload: user.signInUserSession.idToken.payload
+        }
+        yield put({type: Types.SET_USER_INFO, info})
     }catch(e){
         console.log('login fail')
         console.log(e);

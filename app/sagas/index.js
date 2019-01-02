@@ -19,5 +19,6 @@ export default function* watch() {
         takeEvery(types.AUTH_VERIFY, authSaga.verify),
         takeEvery(types.AUTH_RESEND, authSaga.resend),
         takeEvery(types.AUTH_LOGOUT, authSaga.logout),
+        takeEvery(types.AUTH_REFRESH, authSaga.refresh),
     ]);
 }

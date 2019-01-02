@@ -202,7 +202,7 @@ const RNApp = createAppContainer(
             }
         }
     },{
-        initialRouteName: 'Auth'
+        initialRouteName: 'Home'
     })
 );
 
