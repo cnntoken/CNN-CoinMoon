@@ -8,6 +8,16 @@ const styles = StyleSheet.create({
     },
     title: {
         color: '#fff'
+    },
+    col_img: {
+        width: 100,
+        height: 100
+    },
+
+    image: {
+        width: 100,
+        height: 100
+        // resizeMode: 'cover'
     }
 });
 

@@ -14,22 +14,27 @@ import {
     List,
     ListItem, Icon, Switch, Thumbnail
 } from "native-base";
+import {View, TouchableHighlight, Image} from 'react-native';
+
+import {Col, Row, Grid} from "react-native-easy-grid";
 
 import {API} from 'aws-amplify';
 
 
-class Page extends Component {
+class Screen extends Component {
 
     constructor(props) {
         super(props);
     }
 
-    toggleTab1 = () => {
-        this.props.navigation.navigate('DiscloseDetail');
+    // 写爆料
+    writeDisclose = () => {
+        console.log('写爆料');
+        this.props.navigation.navigate('DisclosePublish');
     };
 
-    toggleTab2 = () => {
-        this.props.navigation.navigate('DisclosePublish');
+    pressItem = () => {
+        this.props.navigation.navigate('DiscloseDetail');
     };
 
 
@@ -50,55 +55,96 @@ class Page extends Component {
                     <Title style={styles.title}>Disclose</Title>
                     </Body>
                     <Right>
-                        <Button transparent light>
-                            <Text>Write</Text>
+                        <Button transparent light onPress={this.writeDisclose}>
+                            <Image style={styles.writeDiscloseBtn}
+                                   source={require('../../../images/btn_post.png')}/>
                         </Button>
                     </Right>
                 </Header>
-
                 <Content>
-                    {/*<Button onPress={this.toggleTab1.bind(this)}><Text>Detail</Text></Button>*/}
-                    <Button onPress={this.toggleTab2.bind(this)}><Text>Publish</Text></Button>
-
-
                     <List
                         dataArray={list}
                         renderRow={item =>
                             <ListItem avatar>
+                                {/* 左侧图标 */}
                                 <Left>
                                     <Thumbnail small source={item.source}/>
                                 </Left>
+                                {/* 用户名& 发布时间*/}
                                 <Body>
-                                <Text>
-                                    <Text>{item.userName}</Text>{item.time}
-                                </Text>
-                                <Text>
-                                    {item.title}
-                                </Text>
-                                <Content>
-                                    {
-                                        item.images.map((i, idx) => {
-                                            return <Thumbnail key={idx} large source={{uri: i}}/>
-                                        })
-                                    }
-                                </Content>
-                                </Body>
+                                <TouchableHighlight onPress={this.pressItem}>
 
-                                {/*<Right>*/}
-                                {/*<Text note>*/}
-                                {/*{item.time.toString()}*/}
-                                {/*</Text>*/}
-                                {/*</Right>*/}
+                                    <Grid>
+                                        <Row>
+
+                                            <Col>
+                                                <Text>{item.userName}</Text>
+                                            </Col>
+                                            <Col>
+                                                <Text>{item.time}</Text>
+                                            </Col>
+
+                                        </Row>
+
+                                        <Row>
+                                            <Col>
+                                                <Text>{item.title}</Text>
+                                            </Col>
+
+                                        </Row>
+
+                                        <Row>
+                                            {
+                                                item.images.map((i, idx) => {
+                                                    return <Col style={styles.col_img}>
+                                                        <Image style={styles.image} key={idx} source={{uri: i.uri}}/>
+                                                    </Col>
+                                                })
+                                            }
+                                        </Row>
+
+                                    </Grid>
+                                </TouchableHighlight>
+
+
+                                {/* 点赞评论*/}
+                                <Grid>
+                                    <Col>
+                                        <Button transparent light onPress={this.view}>
+                                            <Image source={require('../../../images/icon_view.png')}/>
+                                            <Text>{item.num1}</Text>
+                                        </Button>
+                                    </Col>
+
+                                    <Col>
+                                        <Button transparent light onPress={this.view}>
+                                            <Image source={require('../../../images/icon_comment_small.png')}/>
+                                            <Text>{item.num2}</Text>
+                                        </Button>
+                                    </Col>
+
+                                    <Col>
+                                        <Button transparent light onPress={this.view}>
+                                            <Image source={require('../../../images/icon_like_small.png')}/>
+                                            <Text>{item.num3}</Text>
+                                        </Button>
+
+                                    </Col>
+
+                                    {/*<Button transparent light onPress={this.view}>*/}
+                                    {/*<Image source={require('../../../images/icon_view.png')}/>*/}
+                                    {/*</Button>*/}
+                                </Grid>
+
+                                </Body>
                             </ListItem>}
                     />
 
                 </Content>
-
-                <Footer/>
 
             </Container>
         );
     }
 }
 
-export default Page;
+export default Screen;
