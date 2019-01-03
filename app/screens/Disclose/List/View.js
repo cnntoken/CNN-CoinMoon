@@ -34,6 +34,7 @@ class Screen extends Component {
     };
 
     pressItem = () => {
+        console.log("presssss");
         this.props.navigation.navigate('DiscloseDetail');
     };
 
@@ -74,36 +75,67 @@ class Screen extends Component {
                                 <Body>
                                 <TouchableHighlight onPress={this.pressItem}>
 
-                                    <Grid>
-                                        <Row>
+                                    <View>
+                                        <Grid>
+                                            <Row>
+                                                <Col>
+                                                    <Text>{item.userName}</Text>
+                                                </Col>
+                                                <Col>
+                                                    <Text>{item.time}</Text>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col>
+                                                    <Text>{item.title}</Text>
+                                                </Col>
+                                            </Row>
+                                        </Grid>
 
-                                            <Col>
-                                                <Text>{item.userName}</Text>
-                                            </Col>
-                                            <Col>
-                                                <Text>{item.time}</Text>
-                                            </Col>
+                                        {/* todo 九宫格组件待提出 */}
+                                        <Grid>
 
-                                        </Row>
+                                            <Row>
+                                                {
+                                                    item.images.slice(0, 3).map((i, idx) => {
+                                                        return <Col style={styles.col_img}>
+                                                            <Image style={styles.image} key={idx}
+                                                                   source={{uri: i.uri}}/>
+                                                        </Col>
+                                                    })
+                                                }
+                                            </Row>
 
-                                        <Row>
-                                            <Col>
-                                                <Text>{item.title}</Text>
-                                            </Col>
+                                            <Row>
+                                                {
+                                                    item.images.length > 3 ?
+                                                        item.images.slice(3, 6).map((i, idx) => {
+                                                            return <Col style={styles.col_img}>
+                                                                <Image style={styles.image} key={idx}
+                                                                       source={{uri: i.uri}}/>
+                                                            </Col>
+                                                        }) : null
+                                                }
+                                            </Row>
 
-                                        </Row>
 
-                                        <Row>
-                                            {
-                                                item.images.map((i, idx) => {
-                                                    return <Col style={styles.col_img}>
-                                                        <Image style={styles.image} key={idx} source={{uri: i.uri}}/>
-                                                    </Col>
-                                                })
-                                            }
-                                        </Row>
+                                            <Row>
+                                                {
+                                                    item.images.length > 6 ?
+                                                        item.images.slice(6, 9).map((i, idx) => {
+                                                            return <Col style={styles.col_img}>
+                                                                <Image style={styles.image} key={idx}
+                                                                       source={{uri: i.uri}}/>
+                                                            </Col>
+                                                        }) : null
+                                                }
+                                            </Row>
 
-                                    </Grid>
+                                        </Grid>
+
+                                    </View>
+
+
                                 </TouchableHighlight>
 
 

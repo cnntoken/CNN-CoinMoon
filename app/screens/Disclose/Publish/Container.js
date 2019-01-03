@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Screen from './Screen';
 import {connect} from 'react-redux';
-
+const moment = require('moment');
 class Container extends Component {
     constructor(props) {
         super(props);
