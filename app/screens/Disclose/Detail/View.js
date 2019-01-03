@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-// import styles from './styles';
+import styles from './styles';
 import {
     Container,
     Header,
     Content,
-    Text,
+
     Button,
     Left,
     Right,
@@ -15,8 +15,7 @@ import {
 } from "native-base";
 import {Col, Row, Grid} from "react-native-easy-grid";
 import {API} from 'aws-amplify';
-import styles from "../List/styles";
-import {Image, TouchableHighlight} from "react-native";
+import {Image, Text, View} from "react-native";
 
 class Page extends Component {
 
@@ -39,6 +38,7 @@ class Page extends Component {
         let {list} = this.props;
         return (
             <Container>
+
                 <Header>
                     <Left>
                         <Button transparent onPress={this.goListScreen}>
@@ -46,6 +46,7 @@ class Page extends Component {
                                    source={require('../../../images/icon_back_white.png')}/>
                         </Button>
                     </Left>
+
                     <Body>
                     <Title style={styles.title}></Title>
                     </Body>
@@ -65,43 +66,77 @@ class Page extends Component {
                             <ListItem avatar>
                                 {/* 左侧图标 */}
                                 <Left>
-                                    <Thumbnail small source={item.source}/>
+                                    <Image source={item.source}/>
                                 </Left>
                                 {/* 用户名& 发布时间*/}
                                 <Body>
-                                <TouchableHighlight onPress={this.pressItem}>
 
-                                    <Grid>
-                                        <Row>
+                                <Grid>
 
-                                            <Col>
-                                                <Text>{item.userName}</Text>
-                                            </Col>
-                                            <Col>
-                                                <Text>{item.time}</Text>
-                                            </Col>
+                                    <Row>
 
-                                        </Row>
+                                        <Col style={styles.col_username}>
+                                            <Text style={styles.col_username_text}>{item.userName}</Text>
+                                        </Col>
 
-                                        <Row>
-                                            <Col>
-                                                <Text>{item.title}</Text>
-                                            </Col>
+                                        <Col style={styles.col_time}>
+                                            <Text style={styles.col_time_text}>{item.time}</Text>
+                                        </Col>
 
-                                        </Row>
+                                    </Row>
 
-                                        <Row>
-                                            {
-                                                item.images.map((i, idx) => {
+                                    <Row>
+
+                                        <Col>
+                                            <Text>{item.title}</Text>
+                                        </Col>
+
+                                    </Row>
+
+                                </Grid>
+
+                                {/* todo 九宫格组件待提出 */}
+                                <Grid>
+
+                                    <Row>
+                                        {
+                                            item.images.slice(0, 3).map((i, idx) => {
+                                                return <Col style={styles.col_img}>
+                                                    <Image style={styles.image} key={idx}
+                                                           source={{uri: i.uri}}/>
+                                                </Col>
+                                            })
+                                        }
+                                    </Row>
+
+                                    <Row>
+                                        {
+                                            item.images.length > 3 ?
+                                                item.images.slice(3, 6).map((i, idx) => {
                                                     return <Col style={styles.col_img}>
-                                                        <Image style={styles.image} key={idx} source={{uri: i.uri}}/>
+                                                        <Image style={styles.image} key={idx}
+                                                               source={{uri: i.uri}}/>
                                                     </Col>
-                                                })
-                                            }
-                                        </Row>
+                                                }) : null
+                                        }
+                                    </Row>
 
-                                    </Grid>
-                                </TouchableHighlight>
+
+                                    <Row>
+                                        {
+                                            item.images.length > 6 ?
+                                                item.images.slice(6, 9).map((i, idx) => {
+                                                    return <Col style={styles.col_img}>
+                                                        <Image style={styles.image} key={idx}
+                                                               source={{uri: i.uri}}/>
+                                                    </Col>
+                                                }) : null
+                                        }
+                                    </Row>
+
+                                </Grid>
+
+
 
 
                                 {/* 点赞评论*/}
