@@ -14,7 +14,7 @@ import {
     List,
     ListItem, Icon, Switch, Thumbnail
 } from "native-base";
-import {View, TouchableHighlight, Image} from 'react-native';
+import {View, TouchableOpacity, Image} from 'react-native';
 
 import {Col, Row, Grid} from "react-native-easy-grid";
 
@@ -73,7 +73,8 @@ class Screen extends Component {
                                 </Left>
                                 {/* 用户名& 发布时间*/}
                                 <Body>
-                                <TouchableHighlight onPress={this.pressItem}>
+                                <TouchableOpacity
+                                    onPress={this.pressItem}>
 
                                     <View>
                                         <Grid>
@@ -135,8 +136,7 @@ class Screen extends Component {
 
                                     </View>
 
-
-                                </TouchableHighlight>
+                                </TouchableOpacity>
 
 
                                 {/* 点赞评论*/}
