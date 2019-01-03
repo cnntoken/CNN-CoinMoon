@@ -5,6 +5,8 @@ import {
     createAppContainer,
     createBottomTabNavigator
 } from 'react-navigation';
+import React from 'react';
+import {Image,Text} from 'react-native';
 
 // import {CustomTabComponent} from './CustomTabComponent'
 
@@ -46,6 +48,39 @@ import Login from '../screens/Auth/Login';
 import Register from '../screens/Auth/Register';
 import Verify from '../screens/Auth/Verify';
 
+// const customTabbarConfig = {
+//     News: {
+//         tabBarIcon: {
+//             normal: <Image source={require('../images/icon_tabbar_news_normal.png')}/>,
+//             focuse: <Image source={require('../images/icon_tabbar_news_selected.png')}/>
+//         },
+//         tabBarLabel: {
+//             normal: <Text></Text>,
+//             focuse: <Text></Text>
+//         }
+//     },
+//     DiscloseList: {
+//         tabBarIcon: {
+//             normal: <Image source={require('../images/icon_tabbar_prophet_normal.png')}/>,
+//             focuse: <Image source={require('../images/icon_tabbar_prophet_selected.png')}/>
+//         },
+//         tabBarLabel: {
+//             normal: <Text></Text>,
+//             focuse: <Text></Text>
+//         }
+//     },
+//     Mine: {
+//         tabBarIcon: {
+//            normal: <Image source={require('../images/icon_tabbar_me_normal.png')}/>,
+//            focuse: <Image source={require('../images/icon_tabbar_me_selected.png')}/>
+//        },
+//        tabBarLabel: {
+//         normal: <Text></Text>,
+//         focuse: <Text></Text>
+//         }
+//     }
+// }
+
 const TabNavigator = createBottomTabNavigator({
         News: {
             screen: NewsList,
@@ -73,15 +108,57 @@ const TabNavigator = createBottomTabNavigator({
     // 初始路由
     {
         initialRouteName: 'News',
-        // tabBarOptions: {
-        //     activeTintColor: '#e91e63',
-        //     labelStyle: {
-        //         fontSize: 12,
-        //     },
-        //     style: {
-        //         backgroundColor: '#fff',
-        //     },
-        // },
+        defaultNavigationOptions: ({ navigation }) => ({
+            tabBarIcon: ({ focused, horizontal, tintColor }) => {
+                const { routeName } = navigation.state;
+                if(routeName === 'News'){
+                    if(focused){
+                        return <Image source={require('../images/icon_tabbar_news_selected.png')}/>
+                    }
+                    return <Image source={require('../images/icon_tabbar_news_normal.png')}/>
+                }else if(routeName === 'DiscloseList'){
+                    const style = {
+                        top: -15
+                    }
+                    if(focused){
+                        return <Image source={require('../images/icon_tabbar_prophet_selected.png')} style={style}/>
+                    }
+                    return <Image source={require('../images/icon_tabbar_prophet_normal.png')} style={style}/>
+                }else if(routeName === 'Mine'){
+                    if(focused){
+                        return <Image source={require('../images/icon_tabbar_me_selected.png')}/>
+                    }
+                    return <Image source={require('../images/icon_tabbar_me_normal.png')}/>
+                }
+            },
+            tabBarLabel: ({ focused, horizontal, tintColor }) => {
+                const style = {
+                    color: tintColor,
+                    fontSize: 10
+                }
+                const { routeName } = navigation.state;
+                let text = '';
+                if(routeName === 'News'){
+                    text = '先知'
+                }else if(routeName === 'DiscloseList'){
+                    style.top = -3
+                    text = '资讯'
+                }else if(routeName === 'Mine'){
+                    text = '我'
+                }
+                return <Text style={style}>{text}</Text>
+            },
+        }),
+        tabBarOptions: {
+            activeTintColor: '#408EF5',
+            inactiveTintColor: '#666666',
+            labelStyle: {
+                fontSize: 10,
+            },
+            style: {
+                backgroundColor: '#fff',
+            },
+        },
         // TabBarComponent: props => {
         //     return (
         //         <Footer>
