@@ -203,12 +203,22 @@ const styles = StyleSheet.create({
         width: viewportWidth,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
+        alignContent: 'center',
+        justifyContent: 'space-around',
+        height: 70
+    },
+    loadmore_col:{
+        display: 'flex',
+        alignItems: 'center',
+        alignContent: 'center',
+        justifyContent: 'space-around',
+    },
+    loadmore_btn: {
+
     },
     loadmore_btn_text: {
         color: '#408EF5',
         fontSize: 15,
-        textAlign: 'center'
         // width: 90
     },
 

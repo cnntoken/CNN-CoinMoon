@@ -371,11 +371,12 @@ class Page extends Component {
                     {/*</Button>*/}
                     {/*</View>*/}
 
-                    <View style={styles.loadmore_btn}>
-                        <Button transparent light onPress={this.loadmore.bind(this, data)}>
+
+                    <Grid style={styles.loadmore}>
+                        <Button style={styles.loadmore_btn} block transparent light onPress={this.loadmore.bind(this, data)}>
                             <Text style={styles.loadmore_btn_text}>加载更多评论</Text>
                         </Button>
-                    </View>
+                    </Grid>
                     {/**************评论 end**************/}
 
 
