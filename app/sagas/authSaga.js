@@ -2,15 +2,16 @@ import { put, call, select } from 'redux-saga/effects';
 import { Auth } from 'aws-amplify';
 import { $toast } from '../utils'
 import * as Types from '../actions/types'
-
+import userService from '../services/user'
 
 export function* refresh(){
     try{
         const user = yield Auth.currentAuthenticatedUser({
-            bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+            bypassCache: true  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
         });
+        userService.init(user);
         console.log('Auth.currentAuthenticatedUser success',user)
-        console.log(user.getUserContextData());
+        // console.log(user.getUserContextData());
         const info = {
             attributes: user.attributes,
             username: user.username,
@@ -50,13 +51,15 @@ export function* login({payload,callback}) {
 
 export function* register({payload}) {
     console.log(payload)
-    const {email, password} = payload
+    const {email, password} = payload;
+    const essentialAttributes = userService.generateRandomAttributes();
     try{
         const res = yield Auth.signUp({ 
             username: email,
             password,
             attributes: {
-                email
+                email,
+                ...essentialAttributes
             },
             validationData: []  //optional
         })

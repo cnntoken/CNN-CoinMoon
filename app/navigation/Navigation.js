@@ -5,6 +5,8 @@ import {
     createAppContainer,
     createBottomTabNavigator
 } from 'react-navigation';
+import React from 'react';
+import {Image,Text} from 'react-native';
 
 // import {CustomTabComponent} from './CustomTabComponent'
 
@@ -39,12 +41,50 @@ import DiscloseDetail from 'app/screens/Disclose/Detail';
 import DisclosePublish from 'app/screens/Disclose/Publish';
 
 // Mine
-import Mine from 'app/screens/Mine';
+import MineIndex from '../screens/Mine/Index';
+import MineSettings from '../screens/Mine/Settings';
+import MineEidt from '../screens/Mine/Edit';
 
 // Auth
 import Login from '../screens/Auth/Login';
 import Register from '../screens/Auth/Register';
 import Verify from '../screens/Auth/Verify';
+
+
+const MineStack = createStackNavigator({
+    Index: {
+        screen: MineIndex,
+        navigationOptions: {
+            header: null,
+            gesturesEnabled: false
+        }
+    },
+    Settings: {
+        screen: MineSettings,
+        navigationOptions: {
+            header: null,
+            gesturesEnabled: true
+        }
+    },
+    Edit: {
+        screen: MineEidt,
+        navigationOptions: {
+            header: null,
+            gesturesEnabled: true
+        }
+    },
+});
+
+MineStack.navigationOptions = ({ navigation }) => {
+    let tabBarVisible = true;
+    if (navigation.state.index > 0) {
+      tabBarVisible = false;
+    }
+    return {
+      tabBarVisible,
+    };
+  };
+
 
 const TabNavigator = createBottomTabNavigator({
         News: {
@@ -63,7 +103,7 @@ const TabNavigator = createBottomTabNavigator({
             }
         },
         Mine: {
-            screen: Mine,
+            screen: MineStack,
             navigationOptions: {
                 header: null,
                 gesturesEnabled: true
@@ -73,15 +113,57 @@ const TabNavigator = createBottomTabNavigator({
     // 初始路由
     {
         initialRouteName: 'News',
-        // tabBarOptions: {
-        //     activeTintColor: '#e91e63',
-        //     labelStyle: {
-        //         fontSize: 12,
-        //     },
-        //     style: {
-        //         backgroundColor: '#fff',
-        //     },
-        // },
+        defaultNavigationOptions: ({ navigation }) => ({
+            tabBarIcon: ({ focused, horizontal, tintColor }) => {
+                const { routeName } = navigation.state;
+                if(routeName === 'News'){
+                    if(focused){
+                        return <Image source={require('../images/icon_tabbar_news_selected.png')}/>
+                    }
+                    return <Image source={require('../images/icon_tabbar_news_normal.png')}/>
+                }else if(routeName === 'DiscloseList'){
+                    const style = {
+                        top: -15
+                    }
+                    if(focused){
+                        return <Image source={require('../images/icon_tabbar_prophet_selected.png')} style={style}/>
+                    }
+                    return <Image source={require('../images/icon_tabbar_prophet_normal.png')} style={style}/>
+                }else if(routeName === 'Mine'){
+                    if(focused){
+                        return <Image source={require('../images/icon_tabbar_me_selected.png')}/>
+                    }
+                    return <Image source={require('../images/icon_tabbar_me_normal.png')}/>
+                }
+            },
+            tabBarLabel: ({ focused, horizontal, tintColor }) => {
+                const style = {
+                    color: tintColor,
+                    fontSize: 10
+                }
+                const { routeName } = navigation.state;
+                let text = '';
+                if(routeName === 'News'){
+                    text = '资讯'
+                }else if(routeName === 'DiscloseList'){
+                    style.top = -3
+                    text = '先知'
+                }else if(routeName === 'Mine'){
+                    text = '我'
+                }
+                return <Text style={style}>{text}</Text>
+            },
+        }),
+        tabBarOptions: {
+            activeTintColor: '#408EF5',
+            inactiveTintColor: '#666666',
+            labelStyle: {
+                fontSize: 10,
+            },
+            style: {
+                backgroundColor: '#fff',
+            },
+        },
         // TabBarComponent: props => {
         //     return (
         //         <Footer>
@@ -191,11 +273,10 @@ const AuthStack = createStackNavigator({
             gesturesEnabled: false
         }
     },
-},{
-    initialRouteName: 'Login'
-})
+});
+
 const RNApp = createAppContainer(
-    createSwitchNavigator({
+    createStackNavigator({
         Home: {
             screen: HomeStack,
             navigationOptions: {
@@ -209,7 +290,9 @@ const RNApp = createAppContainer(
             }
         }
     },{
-        initialRouteName: 'Home'
+        initialRouteName: 'Home',
+        mode: 'modal',
+        headerMode: 'none',
     })
 );
 

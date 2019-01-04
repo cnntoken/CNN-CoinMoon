@@ -12,16 +12,13 @@ import {
 } from "native-base";
 import styles from './styles';
 
-
 class View extends Component {
 
     render() {
         return (
             <Container>
                 <Header>
-                    <Body>
-                    <Title>Mine</Title>
-                    </Body>
+
                 </Header>
                 <Content>
                     <Text>test</Text>
