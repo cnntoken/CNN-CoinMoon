@@ -17,8 +17,7 @@ class ViewControl extends Component {
     constructor(props){
         super(props)
         this.state = {
-            // stage: 'send',
-            stage: 'submit',
+            stage: 'send',
             sendBtnDisabled: false,
             submitBtnDisabled: false,
             email: props.navigation.getParam('email', '')

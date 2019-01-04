@@ -13,21 +13,27 @@ import {
 } from "native-base";
 import {Image,View,TouchableOpacity} from 'react-native';
 import InputFocus from 'app/components/InputFocus';
-import userService from 'app/services/user'
+import userService from 'app/services/user';
 import styles from './styles';
-
+import { $toast } from 'app/utils';
+import * as Types from 'app/actions/types'
 class ViewControl extends PureComponent {
     constructor(props){
         super(props)
+        const {userInfo} = props;
         this.state = {
-            nick_name: '蚂蚁'
+            nick_name: userInfo.attributes.nickname
         }
     }
     onSubmit = async ()=>{
         console.log('submit')
         try{
+         $toast('正在提交...')
          const res = await userService.updateAttributes({'nickname': this.state.nick_name});
+         this.props.dispatch({type: Types.AUTH_REFRESH})
+         this.props.navigation.pop()
          console.log(res)
+         $toast('修改成功!')
         }catch(e){
             console.log(e)
         }

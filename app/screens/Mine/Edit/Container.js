@@ -1,8 +1,8 @@
 import View from './View';
 import { connect } from 'react-redux';
 
-function mapStateToProps() {
-    return {};
+function mapStateToProps({userReducer:{info}}) {
+    return {userInfo:info};
 }
 
 export default connect(
