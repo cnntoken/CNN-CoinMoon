@@ -197,13 +197,13 @@ const TabNavigator = createBottomTabNavigator({
 
 
 const HomeStack = createStackNavigator({
-    // DiscloseDetail: {
-    //     screen: DiscloseDetail,
-    //     navigationOptions: {
-    //         header: null,
-    //         tabBarVisible: false,
-    //     }
-    // },
+    DiscloseDetail: {
+        screen: DiscloseDetail,
+        navigationOptions: {
+            header: null,
+            tabBarVisible: false,
+        }
+    },
     // DisclosePublish: {
     //     screen: DisclosePublish,
     //     navigationOptions: {
@@ -219,13 +219,13 @@ const HomeStack = createStackNavigator({
             tabBarVisible: false
         }
     },
-    DiscloseDetail: {
-        screen: DiscloseDetail,
-        navigationOptions: {
-            header: null,
-            tabBarVisible: false,
-        }
-    },
+    // DiscloseDetail: {
+    //     screen: DiscloseDetail,
+    //     navigationOptions: {
+    //         header: null,
+    //         tabBarVisible: false,
+    //     }
+    // },
     DisclosePublish: {
         screen: DisclosePublish,
         navigationOptions: {

@@ -264,30 +264,35 @@ class Page extends Component {
 
                     {/* 点赞、评论按钮等*/}
                     <Grid style={styles.btns}>
-                        <Col>
-                            <Button transparent light onPress={this.comment.bind(this, data)}>
-                                <View style={styles.btns_btn}>
-                                    <Image source={require('../../../images/icon_comment_big.png')}/>
-                                    <Text style={styles.btns_text}>{data.num2}</Text>
-                                </View>
-                            </Button>
+                        <Col style={styles.btns_btn_col}>
+                            <View style={styles.btns_btn}>
+                                <Button block transparent light onPress={this.comment.bind(this, data)}>
+                                    <View>
+                                        <Image source={require('../../../images/icon_comment_big.png')}/>
+                                        <Text style={styles.btns_text}>{data.num2}</Text>
+                                    </View>
+                                </Button>
+                            </View>
                         </Col>
-                        <Col>
-                            <Button transparent light onPress={this.like.bind(this, data)}>
-                                <View style={styles.btns_btn}>
-                                    <Image source={require('../../../images/icon_like_big.png')}/>
-                                    <Text style={styles.btns_text}>{data.num3}</Text>
-                                </View>
-
-                            </Button>
+                        <Col style={styles.btns_btn_col}>
+                            <View style={styles.btns_btn}>
+                                <Button block transparent light onPress={this.like.bind(this, data)}>
+                                    <View>
+                                        <Image source={require('../../../images/icon_like_big.png')}/>
+                                        <Text style={styles.btns_text}>{data.num3}</Text>
+                                    </View>
+                                </Button>
+                            </View>
                         </Col>
-                        <Col>
-                            <Button transparent light onPress={this.dislike.bind(this, data)}>
-                                <View style={styles.btns_btn}>
-                                    <Image source={require('../../../images/icon_like_big.png')}/>
-                                    <Text style={styles.btns_text}>{data.num3}</Text>
-                                </View>
-                            </Button>
+                        <Col style={styles.btns_btn_col}>
+                            <View style={styles.btns_btn}>
+                                <Button block transparent light onPress={this.dislike.bind(this, data)}>
+                                    <View>
+                                        <Image source={require('../../../images/icon_like_big.png')}/>
+                                        <Text style={styles.btns_text}>{data.num3}</Text>
+                                    </View>
+                                </Button>
+                            </View>
                         </Col>
                     </Grid>
 
@@ -373,7 +378,8 @@ class Page extends Component {
 
 
                     <Grid style={styles.loadmore}>
-                        <Button style={styles.loadmore_btn} block transparent light onPress={this.loadmore.bind(this, data)}>
+                        <Button style={styles.loadmore_btn} block transparent light
+                                onPress={this.loadmore.bind(this, data)}>
                             <Text style={styles.loadmore_btn_text}>加载更多评论</Text>
                         </Button>
                     </Grid>

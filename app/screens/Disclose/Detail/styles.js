@@ -103,7 +103,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     btns_btn: {
-        width: viewportWidth / 3 - 2,
+        width: 40,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    btns_btn_col: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -113,7 +118,6 @@ const styles = StyleSheet.create({
         color: '#333',
         fontSize: 12
     },
-
     //////////////////// 评论
     comments_header: {
         marginTop: 20,
@@ -207,15 +211,13 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         height: 70
     },
-    loadmore_col:{
+    loadmore_col: {
         display: 'flex',
         alignItems: 'center',
         alignContent: 'center',
         justifyContent: 'space-around',
     },
-    loadmore_btn: {
-
-    },
+    loadmore_btn: {},
     loadmore_btn_text: {
         color: '#408EF5',
         fontSize: 15,
