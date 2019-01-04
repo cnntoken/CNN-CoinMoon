@@ -16,7 +16,7 @@ import {
     // List,
     ListItem, Icon, Switch, Thumbnail
 } from "native-base";
-import {View, TouchableHighlight, FlatList, ActivityIndicator, Image, PixelRatio} from 'react-native';
+import {View, TouchableOpacity, FlatList, ActivityIndicator, Image, PixelRatio} from 'react-native';
 
 import {Col, Row, Grid} from "react-native-easy-grid";
 
@@ -51,7 +51,7 @@ class PureListItem extends PureComponent{
                         </Col>
                     </Row>
                 </Grid>
-                <TouchableHighlight onPress={this.props.pressItem}>
+                <TouchableOpacity onPress={this.props.pressItem}>
                     <View>
                         <Grid>
                             <Row>
@@ -105,7 +105,7 @@ class PureListItem extends PureComponent{
                     </View>
 
 
-                </TouchableHighlight>
+                </TouchableOpacity>
 
                 {/* 点赞评论*/}
                 <Grid>
