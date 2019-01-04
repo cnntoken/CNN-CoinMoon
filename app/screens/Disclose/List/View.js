@@ -24,7 +24,7 @@ import {API} from 'aws-amplify';
 
 class PureListItem extends PureComponent{
     render(){
-        const {item,index,hasData,list} = this.props
+        const {item,index,hasData,list} = this.props.opt
         return (
             <ListItem avatar>
                 {/* 左侧图标 */}
@@ -51,7 +51,7 @@ class PureListItem extends PureComponent{
                         </Col>
                     </Row>
                 </Grid>
-                <TouchableHighlight onPress={this.pressItem}>
+                <TouchableHighlight onPress={this.props.pressItem}>
                     <View>
                         <Grid>
                             <Row>
@@ -214,7 +214,7 @@ class Screen extends PureComponent {
     renderListItem = ({item,index}) => {
         const {hasData,list} = this.state;
         // 纯组件
-        return <PureListItem item={item} index={index} hasData={hasData} list={list} />
+        return <PureListItem opt={{item,index,hasData,list}} pressItem={this.pressItem} />
     }
 
     componentDidMount() {

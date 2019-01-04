@@ -65,15 +65,3 @@ export default class DoubleClicker extends Component {
         );
     }
 }
-
-// DoubleClicker.defaultProps = {
-//     delay: 300,
-//     radius: 20,
-//     onClick: () => Alert.alert('Double Tap Succeed'),
-// };
-
-// DoubleClicker.propTypes = {
-//     delay: PropTypes.number,
-//     radius: PropTypes.number,
-//     onClick: PropTypes.func,
-// };
