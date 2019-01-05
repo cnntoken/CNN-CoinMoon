@@ -51,17 +51,18 @@ class ViewControl extends Component {
         // setUserInfo: PropTypes.func.isRequired,
     }
     goEdit = ()=>{
-        this.props.navigation.navigate('Edit')
+        this.props.navigation.navigate('MineEidt')
     }
     goSettings = ()=>{
-        this.props.navigation.navigate('Settings')
+        this.props.navigation.navigate('MineSettings')
     }
     render() {
+        const {userInfo} = this.props;
         return (
             <Container>
                 <Header noShadow>
                     <Left>
-                        <UserAvatar info={{avatar: require('app/images/avatar_default.png'), nickname: '一只蚂蚁'}}/>
+                        <UserAvatar info={{avatar: require('app/images/avatar_default.png'), nickname: userInfo.attributes.nickname}}/>
                     </Left>
                     <Right>
                         <Button transparent onPress={this.goSettings}>
@@ -73,7 +74,7 @@ class ViewControl extends Component {
                     <View style={styles.userBox}>
                         <View style={styles.bg}></View>
                         <View style={styles.userInfo}>
-                            <UserAvatar style={styles.userAvatar} info={{avatar: require('app/images/avatar_default.png'), nickname: '一只蚂蚁'}} big/>
+                            <UserAvatar style={styles.userAvatar} info={{avatar: require('app/images/avatar_default.png'), nickname: userInfo.attributes.nickname}} big/>
                             <Button transparent onPress={this.goEdit}>
                                 <Text>编辑信息</Text>
                             </Button>

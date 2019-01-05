@@ -4,16 +4,20 @@ import { $toast } from '../utils'
 import * as Types from '../actions/types'
 import userService from '../services/user'
 
-export function* refresh(){
+export function* refresh({user}){
     try{
-        const user = yield Auth.currentAuthenticatedUser({
-            bypassCache: true  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-        });
+        if(!user){
+            user = yield Auth.currentAuthenticatedUser({
+                bypassCache: true  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+            });
+        }
         userService.init(user);
         console.log('Auth.currentAuthenticatedUser success',user)
         // console.log(user.getUserContextData());
+        const attr = user.attributes;
+        const payload = user.signInUserSession && user.signInUserSession.idToken.payload
         const info = {
-            attributes: user.attributes,
+            attributes: payload ? payload : attr,
             username: user.username,
             userDataKey: user.userDataKey
         }
@@ -32,15 +36,9 @@ export function* login({payload,callback}) {
     const {email, password} = payload
     try{
         const user = yield Auth.signIn(email, password);
+        yield put({type: Types.AUTH_REFRESH, user});
         console.log('user', user)
-        $toast('登录成功')
-        const info = {
-            attributes: user.attributes,
-            username: user.username,
-            userDataKey: user.userDataKey,
-            payload: user.signInUserSession.idToken.payload
-        }
-        yield put({type: Types.SET_USER_INFO, info})
+        callback()
     }catch(e){
         console.log('login fail')
         console.log(e);
@@ -107,11 +105,14 @@ export function* resend({payload,callback}) {
 }
 
 
-export function* logout() {
+export function* logout({callback}) {
     try{
         const res = yield Auth.signOut()
+        userService.destory();
+        yield put({type: Types.SET_USER_INFO, info: {}})
         console.log('logout res', res)
         $toast('退出成功')
+        callback && callback()
     }catch(e){
         console.log('logout fail')
         console.log(e);

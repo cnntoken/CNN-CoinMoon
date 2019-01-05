@@ -64,6 +64,9 @@ class ViewControl extends Component {
                 }else{
                     $toast(`登录失败: ${e.message}`)
                 }
+            }else{
+                $toast('登录成功')
+                this.goBack()
             }
         });
     }

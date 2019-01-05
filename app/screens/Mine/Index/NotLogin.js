@@ -6,6 +6,7 @@ import {
     View
 } from "native-base";
 import {StyleSheet, Image} from 'react-native';
+import NavigationService from 'app/navigation/NavigationService'
 
 const styles = StyleSheet.create({
     head: {
@@ -36,7 +37,8 @@ const styles = StyleSheet.create({
 
 class ViewControl extends Component {
     goLogin = ()=>{
-        this.props.navigation.navigate('Auth')
+        // this.props.navigation.navigate('Auth')
+        NavigationService.navigate('Auth')
     }
     render() {
         return (

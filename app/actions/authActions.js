@@ -14,7 +14,7 @@ export const register = (payload,callback)=> {
         callback
     };
 }
-export const logout = (payload,callback)=> {
+export const logout = (payload={},callback)=> {
     return {
         type: types.AUTH_LOGOUT,
         payload,

@@ -10,7 +10,13 @@ function mapStateToProps({userReducer:{info}}) {
 
 
 class Container extends Component {
-
+    // static navigationOptions = ({ navigation })=>{
+    //     console.log(`Container Component`)
+    //     console.log(navigation)
+    //     return {
+    //         tabBarLabel: Math.random() + 'fjafi'
+    //     }
+    // }
     render() {
         const {userInfo} = this.props;
         if(userInfo.attributes && userInfo.attributes.sub){

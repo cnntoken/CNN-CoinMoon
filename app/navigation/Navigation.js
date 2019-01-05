@@ -7,6 +7,7 @@ import {
 } from 'react-navigation';
 import React from 'react';
 import {Image,Text} from 'react-native';
+import userService from 'app/services/user'
 
 // import {CustomTabComponent} from './CustomTabComponent'
 
@@ -51,69 +52,23 @@ import Register from '../screens/Auth/Register';
 import Verify from '../screens/Auth/Verify';
 
 
-const MineStack = createStackNavigator({
-    Index: {
-        screen: MineIndex,
-        navigationOptions: {
-            header: null,
-            gesturesEnabled: false
-        }
-    },
-    Settings: {
-        screen: MineSettings,
-        navigationOptions: {
-            header: null,
-            gesturesEnabled: true
-        }
-    },
-    Edit: {
-        screen: MineEidt,
-        navigationOptions: {
-            header: null,
-            gesturesEnabled: true
-        }
-    },
-});
-
-MineStack.navigationOptions = ({ navigation }) => {
-    let tabBarVisible = true;
-    if (navigation.state.index > 0) {
-      tabBarVisible = false;
-    }
-    return {
-      tabBarVisible,
-    };
-  };
-
-
 const TabNavigator = createBottomTabNavigator({
         News: {
-            screen: NewsList,
-            navigationOptions: {
-                title: 'HOME',
-                header: null,
-                gesturesEnabled: true
-            }
+            screen: NewsList
         },
         DiscloseList: {
-            screen: DiscloseList,
-            navigationOptions: {
-                header: null,
-                gesturesEnabled: true
-            }
+            screen: DiscloseList
         },
         Mine: {
-            screen: MineStack,
-            navigationOptions: {
-                header: null,
-                gesturesEnabled: true
-            }
+            screen: MineIndex
         }
     },
     // 初始路由
     {
         initialRouteName: 'News',
         defaultNavigationOptions: ({ navigation }) => ({
+            header: null,
+            gesturesEnabled: true,
             tabBarIcon: ({ focused, horizontal, tintColor }) => {
                 const { routeName } = navigation.state;
                 if(routeName === 'News'){
@@ -137,6 +92,7 @@ const TabNavigator = createBottomTabNavigator({
                 }
             },
             tabBarLabel: ({ focused, horizontal, tintColor }) => {
+                console.log('defaultNavigationOptions tabBarLabel')
                 const style = {
                     color: tintColor,
                     fontSize: 10
@@ -163,40 +119,18 @@ const TabNavigator = createBottomTabNavigator({
             style: {
                 backgroundColor: '#fff',
             },
-        },
-        // TabBarComponent: props => {
-        //     return (
-        //         <Footer>
-        //             <FooterTab>
-        //                 <Button
-        //                     vertical
-        //                     // active={props.navigationState.index === 0}
-        //                     onPress={() => props.navigation.navigate("Lucy")}>
-        //                     {/*<Icon name="bowtie" />*/}
-        //                     <Text>Lucy</Text>
-        //                 </Button>
-        //                 <Button
-        //                     vertical
-        //                     active={props.navigationState.index === 1}
-        //                     onPress={() => props.navigation.navigate("Nine")}>
-        //                     <Icon name="briefcase" />
-        //                     <Text>Nine</Text>
-        //                 </Button>
-        //                 <Button
-        //                     vertical
-        //                     // active={props.navigationState.index === 2}
-        //                     onPress={() => props.navigation.navigate("Jade")}>
-        //                     {/*<Icon name="headset" />*/}
-        //                     <Text>Jade</Text>
-        //                 </Button>
-        //             </FooterTab>
-        //         </Footer>
-        //     );
-        // }
+        }
     });
 
 
 const HomeStack = createStackNavigator({
+    // 底部Bottom Tabs
+    Tabs: {
+        screen: TabNavigator,
+        navigationOptions: {
+            header: null
+        }
+    },
     DiscloseDetail: {
         screen: DiscloseDetail,
         navigationOptions: {
@@ -204,28 +138,6 @@ const HomeStack = createStackNavigator({
             tabBarVisible: false,
         }
     },
-    // DisclosePublish: {
-    //     screen: DisclosePublish,
-    //     navigationOptions: {
-    //         header: null,
-    //         tabBarVisible: false,
-    //     }
-    // },
-    // 底部Bottom Tabs
-    Tabs: {
-        screen: TabNavigator,
-        navigationOptions: {
-            header: null,
-            tabBarVisible: false
-        }
-    },
-    // DiscloseDetail: {
-    //     screen: DiscloseDetail,
-    //     navigationOptions: {
-    //         header: null,
-    //         tabBarVisible: false,
-    //     }
-    // },
     DisclosePublish: {
         screen: DisclosePublish,
         navigationOptions: {
@@ -245,6 +157,21 @@ const HomeStack = createStackNavigator({
         screen: NewsPublish,
         navigationOptions: {
             title: 'HOME',
+            header: null,
+            gesturesEnabled: true
+        }
+    },
+    // 我的页面
+    MineSettings: {
+        screen: MineSettings,
+        navigationOptions: {
+            header: null,
+            gesturesEnabled: true
+        }
+    },
+    MineEidt: {
+        screen: MineEidt,
+        navigationOptions: {
             header: null,
             gesturesEnabled: true
         }
