@@ -27,6 +27,7 @@ import {View, Image} from 'react-native';
 
 import ImagePicker from 'react-native-image-picker';
 import Carousel, {ParallaxImage, Pagination} from 'react-native-snap-carousel';
+import {JS} from "aws-amplify";
 
 // import {API} from 'aws-amplify';
 
@@ -46,17 +47,15 @@ class Screen extends Component {
                     dataurl: require("../../../images/btn_add.png"),
                     fileName: "btn_add.png"
                 },
-
             ],
             activeSlide: 0,
         }
     }
 
     selectPhotoTapped = () => {
-
         const options = {
             title: '请选择',
-            quality: 0.8,
+            quality: 0.1,
             cancelButtonTitle: '取消',
             takePhotoButtonTitle: '拍照',
             chooseFromLibraryButtonTitle: '选择相册',
@@ -80,7 +79,6 @@ class Screen extends Component {
                     console.log('User tapped custom button: ', response.customButton);
                 } else {
                     let source = Object.assign(response, {dataurl: 'data:image/jpeg;base64,' + response.data});
-                    console.log(source);
                     this.state.images.splice(this.state.images.length - 1, 0, source);
                     this.setState({});
                 }
@@ -111,8 +109,20 @@ class Screen extends Component {
 
     // 发布爆料
     publish = () => {
-
-        console.log('publish');
+        let images = this.state.images.slice(0, this.state.images.length - 1);
+        let text = this.state.text;
+        this.props.upload({
+            images: images,
+            callback: () => {
+                // //todo upload ok 才会去数据库里创建item
+                // this.props.publish({
+                //     payload: {
+                //         text: text,
+                //         images: images
+                //     }
+                // });
+            }
+        });
     };
 
     textareaChange = (text) => {

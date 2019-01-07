@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Page from './View';
 import {connect} from 'react-redux';
+import * as disCloseActions from "../../../actions/disCloseActions";
 
 const moment = require('moment');
 const source = require("../../../images/avatar_1.png");
@@ -9,7 +10,6 @@ class Container extends Component {
     constructor(props) {
         super(props);
     }
-
     render() {
         return <Page {...this.props} />;
     }
@@ -99,8 +99,34 @@ function mapStateToProps() {
     };
 }
 
-function mapDispatchToProps() {
-    return {};
+function mapDispatchToProps(dispatch) {
+    return {
+        getDiscloseDetail: (...args) => {
+            return;
+            dispatch(disCloseActions.getDiscloseDetail(...args))
+        },
+        getDiscloseComments: (...args) => {
+            return;
+
+            dispatch(disCloseActions.getDiscloseComments(...args))
+        },
+        commentDisclose: (...args) => {
+            return;
+            dispatch(disCloseActions.commentDisclose(...args))
+        },
+        likeComment: (...args) => {
+            return;
+            dispatch(disCloseActions.likeComment(...args))
+        },
+        like: (...args) => {
+            return;
+            dispatch(disCloseActions.like(...args))
+        },
+        deleteComment: (...args) => {
+            return;
+            dispatch(disCloseActions.deleteComment(...args))
+        },
+    };
 }
 
 export default connect(

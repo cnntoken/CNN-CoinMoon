@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Page from './View';
 import {connect} from 'react-redux';
+import * as disCloseActions from "../../../actions/disCloseActions";
 
 const moment = require('moment');
 
@@ -30,7 +31,7 @@ function mapStateToProps() {
                 dislikeNum: 1234,
                 images: [
                     {
-                        uri: 'https://s3.ap-south-1.amazonaws.com/a.fslk.co/disperseshare-test-hi.png',
+                        uri: 'https://s3.ap-south-1.amazonaws.com/a.fslk.co/activity3/medium/test/test6.png',
                     },
                     {
                         uri: 'https://s3.ap-south-1.amazonaws.com/a.fslk.co/disperseshare-test-ta.png',
@@ -68,8 +69,21 @@ function mapStateToProps() {
     };
 }
 
-function mapDispatchToProps() {
-    return {};
+function mapDispatchToProps(dispatch) {
+    return {
+        getList: (...args) => {
+            return;
+            dispatch(disCloseActions.getList(...args))
+        },
+        like: (...args) => {
+            return;
+            dispatch(disCloseActions.like(...args))
+        },
+        deleteDisclose: (...args) => {
+            return;
+            dispatch(disCloseActions.deleteDisclose(...args))
+        },
+    };
 }
 
 export default connect(
