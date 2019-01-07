@@ -81,7 +81,7 @@ function mapDispatchToProps(dispatch) {
         },
         deleteDisclose: (...args) => {
             return;
-            dispatch(disCloseActions.like(...args))
+            dispatch(disCloseActions.deleteDisclose(...args))
         },
     };
 }

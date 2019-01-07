@@ -23,10 +23,17 @@ export default function* watch() {
         takeEvery(types.AUTH_REFRESH, authSaga.refresh),
 
 
-        // 爆料
+        /////////////////// 爆料
         takeEvery(types.DISCLOSE_PUBLISH, disCloseSaga.publish),
         takeEvery(types.DISCLOSE_UPLOAD, disCloseSaga.upload),
-
+        takeEvery(types.DISCLOSE_GETLIST, disCloseSaga.getList),
+        takeEvery(types.DISCLOSE_LIKE, disCloseSaga.like),
+        takeEvery(types.DISCLOSE_DELETEDISCLOSE, disCloseSaga.deleteDisclose),
+        takeEvery(types.DISCLOSE_GETDISCLOSEDETAIL, disCloseSaga.getDiscloseDetail),
+        takeEvery(types.DISCLOSE_GETDISCLOSECOMMENTS, disCloseSaga.getDiscloseComments),
+        takeEvery(types.DISCLOSE_COMMENTDISCLOSE, disCloseSaga.commentDisclose),
+        takeEvery(types.DISCLOSE_LIKECOMMENT, disCloseSaga.likeComment),
+        takeEvery(types.DISCLOSE_DELETECOMMENT, disCloseSaga.deleteComment),
 
     ]);
 }
