@@ -39,7 +39,7 @@ class PureListItem extends PureComponent{
                         <Col size={5}>
                             <View style={styles.name}>
                                 <Text>{item.userName}</Text>
-                                <Text style={styles.time}>{item.time}</Text>     
+                                <Text style={styles.time}>{item.time}</Text>
                             </View>
                         </Col>
                         <Col size={1}>
@@ -133,7 +133,7 @@ class PureListItem extends PureComponent{
                     {/*<Image source={require('../../../images/icon_view.png')}/>*/}
                     {/*</Button>*/}
                 </Grid>
-                
+
                 {/* 无更多数据时,展示 */}
                 {
                     (list.length - 1) != index ? null :
@@ -153,14 +153,14 @@ class Screen extends PureComponent {
             loadMore: false,
             hasData: true,
             list: props.list,
-            
+
         }
     }
     // 双击导航标题,回到顶部
     titleDoubleClick = ()=>{
         console.log('double clicked')
         this._flatList.scrollToIndex({index: 0, viewPosition: 0})
-    }
+    };
     // 写爆料
     writeDisclose = () => {
         console.log('写爆料');
@@ -185,7 +185,7 @@ class Screen extends PureComponent {
         setTimeout(() => {
             this.setState({list: initList,hasData: true,refreshing: false})
         }, 2000);
-    }
+    };
     // 上拉加载
     handleLoadMore = (info) => {
         console.log('load more');
@@ -209,16 +209,22 @@ class Screen extends PureComponent {
             }
         }, 2000);
 
-    }
+    };
     // 渲染列表
     renderListItem = ({item,index}) => {
         const {hasData,list} = this.state;
         // 纯组件
         return <PureListItem opt={{item,index,hasData,list}} pressItem={this.pressItem} />
-    }
+    };
 
     componentDidMount() {
-        console.log('in disclose')
+        console.log('in disclose');
+        this.props.getList({
+            // id: navigation.id,
+            callback: () => {
+
+            }
+        });
     }
 
     render() {

@@ -7,6 +7,7 @@ import loginSaga from './loginSaga';
 import listSaga from './listSaga';
 // import appSaga from './appSaga';
 import * as authSaga from './authSaga';
+import * as disCloseSaga from './disCloseSaga';
 
 export default function* watch() {
     yield all([
@@ -20,5 +21,12 @@ export default function* watch() {
         takeEvery(types.AUTH_RESEND, authSaga.resend),
         takeEvery(types.AUTH_LOGOUT, authSaga.logout),
         takeEvery(types.AUTH_REFRESH, authSaga.refresh),
+
+
+        // 爆料
+        takeEvery(types.DISCLOSE_PUBLISH, disCloseSaga.publish),
+        takeEvery(types.DISCLOSE_UPLOAD, disCloseSaga.upload),
+
+
     ]);
 }

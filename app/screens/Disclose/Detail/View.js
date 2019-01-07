@@ -66,6 +66,12 @@ class Page extends Component {
     // 评论
     comment = (item) => {
         console.log('评论', item);
+        this.props.commentDisclose({
+            id: item.id,
+            callback: () => {
+
+            }
+        });
     };
     // 不点赞
     dislike = (item) => {
@@ -75,29 +81,68 @@ class Page extends Component {
     // 点赞
     like = (item) => {
         console.log('点赞', item);
+        console.log('给评论点赞', item);
+        this.props.like({
+            id: item.id,
+            callback: () => {
+
+            }
+        });
+
     };
 
     // 给评论点赞
     likeComment = (item) => {
         console.log('给评论点赞', item);
+        this.props.likeComment({
+            id: item.id,
+            callback: () => {
+
+            }
+        });
     };
     // 回复评论
     reply = (item) => {
         console.log('回复评论', item);
+        this.props.commentDisclose({
+            id: item.id,
+            callback: () => {
+
+            }
+        });
     };
 
     // 删除评论
     deleteComment = (item) => {
         console.log('删除评论', item);
+        this.props.deleteComment({
+            id: item.id,
+            callback: () => {
+
+            }
+        });
     };
 
     // loadmore 加载更多评论
     loadmore = (item) => {
         console.log('加载更多评论', item);
+
     };
 
     componentDidMount() {
+        const { navigation } = this.props;
+        this.props.getDiscloseDetail({
+            id: navigation.id,
+            callback: () => {
 
+            }
+        });
+        this.props.getDiscloseComments({
+            id: navigation.id,
+            callback: () => {
+
+            }
+        });
     }
 
     render() {
