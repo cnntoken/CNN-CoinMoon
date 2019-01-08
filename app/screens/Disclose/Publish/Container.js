@@ -19,7 +19,8 @@ function mapStateToProps() {
     return {
         // 具体匿名用户
         user: {
-            name: '用户名'
+            name: '用户名',
+            icon:'http://'
         }
     };
 }
