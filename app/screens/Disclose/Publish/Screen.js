@@ -56,21 +56,24 @@ class Screen extends Component {
         const options = {
             title: '请选择',
             quality: 0.1,
+            mediaType: 'photo',
             cancelButtonTitle: '取消',
             takePhotoButtonTitle: '拍照',
             chooseFromLibraryButtonTitle: '选择相册',
             allowsEditing: true,
             noData: false,
-            storageOptions: {
-                skipBackup: true,
-                path: 'images'
-            }
+            // storageOptions: {
+            //     skipBackup: true,
+            //     path: 'images'
+            // }
         };
 
         // 直接调用相册
         try {
             ImagePicker.launchImageLibrary(options, (response) => {
                 console.log('Response = ', response);
+                console.log('Response = ', response.type);
+                console.log(window.atob);
                 if (response.didCancel) {
                     console.log('User cancelled photo picker');
                 } else if (response.error) {
@@ -177,7 +180,7 @@ class Screen extends Component {
 
         let {images, text, isPreview} = this.state;
 
-        // 预览图片
+        // 预览图片页面
         if (isPreview) {
             return <Container style={styles.carousel_container}>
 
@@ -231,7 +234,12 @@ class Screen extends Component {
                         </Button>
                     </Left>
                     <Body>
-                    <Title>Header</Title>
+                    <Title>
+                        {/*<View>*/}
+                            {/*<Image source={}></Image>*/}
+                            {/*<Text>{userName}</Text>*/}
+                        {/*</View>*/}
+                    </Title>
                     </Body>
                     <Right>
                         <Button transparent onPress={this.publish}>
