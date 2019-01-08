@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import styles from './styles';
 import {sliderWidth, itemWidth} from './styles';
-
 import {
     Container,
     Header,
@@ -28,7 +27,7 @@ import {View, Image} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import Carousel, {ParallaxImage, Pagination} from 'react-native-snap-carousel';
 import {JS} from "aws-amplify";
-
+import {$toast} from '../../../utils';
 // import {API} from 'aws-amplify';
 
 // const btn_add_source = require("../../../images/btn_add.png");
@@ -40,7 +39,7 @@ class Screen extends Component {
         this.state = {
             avatarSource: null,
             isPreview: false,
-            text: '',
+            title: '',
             images: [
                 // 默认展示添加图片按钮
                 {
@@ -62,18 +61,18 @@ class Screen extends Component {
             chooseFromLibraryButtonTitle: '选择相册',
             allowsEditing: true,
             noData: false,
-            // storageOptions: {
-            //     skipBackup: true,
-            //     path: 'images'
-            // }
+            storageOptions: {
+                skipBackup: true,
+                path: 'images'
+            }
         };
 
         // 直接调用相册
         try {
             ImagePicker.launchImageLibrary(options, (response) => {
                 console.log('Response = ', response);
-                console.log('Response = ', response.type);
-                console.log(window.atob);
+                // console.log('Response = ', response.type);
+                // console.log(window.atob);
                 if (response.didCancel) {
                     console.log('User cancelled photo picker');
                 } else if (response.error) {
@@ -81,7 +80,7 @@ class Screen extends Component {
                 } else if (response.customButton) {
                     console.log('User tapped custom button: ', response.customButton);
                 } else {
-                    let source = Object.assign(response, {dataurl: 'data:image/jpeg;base64,' + response.data});
+                    let source = Object.assign(response, {dataurl: 'data:image/png;base64,' + response.data});
                     this.state.images.splice(this.state.images.length - 1, 0, source);
                     this.setState({});
                 }
@@ -112,18 +111,45 @@ class Screen extends Component {
 
     // 发布爆料
     publish = () => {
+        let title = this.state.title;
+        if (!title) {
+            // TODO 国际化
+            $toast(`请输入爆料内容`);
+            return;
+        }
         let images = this.state.images.slice(0, this.state.images.length - 1);
-        let text = this.state.text;
+
+        let source = [];
+        images.forEach((item) => {
+            source.push({
+                data: item.data,
+                fileName: item.fileName
+            })
+        });
         this.props.upload({
             images: images,
-            callback: () => {
-                // //todo upload ok 才会去数据库里创建item
-                // this.props.publish({
-                //     payload: {
-                //         text: text,
-                //         images: images
-                //     }
-                // });
+            callback: (data) => {
+                console.log(data);
+                let uris = [];
+                data.data.forEach((item) => {
+                    uris.push(item.uri);
+                });
+                this.props.publish({
+                    title: title,
+                    images: uris,
+                    callback: (data) => {
+                        if (data.success) {
+                            let images = this.state.images.slice(-1);
+                            this.setState({
+                                images: images,
+                                avatarSource: null,
+                                isPreview: false,
+                                title: '',
+                                activeSlide: 0,
+                            })
+                        }
+                    }
+                });
             }
         });
     };
@@ -131,7 +157,7 @@ class Screen extends Component {
     textareaChange = (text) => {
         // console.log(text);
         this.setState({
-            text: text
+            title: text
         })
     };
 
@@ -167,18 +193,22 @@ class Screen extends Component {
 
     // 放弃写爆料，返回爆料列表页面
     cancelWriteDisclose = () => {
-        console.log('写爆料');
+        // console.log('写爆料');
         this.props.navigation.navigate('DiscloseList');
     };
-
+    // 跳到用户首页
+    goUserHome = () => {
+        this.props.navigation.navigate('Mine');
+    };
 
     componentDidMount() {
-
+        // console.log("hhhh");
     };
 
     render() {
 
-        let {images, text, isPreview} = this.state;
+        let {images, title, isPreview} = this.state;
+        let user = this.props.user;
 
         // 预览图片页面
         if (isPreview) {
@@ -227,38 +257,34 @@ class Screen extends Component {
         // 上传图片
         return (
             <Container>
-                <Header>
+                <Header style={styles.publish_header}>
                     <Left>
                         <Button transparent onPress={this.cancelWriteDisclose}>
                             <Text style={styles.btnText}>取消</Text>
                         </Button>
                     </Left>
                     <Body>
-                    <Title>
-                        {/*<View>*/}
-                            {/*<Image source={}></Image>*/}
-                            {/*<Text>{userName}</Text>*/}
-                        {/*</View>*/}
-                    </Title>
+                    {/* 人物头像 */}
+                    <Button transparent onPress={this.goUserHome}>
+                        <Image style={styles.user_icon} source={{uri: user.icon}}/>
+                        <Text style={styles.btnText}>{user.name}</Text>
+                    </Button>
                     </Body>
                     <Right>
                         <Button transparent onPress={this.publish}>
-                            <Text style={styles.btnText}>发布</Text>
+                            <Text style={styles.btn_pubish_text}>发布</Text>
                         </Button>
                     </Right>
                 </Header>
                 <Content>
-
                     <Form>
                         <Textarea bordered
                                   onChangeText={this.textareaChange.bind(this)}
                                   rowSpan={5}
-                                  value={this.state.text}
+                                  value={this.state.title}
                                   placeholder="请输入爆料内容"/>
                     </Form>
-
                     <View>
-
                         <Text>最多输入9张图片</Text>
 
                         <View style={styles.items}>

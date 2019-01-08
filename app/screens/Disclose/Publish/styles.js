@@ -65,8 +65,20 @@ export default StyleSheet.create({
         zIndex: 19,
     },
     btnText: {
-        color: '#fff'
+        color: '#333333'
     },
+    btn_pubish_text: {
+        color: '#408EF5'
+    },
+    // 发布页面样式 header
+    user_icon: {
+        width: 30,
+        height: 30,
+    },
+    publish_header: {
+        backgroundColor: '#fff'
+    },
+
     //  add ///////// todo 待提出成组件
     carousel_container: {
         backgroundColor: '#000',
@@ -178,5 +190,6 @@ export default StyleSheet.create({
     },
     subtitleEven: {
         color: 'rgba(255, 255, 255, 0.7)'
-    }
+    },
+
 });

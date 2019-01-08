@@ -2,10 +2,15 @@
 import ApiConstants from './ApiConstants';
 
 /**
- *  封装fetch接口
+ *  @desc 封装fetch接口
+ *  @param path 请求路径，如果带有query参数，直接放到url中
+ *  @param params 请求参数
+ *  @param method 默认POST
+ *  @param token  header头中带有的token
  * */
 export default function api(path, params, method, token) {
 
+    console.log('请求参数:', path, params, method, token);
     let options;
     options = {
         headers: {
@@ -17,13 +22,27 @@ export default function api(path, params, method, token) {
         ...(params && {body: JSON.stringify(params)})
     };
 
-    let url = path.indexOf('http') === 0 ? path : ApiConstants.BASE_URL + path;
-
-    console.log(options);
+    // todo 先写死URL 待确定后端真正的URL
+    let url;
+    if (path.indexOf('http') === 0) {
+        url = path;
+    } else if (path.includes('/image/upload')) {
+        url = ApiConstants.BASE_URL + path;
+    } else if (path.includes('disclose') || path.includes('discloseComment')) {
+        url = ApiConstants.TESTLAMBDAURL + path;
+    } else {
+        url = ApiConstants.BASE_URL + path;
+    }
 
     return fetch(url, options)
-        .then(resp => resp.json())
-        .then(json => json)
+        .then((resp) => {
+            console.log(resp);
+            return resp.json();
+        })
+        .then((resp) => {
+            console.log(resp);
+            return resp;
+        })
         .catch(error => {
             console.log('api:', error);
             return error
