@@ -9,7 +9,7 @@ export function* upload({payload}) {
     const {images, callback} = payload;
     try {
         const res = yield call(services.upload, images);
-        console.log(res);
+        // console.log(res);
         if (callback) callback(res);
     } catch (e) {
         console.log('upload image fail');
@@ -48,9 +48,9 @@ export function* getList({payload}) {
 
 // 点赞爆料
 export function* like({payload}) {
-    const {id, callback} = payload;
+    const {id, field, cancel, callback} = payload;
     try {
-        const res = yield call(services.like, id);
+        const res = yield call(services.like, id, field, cancel);
         console.log('res', res);
         if (callback) callback(res);
     } catch (e) {
@@ -101,9 +101,9 @@ export function* getDiscloseComments({payload}) {
 
 // 评论爆料，或者回复评论
 export function* commentDisclose({payload}) {
-    const {id, callback} = payload;
+    const {id, params, callback} = payload;
     try {
-        const res = yield call(services.commentDisclose, id);
+        const res = yield call(services.commentDisclose, id, params);
         console.log('res', res);
         if (callback) callback(res);
     } catch (e) {
@@ -115,14 +115,14 @@ export function* commentDisclose({payload}) {
 
 // 点赞评论
 export function* likeComment({payload}) {
-    const {id, callback} = payload;
+    const {id, field, cancel, callback} = payload;
     try {
-        const res = yield call(services.likeComment, id);
+        const res = yield call(services.likeComment, id, field, cancel);
         console.log('res', res);
         if (callback) callback(res);
     } catch (e) {
         $toast(`likeComment fail: ${e.message}`);
-        if (callback) callback(e)
+        if (callback) callback(e);
     }
 }
 
