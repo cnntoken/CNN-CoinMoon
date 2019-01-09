@@ -11,7 +11,8 @@ const styles = StyleSheet.create({
     },
     avatar: {
         width: 28,
-        height: 28
+        height: 28,
+        borderRadius: 14
     },
     text:{
         fontSize: 14,
@@ -27,7 +28,8 @@ const stylesBig = StyleSheet.create({
     },
     avatar: {
         width: 80,
-        height: 80
+        height: 80,
+        borderRadius: 40
     },
     text:{
         fontSize: 15,
@@ -48,7 +50,7 @@ class UserAvatar extends PureComponent {
         }
         return (
             <View style={[customStyle.wrap,style]}>
-                <Image source={info.avatar || require('app/images/icon_settings.png')} style={customStyle.avatar}/>
+                <Image source={{uri: info.avatar} || require('app/images/avatar_default.png')} style={customStyle.avatar}/>
                 <Text style={customStyle.text}>{info.nickname || '一只蚂蚁'}</Text>
             </View>
         );

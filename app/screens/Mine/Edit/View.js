@@ -17,37 +17,97 @@ import userService from 'app/services/user';
 import styles from './styles';
 import { $toast } from 'app/utils';
 import * as Types from 'app/actions/types'
+import ImagePicker from 'react-native-image-picker';
 class ViewControl extends PureComponent {
     constructor(props){
         super(props)
         const {userInfo} = props;
         this.state = {
-            nick_name: userInfo.attributes.nickname
+            nick_name: userInfo.attributes.nickname,
+            avatar: userInfo.attributes.picture,
+            needupload: false
         }
     }
-    onSubmit = async ()=>{
-        console.log('submit')
-        try{
-         $toast('正在提交...')
-         const res = await userService.updateAttributes({'nickname': this.state.nick_name});
-         this.props.dispatch({type: Types.AUTH_REFRESH})
-         this.props.navigation.pop()
-         console.log(res)
-         $toast('修改成功!')
-        }catch(e){
-            console.log(e)
-        }
+
+    uploadPicture = async (fn)=>{
+        const {avatar} = this.state;
+        const data = avatar.replace('data:image/png;base64,','');
+        this.props.upload({
+            images: [{data}],
+            callback: (res) => {
+                if(res.data){
+                    fn(res.data[0].uri)
+                }
+            }
+        })
+    }
+    onSubmit = ()=>{
+        $toast('正在提交...')
+        this.uploadPicture(async (url)=>{
+            try{
+                const res = await userService.updateAttributes({
+                    'nickname': this.state.nick_name,
+                    'picture': url
+                });
+                this.props.refreshInfo()
+                this.props.navigation.pop()
+                console.log(res)
+                $toast('修改成功!')
+            }catch(e){
+                   console.log(e)
+            }
+        })
+       
     }
     onChangeNickName = (nick_name)=>{
         this.setState({
             nick_name
         })
     }
+    selectPhotoTapped = () => {
+        const options = {
+            title: '请选择',
+            quality: 0.1,
+            mediaType: 'photo',
+            cancelButtonTitle: '取消',
+            takePhotoButtonTitle: '拍照',
+            chooseFromLibraryButtonTitle: '选择相册',
+            allowsEditing: true,
+            noData: false,
+            storageOptions: {
+                skipBackup: true,
+                path: 'images'
+            }
+        };
+
+        // 直接调用相册
+        try {
+            ImagePicker.launchImageLibrary(options, (response) => {
+                console.log('Response = ', response);
+                // console.log('Response = ', response.type);
+                // console.log(window.atob);
+                if (response.didCancel) {
+                    console.log('User cancelled photo picker');
+                } else if (response.error) {
+                    console.log('ImagePicker Error: ', response.error);
+                } else if (response.customButton) {
+                    console.log('User tapped custom button: ', response.customButton);
+                } else {
+                    // let source = Object.assign(response, {dataurl: 'data:image/png;base64,' + response.data});
+                    // let source = Object.assign(response, {dataurl: 'data:image/png;base64,' + response.data});
+                    // this.state.images.splice(this.state.images.length - 1, 0, source);
+                    this.setState({avatar: 'data:image/png;base64,' + response.data, needupload: true});
+                }
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    };
     goBack = ()=>{
         this.props.navigation.pop();
     }
     render() {
-        const {nick_name} = this.state;
+        const {nick_name,avatar} = this.state;
         return (
             <Container>
                 <Header transparent>
@@ -59,9 +119,9 @@ class ViewControl extends PureComponent {
                 </Header>
                 <Content style={styles.content}>
                     <View style={styles.uploadbox}>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={this.selectPhotoTapped}>
                             <View style={styles.imgbox}>
-                                <Image source={require('app/images/avatar_default.png')} style={{width:80,height:80}}/>
+                                <Image source={avatar ? {uri: avatar} : require('app/images/avatar_default.png')} style={{width:80,height:80}}/>
                                 <Image source={require('app/images/icon_camera.png')} style={styles.camera}/>
                             </View>
                         </TouchableOpacity>

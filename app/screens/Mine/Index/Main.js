@@ -62,7 +62,7 @@ class ViewControl extends Component {
             <Container>
                 <Header noShadow>
                     <Left>
-                        <UserAvatar info={{avatar: require('app/images/avatar_default.png'), nickname: userInfo.attributes.nickname}}/>
+                        <UserAvatar info={{avatar: userInfo.attributes.picture, nickname: userInfo.attributes.nickname}}/>
                     </Left>
                     <Right>
                         <Button transparent onPress={this.goSettings}>
@@ -74,7 +74,7 @@ class ViewControl extends Component {
                     <View style={styles.userBox}>
                         <View style={styles.bg}></View>
                         <View style={styles.userInfo}>
-                            <UserAvatar style={styles.userAvatar} info={{avatar: require('app/images/avatar_default.png'), nickname: userInfo.attributes.nickname}} big/>
+                            <UserAvatar style={styles.userAvatar} info={{avatar: userInfo.attributes.picture, nickname: userInfo.attributes.nickname}} big/>
                             <Button transparent onPress={this.goEdit}>
                                 <Text>编辑信息</Text>
                             </Button>
