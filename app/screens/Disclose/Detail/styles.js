@@ -225,40 +225,7 @@ const styles = StyleSheet.create({
     },
 
     /////////////////////////////// footer input
-    footer: {
-        height: 40,
-        backgroundColor: '#fff',
 
-    },
-    footer_grid: {
-        display: 'flex',
-        alignItems: 'center',
-    },
-    footer_form: {
-        // width:viewportWidth - 80
-        marginLeft: 16,
-        // height: 33
-    },
-    footer_label: {
-        color: '#666666',
-        fontSize: 16
-    },
-    footer_item: {
-        borderRadius: 8,
-        backgroundColor: '#F5F5F5',
-        height: 33,
-    },
-    footer_input: {
-        height: 33,
-
-    },
-    footer_col_label: {
-        width: 36,
-        marginLeft: 16,
-        marginRight: 16,
-        // display: 'flex',
-        // alignItems: 'center'
-    },
 
     // 删除弹框
     modal_btn: {

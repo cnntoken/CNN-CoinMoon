@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet} from 'react-native';
-import { Item, Input } from 'native-base';
+import {Item, Input} from 'native-base';
 import PropTypes from 'prop-types'
 
 
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         backgroundColor: '#F5F5F5'
     },
-    inputFocus:{
+    inputFocus: {
         borderWidth: 1,
         borderColor: '#408EF5',
         backgroundColor: '#fff'
@@ -25,31 +25,32 @@ class FocusInput extends Component {
     static propTypes = {
         value: PropTypes.any,
         onChangeText: PropTypes.func.isRequired
-    }
+    };
     state = {
         isFocus: false
-    }
-    onFocus = ()=>{
+    };
+    onFocus = () => {
         this.setState({
             isFocus: true
         })
-    }
-    onBlur = ()=>{
+    };
+    onBlur = () => {
         this.setState({
             isFocus: false
         })
-    }
+    };
+
     render() {
         const {isFocus} = this.state;
-        const {onChangeText,style,...rest} = this.props;
+        const {onChangeText, style, ...rest} = this.props;
         return (
-            <Item regular style={[styles.input,isFocus && styles.inputFocus,style]}>
+            <Item regular style={[styles.input, isFocus && styles.inputFocus, style]}>
                 <Input
                     onFocus={this.onFocus}
                     onBlur={this.onBlur}
                     onChangeText={onChangeText}
-                    placeholderTextColor='#999'  
-                    clearButtonMode='while-editing' 
+                    placeholderTextColor='#999'
+                    clearButtonMode='while-editing'
                     {...rest}
                 />
             </Item>

@@ -260,6 +260,7 @@ class Screen extends PureComponent {
                     </Modal>
                 </View>
             </Container>
+
         );
     }
 }

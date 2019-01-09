@@ -14,8 +14,8 @@ export function* upload({payload}) {
         // console.log(res);
         if (callback) callback(res);
     } catch (e) {
-        console.log('upload image fail');
-        console.log(e);
+        // console.log('upload image fail');
+        // console.log(e);
         $toast(`upload image fail: ${e.message}`);
         if (callback) callback(e);
     }
@@ -103,17 +103,16 @@ export function* getDiscloseComments({payload}) {
 
 // 评论爆料，或者回复评论
 export function* commentDisclose({payload}) {
-    const {id, params, callback} = payload;
+    const {params, callback} = payload;
     try {
-        const res = yield call(services.commentDisclose, id, params);
+        const res = yield call(services.commentDisclose, params);
         console.log('res', res);
         if (callback) callback(res);
     } catch (e) {
         $toast(`commentDisclose fail: ${e.message}`);
-        if (callback) callback(e)
+        if (callback) callback(e);
     }
 }
-
 
 // 点赞评论
 export function* likeComment({payload}) {

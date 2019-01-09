@@ -4,26 +4,23 @@ import {
     Container,
     Header,
     Content,
-    Input,
     Button,
     Left,
     Right,
     Body,
-    Title,
-    Item,
-    Form,
-    FooterTab,
-    Footer, List, ListItem, Thumbnail, Label
+    List,
+    ListItem
 } from "native-base";
 import {Col, Row, Grid} from "react-native-easy-grid";
 import {API} from 'aws-amplify';
-import {Image, Text, View} from "react-native";
+import {Image, Text, View, Keyboard} from "react-native";
 import Carousel from "react-native-snap-carousel";
+import FooterInput from './FooterInput';
+import CommentList from './CommentList';
 import {sliderWidth} from "../Publish/styles";
 import Modal from "react-native-modal";
 import {$toast} from "../../../utils";
 import * as navigationActions from 'app/actions/navigationActions';
-
 
 const source = require("../../../images/avatar_1.png");
 
@@ -36,7 +33,8 @@ class Page extends Component {
             activeSlide: 0,
             data: null,
             comments: [],
-            isModalVisible: false
+            isModalVisible: false,
+            activeComment: null,
         }
     }
 
@@ -72,20 +70,84 @@ class Page extends Component {
         });
     };
 
+
+    // 回复评论
+    reply = (item) => {
+        console.log('回复评论', item);
+        // 调取键盘
+        this.setState({
+            activeComment: item,
+        })
+
+    };
+
     // 评论
     comment = (item) => {
         console.log('评论', item);
-        this.props.commentDisclose({
-            id: item.id,
-            callback: () => {
+        // 调取键盘
+        this.setState({
+            activeComment: item,
+        })
+    };
 
-            }
-        });
+    // 评论
+    onComment = (item, text, completeCallback) => {
+        console.log('评论ddd', item, text);
+        // 如果传入的对象不含有images字段，则是回复某条评论
+        if (item && !item.images) {
+            this.props.commentDisclose({
+                params: {
+                    content: text,
+                    discloseId: item.discloseId,
+                    atCommentId: item._id,
+                    userId: "3ecd2ff0-f731-4faf-be97-f5e76abf69e7",
+                    atUserId: item.userId,
+                    "likeNum": 0,
+                    "replayNum": 0,
+                    "dislikeNum": 0
+                },
+                callback: (data) => {
+                    if (data.success) {
+                        completeCallback(data);
+                        this.setState({
+                            activeComment: null,
+                        })
+                    }
+                }
+            });
+        }
+        // 新增评论
+        else {
+            this.props.commentDisclose({
+                params: {
+                    content: text,
+                    discloseId: this.state.data._id,
+                    "userId": "3ecd2ff0-f731-4faf-be97-f5e76abf69e7",
+                    "likeNum": 0,
+                    "replayNum": 0,
+                    "dislikeNum": 0
+                },
+                callback: (data) => {
+                    console.log(data);
+                    if (data.success) {
+                        completeCallback(data);
+                        this.setState({
+                            activeComment: null,
+                        })
+                    }
+                }
+            });
+        }
     };
-    // 不点赞
-    dislike = (item) => {
-        console.log('不点赞', item);
+
+    onBlur = (item) => {
+
     };
+
+    onFocus = (item) => {
+
+    };
+
 
     // 点赞
     like = (item) => {
@@ -100,32 +162,30 @@ class Page extends Component {
             }
         });
     };
+
     // 给评论点赞
     likeComment = (item) => {
-        item.liked = true;
-        item.likeNum = item.likeNum + 1;
-        this.setState({
-            list: [...this.state.list]
-        });
+
         this.props.likeComment({
             id: item._id,
             field: 'likeNum',
             callback: (data) => {
-                console.log(data);
+                if(data.success){
+                    let index = this.state.comments.indexOf(item);
+
+                    this.state.comments[index].liked = true;
+                    this.state.comments[index].likeNum = item.likeNum + 1;
+
+                    this.setState({
+                        comments: [...this.state.comments],
+                        activeComment: null
+                    });
+                }
+              
             }
         });
     };
 
-    // 回复评论
-    reply = (item) => {
-        console.log('回复评论', item);
-        this.props.commentDisclose({
-            id: item.id,
-            callback: () => {
-
-            }
-        });
-    };
 
     // 删除评论
     deleteComment = (item) => {
@@ -139,17 +199,22 @@ class Page extends Component {
                     $toast('删除爆料成功');
                     let index = this.state.comments.indexOf(item);
                     this.state.comments.splice(index, 1);
-                    this.setState({});
+                    this.setState({
+                        activeComment: null
+                    });
                 }
             }
         });
     };
 
     // loadmore 加载更多评论
-    loadmore = (item) => {
+    loadMore = (item) => {
         console.log('加载更多评论', item);
-
+        this.setState({
+            activeComment: null
+        });
     };
+
 
     componentDidMount() {
         const {navigation} = this.props;
@@ -176,7 +241,9 @@ class Page extends Component {
                 }
             }
         });
+
     }
+
 
     // 显示删除弹框
     showDeleteDialog = () => {
@@ -207,9 +274,11 @@ class Page extends Component {
         })
     };
 
+
     render() {
 
-        let {data, comments, isPreview} = this.state;
+        let {data, comments, isPreview, activeComment} = this.state;
+
         // 预览九宫格图片
         if (isPreview && data) {
             let list = [data];
@@ -269,249 +338,167 @@ class Page extends Component {
                 </Header>
 
                 {
-                    data ? <Content>
-                        <List
-                            dataArray={[data]}
-                            renderRow={item =>
-                                <ListItem style={styles.listitem} avatar>
-                                    {/* 左侧图标 */}
-                                    <Left>
-                                        <Image source={item.source}/>
-                                    </Left>
-                                    {/* 用户名& 发布时间*/}
-                                    <Body style={styles.listitem_body}>
-                                    {/* item 标题 ， 用户 时间等 */}
-                                    <Grid style={styles.grid_con}>
-                                        <Row>
-                                            <Col style={styles.col_username}>
-                                                <Text style={styles.col_username_text}>{item.userName}</Text>
-                                            </Col>
-                                            <Col style={styles.col_time}>
-                                                <Text style={styles.col_time_text}>{item.time}</Text>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col>
-                                                <Text style={styles.col_title_text}>{item.title}</Text>
-                                            </Col>
-                                        </Row>
-                                    </Grid>
-                                    {/* 九宫格图片 */}
-                                    <Grid style={styles.grid_images_btns}>
-                                        <Row>
-                                            {
-                                                item.images.slice(0, 3).map((i, idx) => {
-                                                    return <Col style={styles.col_img}>
-                                                        <Button onPress={this.previewImage.bind(this, idx)}>
-                                                            <Image style={styles.image} key={idx}
-                                                                   source={{uri: i.uri}}/>
-                                                        </Button>
+                    data ? (<Content>
+
+                        <View>
+                            {/***********************内容详情区域  start**********************/}
+                            <View style={styles.divider}>
+                                {/*****爆料详情区域****/}
+                                <List
+                                    dataArray={[data]}
+                                    renderRow={item =>
+                                        <ListItem style={styles.listitem} avatar>
+                                            {/* 左侧图标 */}
+                                            <Left>
+                                                <Image source={item.source}/>
+                                            </Left>
+                                            {/* 用户名& 发布时间*/}
+                                            <Body style={styles.listitem_body}>
+                                            {/* item 标题 ， 用户 时间等 */}
+                                            <Grid style={styles.grid_con}>
+                                                <Row>
+                                                    <Col style={styles.col_username}>
+                                                        <Text
+                                                            style={styles.col_username_text}>{item.userName}</Text>
                                                     </Col>
-                                                })
-                                            }
-                                        </Row>
+                                                    <Col style={styles.col_time}>
+                                                        <Text style={styles.col_time_text}>{item.time}</Text>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col>
+                                                        <Text style={styles.col_title_text}>{item.title}</Text>
+                                                    </Col>
+                                                </Row>
+                                            </Grid>
+                                            {/* 九宫格图片 */}
+                                            <Grid style={styles.grid_images_btns}>
+                                                <Row>
+                                                    {
+                                                        item.images.slice(0, 3).map((i, idx) => {
+                                                            return <Col style={styles.col_img}>
+                                                                <Button onPress={this.previewImage.bind(this, idx)}>
+                                                                    <Image style={styles.image} key={idx}
+                                                                           source={{uri: i.uri}}/>
+                                                                </Button>
+                                                            </Col>
+                                                        })
+                                                    }
+                                                </Row>
 
-                                        <Row>
-                                            {
-                                                item.images.length > 3 ?
-                                                    item.images.slice(3, 6).map((i, idx) => {
-                                                        return <Col style={styles.col_img}>
-                                                            <Button onPress={this.previewImage.bind(this, idx + 3)}>
-                                                                <Image style={styles.image} key={idx}
-                                                                       source={{uri: i.uri}}/>
-                                                            </Button>
+                                                <Row>
+                                                    {
+                                                        item.images.length > 3 ?
+                                                            item.images.slice(3, 6).map((i, idx) => {
+                                                                return <Col style={styles.col_img}>
+                                                                    <Button
+                                                                        onPress={this.previewImage.bind(this, idx + 3)}>
+                                                                        <Image style={styles.image} key={idx}
+                                                                               source={{uri: i.uri}}/>
+                                                                    </Button>
 
-                                                        </Col>
-                                                    }) : null
-                                            }
-                                        </Row>
-                                        <Row>
-                                            {
-                                                item.images.length > 6 ?
-                                                    item.images.slice(6, 9).map((i, idx) => {
-                                                        return <Col style={styles.col_img}>
-                                                            <Button onPress={this.previewImage.bind(this, idx + 6)}>
-                                                                <Image style={styles.image} key={idx}
-                                                                       source={{uri: i.uri}}/>
-                                                            </Button>
-                                                        </Col>
-                                                    }) : null
-                                            }
-                                        </Row>
-                                    </Grid>
-                                    </Body>
-                                </ListItem>}
-                        />
-                        {/* 查看次数 */}
-                        <Grid style={styles.viewNum}>
-                            <Col style={styles.viewNum_image}>
-                                <Image source={require('../../../images/icon_view.png')}/>
-                            </Col>
-                            <Col>
-                                <Text style={styles.viewNum_text}>{data.viewNum}</Text>
-                            </Col>
-                        </Grid>
-
-                        <View style={styles.divider}/>
-
-                        {/* 点赞、评论按钮等*/}
-                        <Grid style={styles.btns}>
-                            <Col style={styles.btns_btn_col}>
-                                <View style={styles.btns_btn}>
-                                    <Button block transparent light onPress={this.comment.bind(this, data)}>
-                                        <View>
-                                            <Image source={require('../../../images/icon_comment_big.png')}/>
-                                            <Text style={styles.btns_text}>{data.commentsNum}</Text>
+                                                                </Col>
+                                                            }) : null
+                                                    }
+                                                </Row>
+                                                <Row>
+                                                    {
+                                                        item.images.length > 6 ?
+                                                            item.images.slice(6, 9).map((i, idx) => {
+                                                                return <Col style={styles.col_img}>
+                                                                    <Button
+                                                                        onPress={this.previewImage.bind(this, idx + 6)}>
+                                                                        <Image style={styles.image} key={idx}
+                                                                               source={{uri: i.uri}}/>
+                                                                    </Button>
+                                                                </Col>
+                                                            }) : null
+                                                    }
+                                                </Row>
+                                            </Grid>
+                                            </Body>
+                                        </ListItem>}
+                                />
+                                {/* 查看次数 */}
+                                <Grid style={styles.viewNum}>
+                                    <Col style={styles.viewNum_image}>
+                                        <Image source={require('../../../images/icon_view.png')}/>
+                                    </Col>
+                                    <Col>
+                                        <Text style={styles.viewNum_text}>{data.viewNum}</Text>
+                                    </Col>
+                                </Grid>
+                                <View style={styles.divider}/>
+                                {/* 点赞、评论按钮等*/}
+                                <Grid style={styles.btns}>
+                                    <Col style={styles.btns_btn_col}>
+                                        <View style={styles.btns_btn}>
+                                            <Button block transparent light onPress={this.comment.bind(this, data)}>
+                                                <View>
+                                                    <Image
+                                                        source={require('../../../images/icon_comment_big.png')}/>
+                                                    <Text style={styles.btns_text}>{data.commentsNum}</Text>
+                                                </View>
+                                            </Button>
                                         </View>
-                                    </Button>
-                                </View>
-                            </Col>
-                            <Col style={styles.btns_btn_col}>
-                                <View style={styles.btns_btn}>
-                                    <Button block transparent light onPress={this.like.bind(this, data)}>
-                                        <View>
-                                            {
-                                                !data.liked ?
-                                                    <Image source={require('../../../images/icon_like_big.png')}/> :
-                                                    <Image source={require('../../../images/icon_liked_big.png')}/>
-                                            }
-                                            <Text style={styles.btns_text}>{data.likeNum}</Text>
+                                    </Col>
+                                    <Col style={styles.btns_btn_col}>
+                                        <View style={styles.btns_btn}>
+                                            <Button block transparent light onPress={this.like.bind(this, data)}>
+                                                <View>
+                                                    {
+                                                        !data.liked ?
+                                                            <Image
+                                                                source={require('../../../images/icon_like_big.png')}/> :
+                                                            <Image
+                                                                source={require('../../../images/icon_liked_big.png')}/>
+                                                    }
+                                                    <Text style={styles.btns_text}>{data.likeNum}</Text>
+                                                </View>
+                                            </Button>
                                         </View>
-                                    </Button>
-                                </View>
-                            </Col>
-                        </Grid>
+                                    </Col>
+                                </Grid>
+                            </View>
+                            {/***********************内容详情区域 end********************** /}
 
-                        <View style={styles.divider}/>
+                             {/****************************评论列表 start****************************/}
+                            <CommentList data={data}
+                                         comments={comments}
+                                         deleteComment={this.deleteComment.bind(this)}
+                                         loadMore={this.loadMore.bind(this)}
+                                         likeComment={this.likeComment.bind(this)}
+                                         reply={this.reply.bind(this)}/>
+                            {/**************评论列表 end**************/}
 
-                        {/**************评论 start**************/}
-
-                        <View style={styles.comments_header}>
-                            <Text style={styles.comments_header_text}>所有评论({comments.length})</Text>
                         </View>
 
-                        <List
-                            dataArray={comments}
-                            renderRow={item =>
-                                <ListItem style={styles.listitem} avatar>
-                                    {/* 左侧图标 */}
-                                    <Left>
-                                        <Image source={item.avatar}/>
-                                    </Left>
-                                    <Body style={styles.comments_listitem_body}>
-                                    {/* 评论人，评论时间、评论内容*/}
-                                    <View style={styles.comments_container}>
-                                        <View style={styles.comments}>
-                                            <Text style={styles.comments_username}>{item.username}</Text>
-                                            <Text style={styles.comments_content}>{item.content}</Text>
-                                            <Text style={styles.comments_time}>{item.time}</Text>
+                        {/*************删除确认弹框modal***************/}
+                        <View>
+                            <Modal isVisible={this.state.isModalVisible}>
+                                <View>
+                                    <Button style={styles.modal_btn} block transparent light
+                                            onPress={this.confirmDelete}>
+                                        <Text style={styles.modal_btn_del_text}>删除</Text>
+                                    </Button>
+                                    <Button style={styles.modal_btn} block transparent light
+                                            onPress={this.cancelDelete}>
+                                        <Text style={styles.modal_btn_calcel_text}>取消</Text>
+                                    </Button>
+                                </View>
+                            </Modal>
+                        </View>
 
-                                            {
-                                                item.at ? <View style={styles.comments_at}>
-                                                    <Text
-                                                        style={styles.comments_at_content}>@{item.at}: {item.atContent}</Text>
-                                                    <Text style={styles.comments_at_time}>{item.atTime}</Text>
-                                                </View> : null
-                                            }
-                                        </View>
-                                    </View>
-
-
-                                    {/* 回复，赞评论等 */}
-                                    <Grid>
-                                        <Col style={{width: 90}}>
-                                            <Button transparent light onPress={this.reply.bind(this, item)}>
-                                                <Grid style={styles.comments_btn_comment}>
-                                                    <Col style={{width: 14}}>
-                                                        <Image
-                                                            source={require('../../../images/icon_comment_small.png')}/>
-                                                    </Col>
-                                                    <Col>
-                                                        <Text style={styles.comments_btn_text}>回复评论</Text>
-                                                    </Col>
-                                                </Grid>
-                                            </Button>
-                                        </Col>
-                                        <Col style={{width: 90}}>
-                                            <Button transparent light onPress={this.likeComment.bind(this, item)}>
-                                                <Grid style={styles.comments_btn_comment}>
-                                                    <Col style={{width: 14}}>
-                                                        {
-                                                            !item.liked ?
-                                                                <Image
-                                                                    source={require('../../../images/icon_like_small.png')}/> :
-                                                                <Image
-                                                                    source={require('../../../images/icon_liked_small.png')}/>
-                                                        }
-                                                    </Col>
-                                                    <Col>
-                                                        <Text style={styles.comments_btn_text}>赞评论</Text>
-                                                    </Col>
-                                                </Grid>
-                                            </Button>
-                                        </Col>
-                                        <Col style={{width: 70}}>
-                                            <Button transparent light onPress={this.deleteComment.bind(this, item)}>
-                                                <Grid style={styles.comments_btn_comment}>
-                                                    <Col>
-                                                        <Text style={styles.comments_btn_text}>删除评论</Text>
-                                                    </Col>
-                                                </Grid>
-                                            </Button>
-                                        </Col>
-                                    </Grid>
-                                    </Body>
-                                </ListItem>}/>
-
-                        {/*<View style={styles.loadmore}>*/}
-                        {/*<Button style={styles.loadmore_btn} transparent light onPress={this.loadmore.bind(this, data)}>*/}
-                        {/*<Text style={styles.loadmore_btn_text}>加载更多评论</Text>*/}
-                        {/*</Button>*/}
-                        {/*</View>*/}
-
-
-                        <Grid style={styles.loadmore}>
-                            <Button style={styles.loadmore_btn} block transparent light
-                                    onPress={this.loadmore.bind(this, data)}>
-                                <Text style={styles.loadmore_btn_text}>加载更多评论</Text>
-                            </Button>
-                        </Grid>
-                        {/**************评论 end**************/}
-
-
-                    </Content> : <Content/>
+                    </Content>) : <Content/>
                 }
 
-                {/* 底部评论区域 */}
-                <Footer style={styles.footer}>
-                    <Grid style={styles.footer_grid}>
-                        <Col>
-                            <Form style={styles.footer_form}>
-                                <Item rounded style={styles.footer_item}>
-                                    <Input style={styles.footer_input} placeholder=''/>
-                                </Item>
-                            </Form>
-                        </Col>
-                        <Col style={styles.footer_col_label}>
-                            <Text style={styles.footer_label}>评论</Text>
-                        </Col>
-                    </Grid>
-                </Footer>
-
-                {/*modal*/}
-                <View>
-                    <Modal isVisible={this.state.isModalVisible}>
-                        <View>
-                            <Button style={styles.modal_btn} block transparent light
-                                    onPress={this.confirmDelete}>
-                                <Text style={styles.modal_btn_del_text}>删除</Text>
-                            </Button>
-                            <Button style={styles.modal_btn} block transparent light onPress={this.cancelDelete}>
-                                <Text style={styles.modal_btn_calcel_text}>取消</Text>
-                            </Button>
-                        </View>
-                    </Modal>
-                </View>
+                {/* 底部评论框 */}
+                <FooterInput
+                    activeComment={activeComment}
+                    onBlur={this.onBlur}
+                    onFocus={this.onFocus}
+                    onComment={this.onComment}
+                />
 
             </Container>
         );
