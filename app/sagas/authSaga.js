@@ -14,10 +14,10 @@ export function* refresh({user}){
         userService.init(user);
         console.log('Auth.currentAuthenticatedUser success',user)
         // console.log(user.getUserContextData());
-        const attr = user.attributes;
+        const attr = user.attributes || {};
         const payload = user.signInUserSession && user.signInUserSession.idToken.payload
         const info = {
-            attributes: payload ? payload : attr,
+            attributes: payload ? {...payload,...attr} : attr,
             username: user.username,
             userDataKey: user.userDataKey
         }

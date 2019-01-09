@@ -15,6 +15,7 @@ module.exports = {
     //   /nodejs-assets\/.*/,
     //   /android\/.*/,
     //   /ios\/.*/,
+      /test-lambda\/.*/,
       /#current-cloud-backend\/.*/
     ])
   },

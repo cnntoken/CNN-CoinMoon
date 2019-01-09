@@ -31,6 +31,8 @@ import userService from 'app/services/user'
 //     Footer
 // } from "native-base";
 
+// import Publish from 'app/screens/Publish/index';
+
 // 资讯 News
 import NewsList from 'app/screens/News/List';
 import NewsDetail from 'app/screens/News/Detail';
