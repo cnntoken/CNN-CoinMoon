@@ -3,6 +3,8 @@ import {Auth} from 'aws-amplify';
 import {$toast} from '../utils';
 import * as Types from '../actions/types';
 import * as services from '../services/disclose';
+import * as navigationActions from 'app/actions/navigationActions';
+
 
 // 发布页上传图片
 export function* upload({payload}) {
@@ -21,11 +23,11 @@ export function* upload({payload}) {
 
 // 发布保存
 export function* publish({payload}) {
-    const {text, images, callback} = payload;
+    const {title, images, callback} = payload;
     try {
-        const res = yield call(services.publish, text, images);
-        console.log('res', res);
-        if (callback) callback('hhhhhhh');
+        const res = yield call(services.publish, title, images);
+        yield call(navigationActions.navigateToDiscloseList);
+        if (callback) callback(res);
     } catch (e) {
         console.log('publish fail');
         $toast(`publish fail: ${e.message}`);
@@ -88,9 +90,9 @@ export function* getDiscloseDetail({payload}) {
 
 // 获取所有的爆料评论列表，一次获取多条数据再在前端分页
 export function* getDiscloseComments({payload}) {
-    const {params, callback} = payload;
+    const {id, callback} = payload;
     try {
-        const res = yield call(services.getDiscloseComments, params);
+        const res = yield call(services.getDiscloseComments, id);
         console.log('res', res);
         if (callback) callback(res);
     } catch (e) {

@@ -4,12 +4,13 @@ import {connect} from 'react-redux';
 import * as disCloseActions from "../../../actions/disCloseActions";
 
 const moment = require('moment');
-const source = require("../../../images/avatar_1.png");
+
 
 class Container extends Component {
     constructor(props) {
         super(props);
     }
+
     render() {
         return <Page {...this.props} />;
     }
@@ -17,115 +18,38 @@ class Container extends Component {
 
 function mapStateToProps() {
     return {
-        list: [{
-            title: '하지만 스마트폰이 우리 삶에 깊게 들어온 만큼, 그로 인한 어두운 면 역시 부각되고 있습니다.',
-            time: moment().format("hh:mm"),
-            userName: '匿名',
-            source: source,
-            num1: 1234,
-            num2: 1234,
-            num3: 1234,
-            num4: 1234,
-            // commentsNum
-            commentsNum: 3435,
-            images: [
-                {
-                    uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png',
-                },
-                {
-                    uri: 'http://img.hb.aicdn.com/3f488166d89c1c933e01efb3c7b1ba8d03c1f467c6239-8QXmaI_fw658',
-                },
-                {
-                    uri: 'http://img.hb.aicdn.com/2ef0972e721f55fa0b176eca9c56c1909cf86c41496141-z4MJmr_fw658'
-                },
-                {
-                    uri: 'http://img.hb.aicdn.com/90f0e0780b767a82885bafdf9526ee0224642f803befd8-qDYNht_fw658'
-                },
-                {
-                    uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png',
-                },
-                {
-                    uri: 'http://img.hb.aicdn.com/3f488166d89c1c933e01efb3c7b1ba8d03c1f467c6239-8QXmaI_fw658',
-                },
-                {
-                    uri: 'http://img.hb.aicdn.com/2ef0972e721f55fa0b176eca9c56c1909cf86c41496141-z4MJmr_fw658'
-                },
-                {
-                    uri: 'http://img.hb.aicdn.com/90f0e0780b767a82885bafdf9526ee0224642f803befd8-qDYNht_fw658'
-                },
-                {
-                    uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png',
-                },
-                {
-                    uri: 'http://img.hb.aicdn.com/3f488166d89c1c933e01efb3c7b1ba8d03c1f467c6239-8QXmaI_fw658',
-                },
-                {
-                    uri: 'http://img.hb.aicdn.com/2ef0972e721f55fa0b176eca9c56c1909cf86c41496141-z4MJmr_fw658'
-                },
-                {
-                    uri: 'http://img.hb.aicdn.com/90f0e0780b767a82885bafdf9526ee0224642f803befd8-qDYNht_fw658'
-                }
-            ]
+        user: {
+            "id": "3ecd2ff0-f731-4faf-be97-f5e76abf69e7",
+            "name": 'liguwe',
+            "icon": ''
         }
-        ],
-        // 评论
-        comments: [
-            {
-                content: '하지만 스마트폰이 우리 삶에 깊게 들어온 만큼, 그로 인한 어두운 면 역시 부각되고 있습니다.',
-                time: moment().format("hh:mm"),
-                username: '匿名',
-                avatar: source
-            },
-            {
-                content: '하지만 스마트폰이 우리 삶에 깊게 들어온 만큼, 그로 인한 어두운 면 역시 부각되고 있습니다.',
-                time: moment().format("hh:mm"),
-                username: '匿名',
-                avatar: source,
-                at: '用户1',
-                atContent: '하지만 스마트폰이 우리 삶에 깊게 들어온 만큼, 그로 인한 어두운 면 역시 부각되고 있습니다.',
-                atTime: moment().format("hh:mm"),
-            },
-            {
-                content: '하지만 스마트폰이 우리 삶에 깊게 들어온 만큼, 그로 인한 어두운 면 역시 부각되고 있습니다.',
-                time: moment().format("hh:mm"),
-                username: '匿名',
-                avatar: source,
-                at: '用户2',
-                atContent: '하지만 스마트폰이 우리 삶에 깊게 들어온 만큼, 그로 인한 어두운 면 역시 부각되고 있습니다.',
-                atTime: moment().format("hh:mm"),
-            }
-
-        ]
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         getDiscloseDetail: (...args) => {
-            return;
+            console.log(args);
             dispatch(disCloseActions.getDiscloseDetail(...args))
         },
         getDiscloseComments: (...args) => {
-            return;
-
             dispatch(disCloseActions.getDiscloseComments(...args))
         },
         commentDisclose: (...args) => {
-            return;
             dispatch(disCloseActions.commentDisclose(...args))
         },
         likeComment: (...args) => {
-            return;
             dispatch(disCloseActions.likeComment(...args))
         },
         like: (...args) => {
-            return;
             dispatch(disCloseActions.like(...args))
         },
         deleteComment: (...args) => {
-            return;
             dispatch(disCloseActions.deleteComment(...args))
         },
+        deleteDisclose: (...args) => {
+            dispatch(disCloseActions.deleteDisclose(...args))
+        }
     };
 }
 

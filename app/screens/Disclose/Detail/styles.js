@@ -258,6 +258,19 @@ const styles = StyleSheet.create({
         marginRight: 16,
         // display: 'flex',
         // alignItems: 'center'
+    },
+
+    // 删除弹框
+    modal_btn: {
+        borderRadius: 8,
+        backgroundColor: '#FFFFFF',
+        marginBottom: 15
+    },
+    modal_btn_del_text: {
+        color: '#FF3B30'
+    },
+    modal_btn_calcel_text: {
+        color: '#007AFF'
     }
 
 
