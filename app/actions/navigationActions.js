@@ -8,6 +8,11 @@ export function navigateToHome(params) {
 }
 
 // 跳往爆料列表页面
+export function navigateToDisclosePublish(params) {
+    NavigationService.navigate('DisclosePublish', params);
+}
+
+// 跳往爆料发布页面
 export function navigateToDiscloseList(params) {
     NavigationService.navigate('DiscloseList', params);
 }

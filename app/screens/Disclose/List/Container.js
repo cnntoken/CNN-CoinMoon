@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import * as disCloseActions from "../../../actions/disCloseActions";
 
 
-
 class Container extends Component {
     constructor(props) {
         super(props);
@@ -16,8 +15,8 @@ class Container extends Component {
 }
 
 
-
-function mapStateToProps() {
+function mapStateToProps(state) {
+    console.log(state);
     return {
         user: {
             "id": "3ecd2ff0-f731-4faf-be97-f5e76abf69e7",

@@ -26,7 +26,6 @@ export function* publish({payload}) {
     const {title, images, callback} = payload;
     try {
         const res = yield call(services.publish, title, images);
-        yield call(navigationActions.navigateToDiscloseList);
         if (callback) callback(res);
     } catch (e) {
         console.log('publish fail');
@@ -90,9 +89,9 @@ export function* getDiscloseDetail({payload}) {
 
 // 获取所有的爆料评论列表，一次获取多条数据再在前端分页
 export function* getDiscloseComments({payload}) {
-    const {id, callback} = payload;
+    const {id, params, callback} = payload;
     try {
-        const res = yield call(services.getDiscloseComments, id);
+        const res = yield call(services.getDiscloseComments, id, params);
         console.log('res', res);
         if (callback) callback(res);
     } catch (e) {

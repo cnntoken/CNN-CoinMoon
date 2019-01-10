@@ -9,11 +9,12 @@ import {
     Right,
     Body,
     List,
+    Spinner,
     ListItem
 } from "native-base";
 import {Col, Row, Grid} from "react-native-easy-grid";
 import {API} from 'aws-amplify';
-import {Image, Text, View, Keyboard} from "react-native";
+import {Image, Text, View} from "react-native";
 import Carousel from "react-native-snap-carousel";
 import FooterInput from './FooterInput';
 import CommentList from './CommentList';
@@ -35,6 +36,9 @@ class Page extends Component {
             comments: [],
             isModalVisible: false,
             activeComment: null,
+            // 用于标识是否还有更多数据
+            LastEvaluatedKey: null,
+            loadMoreing: false,
         }
     }
 
@@ -52,7 +56,6 @@ class Page extends Component {
     };
 
     renderImagePreview({item}) {
-        // console.log('****', item);
         return (
             <View style={styles.carousel_slide}>
                 <Image
@@ -69,7 +72,6 @@ class Page extends Component {
             isPreview: false
         });
     };
-
 
     // 回复评论
     reply = (item) => {
@@ -111,7 +113,8 @@ class Page extends Component {
                         completeCallback(data);
                         this.setState({
                             activeComment: null,
-                        })
+                        });
+                        this.commentOk();
                     }
                 }
             });
@@ -133,7 +136,8 @@ class Page extends Component {
                         completeCallback(data);
                         this.setState({
                             activeComment: null,
-                        })
+                        });
+                        this.commentOk();
                     }
                 }
             });
@@ -170,7 +174,7 @@ class Page extends Component {
             id: item._id,
             field: 'likeNum',
             callback: (data) => {
-                if(data.success){
+                if (data.success) {
                     let index = this.state.comments.indexOf(item);
 
                     this.state.comments[index].liked = true;
@@ -181,7 +185,7 @@ class Page extends Component {
                         activeComment: null
                     });
                 }
-              
+
             }
         });
     };
@@ -209,16 +213,72 @@ class Page extends Component {
 
     // loadmore 加载更多评论
     loadMore = (item) => {
-        console.log('加载更多评论', item);
+
+        const {navigation} = this.props;
+        const id = navigation.getParam('id');
+
+        const {loadMoreing, LastEvaluatedKey} = this.state;
+
+        if (loadMoreing) {
+            return false;
+        }
+
+        if (!LastEvaluatedKey) {
+            $toast('没有更多数据了!');
+            return;
+        }
+
         this.setState({
-            activeComment: null
+            loadMoreing: true
+        });
+
+        this.props.getDiscloseComments({
+            id: id,
+            params: {
+                limit: 1,
+                LastEvaluatedKey: this.state.LastEvaluatedKey
+            },
+            callback: (data) => {
+                if (data.success) {
+                    let {Items, LastEvaluatedKey} = data.data;
+                    this.setState({
+                        comments: [...this.state.comments, ...Items],
+                        LastEvaluatedKey: LastEvaluatedKey,
+                        activeComment: null,
+                        loadMoreing: false
+                    })
+                }
+            }
+        });
+    };
+
+    commentOk = () => {
+        const {navigation} = this.props;
+        const id = navigation.getParam('id');
+        this.props.getDiscloseComments({
+            id: id,
+            params: {
+                limit: this.state.comments.length + 1,
+                LastEvaluatedKey: null
+            },
+            callback: (data) => {
+                if (data.success) {
+                    let {Items, LastEvaluatedKey} = data.data;
+                    this.setState({
+                        comments: Items,
+                        LastEvaluatedKey: LastEvaluatedKey,
+                    })
+                }
+            }
         });
     };
 
 
     componentDidMount() {
+
         const {navigation} = this.props;
         const id = navigation.getParam('id');
+
         this.props.getDiscloseDetail({
             id: id,
             callback: (data) => {
@@ -231,12 +291,19 @@ class Page extends Component {
                 }
             }
         });
+
         this.props.getDiscloseComments({
             id: id,
+            params: {
+                limit: 1,
+                LastEvaluatedKey: this.state.LastEvaluatedKey
+            },
             callback: (data) => {
                 if (data.success) {
+                    let {Items, LastEvaluatedKey} = data.data;
                     this.setState({
-                        comments: data.data
+                        comments: Items,
+                        LastEvaluatedKey: LastEvaluatedKey,
                     })
                 }
             }
@@ -277,7 +344,7 @@ class Page extends Component {
 
     render() {
 
-        let {data, comments, isPreview, activeComment} = this.state;
+        let {data, comments, isPreview, activeComment, loadMoreing} = this.state;
 
         // 预览九宫格图片
         if (isPreview && data) {
@@ -469,6 +536,7 @@ class Page extends Component {
                                          loadMore={this.loadMore.bind(this)}
                                          likeComment={this.likeComment.bind(this)}
                                          reply={this.reply.bind(this)}/>
+                            {loadMoreing ? <Spinner color={'#408EF5'}/> : null}
                             {/**************评论列表 end**************/}
 
                         </View>
@@ -489,7 +557,7 @@ class Page extends Component {
                             </Modal>
                         </View>
 
-                    </Content>) : <Content/>
+                    </Content>) : <Content><Spinner color={'#408EF5'}/></Content>
                 }
 
                 {/* 底部评论框 */}

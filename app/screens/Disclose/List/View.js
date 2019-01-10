@@ -1,4 +1,4 @@
-import React, {PureComponent, Component} from 'react';
+import React, {Component} from 'react';
 // import PropTypes from 'prop-types'
 import DoubleClicker from '../../../components/DoubleClicker';
 import styles from './styles';
@@ -13,11 +13,12 @@ import {
     Body,
     Title,
     Footer,
+    Spinner,
     // List,
     ListItem, Icon, Switch, Thumbnail
 } from "native-base";
 import {
-    View, TouchableOpacity, FlatList, ActivityIndicator, Image, PixelRatio,
+    View, TouchableOpacity, RefreshControl, FlatList, ActivityIndicator, Image, PixelRatio,
 } from 'react-native';
 
 import {Col, Row, Grid} from "react-native-easy-grid";
@@ -25,7 +26,7 @@ import Modal from "react-native-modal";
 import {$toast} from '../../../utils';
 
 import * as navigationActions from 'app/actions/navigationActions';
-import PureListItem from 'app/components/DiscloseListItem';
+import DiscloseListItem from 'app/components/DiscloseListItem';
 
 import {API} from 'aws-amplify';
 
@@ -38,31 +39,31 @@ const avatars = [
     require("../../../images/avatar_4.png")
 ];
 
-class Screen extends PureComponent {
+class Screen extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             refreshing: false,
-            loadMore: false,
+            loadMoreing: false,
             hasData: true,
-            list: [],
-            // 一次请求多条回来，然后再分页
-            Items: [],
+            Items: null,
             Count: 0,
             isModalVisible: false,
-            activeItem: null
+            activeItem: null,
+            // 用于标识是否还有更多数据
+            LastEvaluatedKey: null
         }
     }
 
     // 双击导航标题,回到顶部
     titleDoubleClick = () => {
-        console.log('double clicked');
         this._flatList.scrollToIndex({index: 0, viewPosition: 0})
     };
+
     // 写爆料
     writeDisclose = () => {
-        this.props.navigation.navigate('DisclosePublish');
+        navigationActions.navigateToDisclosePublish();
     };
 
     // 进入具体详情页面
@@ -79,60 +80,19 @@ class Screen extends PureComponent {
         });
     };
 
+    // 点赞
     like = (item) => {
         item.liked = true;
         item.likeNum = item.likeNum + 1;
         this.setState({
-            list: [...this.state.list]
+            Items: [...this.state.Items]
         });
         this.props.like({
             id: item._id,
             field: 'likeNum',
             callback: (data) => {
-                console.log(data);
             }
         });
-    };
-
-    // 下拉刷新
-    handleRefresh = () => {
-        console.log('pull down');
-        const {refreshing} = this.state;
-        const {list: initList} = this.props;
-        this.setState({refreshing: true});
-        // 如果已经处于加载中,下拉不做任何处理,即不会请求数据
-        if (refreshing) {
-            return false;
-        }
-        // 模拟请求数据
-        setTimeout(() => {
-            this.setState({list: initList, hasData: true, refreshing: false})
-        }, 2000);
-    };
-
-    // 上拉加载
-    handleLoadMore = (info) => {
-        console.log('load more');
-        console.log(info);
-        const {list, loadMore} = this.state;
-        // 如果已经处于加载中,上拉不做任何处理,即不会请求数据
-        if (loadMore) {
-            this.setState({list: [...list]});
-            return false;
-        }
-        const {list: initList} = this.props;
-        // this.props.fetchData()
-        this.setState({loadMore: true})
-        // 模拟请求数据
-        setTimeout(() => {
-            // 模拟无更多数据
-            if (list.length > 10) {
-                this.setState({hasData: false, loadMore: false})
-            } else {
-                this.setState({list: [...list, ...initList], loadMore: false})
-            }
-        }, 2000);
-
     };
 
     // 显示删除弹框
@@ -152,8 +112,8 @@ class Screen extends PureComponent {
                 if (data.success) {
                     // todo 国际化
                     $toast('删除爆料成功');
-                    let index = this.state.list.indexOf(item);
-                    this.state.list.splice(index, 1);
+                    let index = this.state.Items.indexOf(item);
+                    this.state.Items.splice(index, 1);
                     this.setState({
                         isModalVisible: false,
                         activeItem: null
@@ -173,31 +133,111 @@ class Screen extends PureComponent {
 
     // 渲染列表
     renderListItem = ({item, index}) => {
-        const {hasData, list} = this.state;
-        // 纯组件
-        return <PureListItem showDeleteDialog={this.showDeleteDialog}
-                             clickAvatar={this.clickAvatar}
-                             like={this.like}
-                             opt={{item, index, hasData, list}}
-                             pressItem={this.pressItem}/>
+        const {hasData, Items} = this.state;
+        return <DiscloseListItem showDeleteDialog={this.showDeleteDialog}
+                                 clickAvatar={this.clickAvatar}
+                                 like={this.like}
+                                 opt={{item, index, hasData, Items}}
+                                 pressItem={this.pressItem}/>
     };
 
-    componentDidMount() {
-        // console.log('in disclose');
+
+    handleRefresh = () => {
+        const {refreshing} = this.state;
+        if (refreshing) {
+            return false;
+        }
+        this.setState({
+            refreshing: true
+        });
         this.props.getList({
-            // id: navigation.id,
+            params: {
+                // 向上拉刷新最新数据的话，则更新当前所有展示的Items个数
+                limit: this.state.Items.length || 10,
+                LastEvaluatedKey: null,
+            },
             callback: (data) => {
                 if (data.success) {
-                    let {Items, Count} = data.data;
+                    let {Items, Count, LastEvaluatedKey} = data.data;
                     Items.forEach((item, index) => {
                         // todo 用户信息怎么绑定
                         item.source = avatars[index % 5];
                         item.userName = '匿名';
                     });
                     this.setState({
-                        list: Items.slice(9),
+                        Items: [...Items],
+                        Count: Count,
+                        LastEvaluatedKey: LastEvaluatedKey,
+                        refreshing: false
+                    });
+
+                    $toast('已是最新数据!');
+                }
+            }
+        });
+    };
+
+    // 上拉加载更多
+    handleLoadMore = () => {
+        const {loadMoreing, LastEvaluatedKey} = this.state;
+
+        if (loadMoreing) {
+            return false;
+        }
+
+        if (!LastEvaluatedKey) {
+            $toast('没有更多数据了!');
+            return;
+        }
+
+        this.setState({
+            loadMoreing: true
+        });
+
+        this.props.getList({
+            params: {
+                limit: 10,
+                LastEvaluatedKey: this.state.LastEvaluatedKey
+            },
+            callback: (data) => {
+                if (data.success) {
+                    let {Items, Count, LastEvaluatedKey} = data.data;
+                    Items.forEach((item, index) => {
+                        // todo 用户信息怎么绑定
+                        item.source = avatars[index % 5];
+                        item.userName = '匿名';
+                    });
+                    this.setState({
+                        Items: [...this.state.Items, ...Items],
+                        Count: Count,
+                        LastEvaluatedKey: LastEvaluatedKey,
+                        loadMoreing: false
+                    });
+
+                }
+            }
+        });
+    };
+
+
+    componentDidMount() {
+        this.props.getList({
+            params: {
+                limit: 10,
+                LastEvaluatedKey: this.state.LastEvaluatedKey
+            },
+            callback: (data) => {
+                if (data.success) {
+                    let {Items, Count, LastEvaluatedKey} = data.data;
+                    Items.forEach((item, index) => {
+                        // todo 用户信息怎么绑定
+                        item.source = avatars[index % 5];
+                        item.userName = '匿名';
+                    });
+                    this.setState({
                         Items: Items,
-                        Count: Count
+                        Count: Count,
+                        LastEvaluatedKey: LastEvaluatedKey
                     })
                 }
             }
@@ -205,11 +245,10 @@ class Screen extends PureComponent {
     }
 
     render() {
-        // let {list} = this.props;
-        const {refreshing, loadMore, list} = this.state;
-
+        const {refreshing, loadMoreing, Items} = this.state;
         return (
             <Container>
+
                 <Header>
                     <Left/>
                     <Body>
@@ -225,27 +264,32 @@ class Screen extends PureComponent {
                     </Right>
                 </Header>
 
+                {
+                    Items ? <FlatList
+                        ref={(flatlist) => this._flatList = flatlist}
+                        initialNumToRender={4}
+                        keyExtractor={(item, index) => item + index}
+                        ListEmptyComponent={<Text>none data!</Text>}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.state.refreshing}
+                                onRefresh={this.handleRefresh}
+                            />
+                        }
+                        ItemSeparatorComponent={() => <View
+                            style={{height: 1 / PixelRatio.getPixelSizeForLayoutSize(1), backgroundColor: '#E6E6E6'}}/>}
+                        data={Items}
+                        renderItem={this.renderListItem}
+                        refreshing={refreshing}
+                        onEndReached={this.handleLoadMore}
+                        onEndReachedThreshold={0.1}
+                    /> : <Content><Spinner color={'#408EF5'}/></Content>
+                }
 
-                <FlatList
-                    ref={(flatlist) => this._flatList = flatlist}
-                    initialNumToRender={4}
-                    keyExtractor={(item, index) => item + index}
-                    ListEmptyComponent={<Text>none data!</Text>}
-                    ItemSeparatorComponent={() => <View
-                        style={{height: 1 / PixelRatio.getPixelSizeForLayoutSize(1), backgroundColor: '#E6E6E6'}}/>}
-                    data={list}
-                    renderItem={this.renderListItem}
-                    onRefresh={this.handleRefresh}
-                    refreshing={refreshing}
-                    onEndReached={this.handleLoadMore}
-                    onEndReachedThreshold={-0.1}
-                />
 
-                {loadMore ?
-                    <View style={styles.loadMore}><ActivityIndicator size='large' color='#408EF5'/></View> : null}
+                {loadMoreing ? <Spinner color={'#408EF5'}/> : null}
 
-
-                {/*modal*/}
+                {/*需要删除爆料时，弹框提示确定modal*/}
                 <View>
                     <Modal isVisible={this.state.isModalVisible}>
                         <View>
@@ -259,6 +303,7 @@ class Screen extends PureComponent {
                         </View>
                     </Modal>
                 </View>
+
             </Container>
 
         );

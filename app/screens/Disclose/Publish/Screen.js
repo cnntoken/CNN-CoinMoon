@@ -7,28 +7,20 @@ import {
     Content,
     Text,
     Button,
-    // Left,
-    // Right,
-    // Body,
     Form,
     Textarea,
-    // Title,
-    // FooterTab,
-    Thumbnail, Left, Body, Title, Right,
-    // View,
-    // Image,
-    // Footer, List, ListItem,
+    Left, Body, Right,
 } from "native-base";
 
 import {Col, Row, Grid} from 'react-native-easy-grid';
-
+import Spinner from 'react-native-loading-spinner-overlay';
 import {View, Image} from 'react-native';
 
 import ImagePicker from 'react-native-image-picker';
 import Carousel, {ParallaxImage, Pagination} from 'react-native-snap-carousel';
-import {JS} from "aws-amplify";
 import {$toast} from '../../../utils';
-// import {API} from 'aws-amplify';
+import * as navigationActions from 'app/actions/navigationActions';
+
 
 // const btn_add_source = require("../../../images/btn_add.png");
 
@@ -48,6 +40,7 @@ class Screen extends Component {
                 },
             ],
             activeSlide: 0,
+            publishing: false
         }
     }
 
@@ -126,6 +119,12 @@ class Screen extends Component {
                 fileName: item.fileName
             })
         });
+
+        // 添加loading
+        this.setState({
+            publishing: true
+        });
+
         this.props.upload({
             images: images,
             callback: (data) => {
@@ -146,7 +145,9 @@ class Screen extends Component {
                                 isPreview: false,
                                 title: '',
                                 activeSlide: 0,
-                            })
+                                publishing: false
+                            });
+                            navigationActions.navigateToDiscloseList();
                         }
                     }
                 });
@@ -201,13 +202,14 @@ class Screen extends Component {
         this.props.navigation.navigate('Mine');
     };
 
+
     componentDidMount() {
         // console.log("hhhh");
     };
 
     render() {
 
-        let {images, title, isPreview} = this.state;
+        let {images, title, isPreview, publishing} = this.state;
         let user = this.props.user;
 
         // 预览图片页面
@@ -256,7 +258,16 @@ class Screen extends Component {
 
         // 上传图片
         return (
+
             <Container>
+
+                <Spinner
+                    visible={publishing}
+                    textContent={'Loading...'}
+                    textStyle={{color: "white", fontSize: 17, lineHeight: 22}}
+                />
+
+
                 <Header style={styles.publish_header}>
                     <Left>
                         <Button transparent onPress={this.cancelWriteDisclose}>
@@ -318,6 +329,7 @@ class Screen extends Component {
 
                 </Content>
             </Container>
+
         );
     }
 }

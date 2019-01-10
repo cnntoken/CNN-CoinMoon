@@ -18,12 +18,11 @@ import {Col, Row, Grid} from "react-native-easy-grid";
 
 const moment = require('moment');
 
-export default class PureListItem extends Component {
+export default class DiscloseListItem extends Component {
 
     // 删除爆料
     showDeleteDialog = (item) => {
         if (this.props.showDeleteDialog) {
-            console.log(item);
             this.props.showDeleteDialog(item);
         }
     };
@@ -51,7 +50,13 @@ export default class PureListItem extends Component {
     };
 
     render() {
-        const {item, index, hasData, list} = this.props.opt;
+        const {item} = this.props.opt;
+
+        if (!item) {
+            return null;
+        }
+        // 容错
+        item.images = item.images || [];
         return (
             <ListItem avatar>
                 {/* 左侧图标 */}
@@ -91,25 +96,28 @@ export default class PureListItem extends Component {
                                 </Col>
                             </Row>
                         </Grid>
-                        {/* 九宫格 */}
+                        {/******************************* 九宫格 ********************************/}
                         <Grid>
                             <Row>
                                 {
-                                    item.images.slice(0, 3).map((i, idx) => {
+                                    item.images.length > 0 ? item.images.slice(0, 3).map((i, idx) => {
+                                        // 容错处理
+                                        let uri = typeof i === 'string' ? i : i.uri;
                                         return <Col style={styles.col_img} key={idx}>
                                             <Image style={styles.image}
-                                                   source={{uri: i.uri}}/>
+                                                   source={{uri: uri}}/>
                                         </Col>
-                                    })
+                                    }) : null
                                 }
                             </Row>
                             <Row>
                                 {
                                     item.images.length > 3 ?
                                         item.images.slice(3, 6).map((i, idx) => {
+                                            let uri = typeof i === 'string' ? i : i.uri;
                                             return <Col style={styles.col_img} key={idx}>
                                                 <Image style={styles.image}
-                                                       source={{uri: i.uri}}/>
+                                                       source={{uri: uri}}/>
                                             </Col>
                                         }) : null
                                 }
@@ -118,9 +126,10 @@ export default class PureListItem extends Component {
                                 {
                                     item.images.length > 6 ?
                                         item.images.slice(6, 9).map((i, idx) => {
+                                            let uri = typeof i === 'string' ? i : i.uri;
                                             return <Col style={styles.col_img} key={idx}>
                                                 <Image style={styles.image}
-                                                       source={{uri: i.uri}}/>
+                                                       source={{uri: uri}}/>
                                             </Col>
                                         }) : null
                                 }
@@ -151,11 +160,6 @@ export default class PureListItem extends Component {
                         </View>
                     </Col>
                 </Grid>
-                {/* 无更多数据时,展示 */}
-                {
-                    (list.length - 1) !== index ? null :
-                        !(hasData && list.length) ? <Text style={styles.noData}>there is no more!</Text> : null
-                }
                 </Body>
 
             </ListItem>

@@ -107,16 +107,17 @@ class FooterInput extends Component {
             this.props.onFocus(item);
         }
     };
+
     onBlur = (item) => {
         if (this.props.onBlur) {
             this.props.onBlur(item);
         }
     };
+
     onChangeText = (value) => {
         this.setState({
             text: value
         });
-        console.log(value);
     };
 
     onComment = (item) => {
