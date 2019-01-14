@@ -8,6 +8,7 @@ import listSaga from './listSaga';
 // import appSaga from './appSaga';
 import * as authSaga from './authSaga';
 import * as disCloseSaga from './disCloseSaga';
+import * as userActionSaga from './userActionSaga';
 
 export default function* watch() {
     yield all([
@@ -34,6 +35,10 @@ export default function* watch() {
         takeEvery(types.DISCLOSE_COMMENTDISCLOSE, disCloseSaga.commentDisclose),
         takeEvery(types.DISCLOSE_LIKECOMMENT, disCloseSaga.likeComment),
         takeEvery(types.DISCLOSE_DELETECOMMENT, disCloseSaga.deleteComment),
+
+        // 用户行为
+        takeEvery(types.USERACTION_GETACTION, userActionSaga.getActions),
+        takeEvery(types.USERACTION_UPDATE, userActionSaga.update),
 
     ]);
 }

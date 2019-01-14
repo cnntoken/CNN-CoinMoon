@@ -6,7 +6,7 @@ import {
     Form,
     Footer
 } from "native-base";
-import {$toast} from "../../../utils";
+import {$toast} from "app/utils";
 
 
 import {Col, Grid} from "react-native-easy-grid";
