@@ -1,6 +1,6 @@
 import React,{ PureComponent } from 'react';
 import { ListItem, Text,Left,Body,Button,Thumbnail,View } from 'native-base';
-import { Image } from 'react-native';
+import { Image,TouchableOpacity } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import styles from './item-styles'
 import moment from 'moment'
@@ -46,6 +46,11 @@ export default class Item extends PureComponent{
         onAvatarClick && onAvatarClick(info)
     }
 
+    clickItem = ()=>{
+        const {info} = this.props;
+        this.props.onItemClick(info);
+    }
+
     render(){
         const {info} = this.props;
         return(
@@ -56,22 +61,24 @@ export default class Item extends PureComponent{
                     </Button>
                 </Left>
                 <Body style={{borderBottomWidth: 0,paddingVertical:0,marginLeft:6}}>
-                    <Grid>
-                        <Row style={styles.firstRow}>
-                            <Text style={styles.name}>{info.user.nickname}</Text><Icon type='time' normal={true} text={moment(styles.createdAt).format('HH:MM')}/>
-                        </Row>
-                        <Row><Text numberOfLines={2} style={styles.title}>{info.title}</Text></Row>
-                    </Grid>
-                    {
-                        info.images && info.images.length ? 
-                        <Grid style={styles.itemRow}><Row><Image source={{uri: info.images[0]}} style={[styles.image]}/></Row></Grid>
-                        :null
-                    } 
-                    <View style={[styles.itemRow,styles.interact]}>
-                        <Icon type='view' text={info.viewNum || 0}/>
-                        <Icon type='comment' text={info.commentNum || 0}/>
-                        <Icon type='like' text={info.likeNum || 0} onPress={this.like}/>
-                    </View>
+                    <TouchableOpacity onPress={this.clickItem}>
+                        <Grid>
+                            <Row style={styles.firstRow}>
+                                <Text style={styles.name}>{info.user.nickname}</Text><Icon type='time' normal={true} text={moment(styles.createdAt).format('HH:MM')}/>
+                            </Row>
+                            <Row><Text numberOfLines={2} style={styles.title}>{info.title}</Text></Row>
+                        </Grid>
+                        {
+                            info.images && info.images.length ? 
+                            <Grid style={styles.itemRow}><Row><Image source={{uri: info.images[0]}} style={[styles.image]}/></Row></Grid>
+                            :null
+                        } 
+                        <View style={[styles.itemRow,styles.interact]}>
+                            <Icon type='view' text={info.viewNum || 0}/>
+                            <Icon type='comment' text={info.commentNum || 0}/>
+                            <Icon type='like' text={info.likeNum || 0} onPress={this.like}/>
+                        </View>
+                    </TouchableOpacity>
                 </Body>
             </ListItem>
         )

@@ -11,11 +11,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     text:{
-        fontSize: 16,
         color: '#fff'
     },
     active:{
-        fontSize: 24,
         fontWeight: 'bold'
     }
 });

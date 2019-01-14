@@ -24,9 +24,6 @@ class ViewControl extends Component {
         super(props);
     }
 
-    componentDidMount() {
-
-    }
     onChangeTab = (...args)=>{
         console.log('on change tab')
         console.log(...args)
@@ -35,32 +32,42 @@ class ViewControl extends Component {
         console.log('onRefresh',params)
         this.props.getList({isRefresh: true,category})
     }
-    renderInfomationItem = ({item, separators})=>{
-        return <Item info={item} key={item._id}/>
+    // renderInfomationItem = ({item, separators})=>{
+    //     return <Item info={item} key={item._id} onItemClick={this.goDetail}/>
+    // }
+    renderItem = ({item, separators})=>{
+        return <Item info={item} key={item._id} onItemClick={this.goDetail}/>
     }
-    renderNewsItem = ({item, separators})=>{
-        return <Item info={item} key={item._id}/>
+    
+    goDetail = (info)=>{
+        const {_id, category} = info;
+        this.props.navigation.navigate('NewsDetail',{_id,category})
+        console.log('goDetail', info)
     }
+
+    componentDidMount() {
+
+    }
+
     render() {
-        console.log(this.props)
         return (
             <ScrollableTabView
                 initialPage={0}
                 renderTabBar={() => <ListTabBar/>}
-                onChangeTab={this.onChangeTab}
+                // onChangeTab={this.onChangeTab}
                 >
-                <List 
+                <List
                     tabLabel='新闻'
                     data={this.props.news}
-                    renderItem={this.renderNewsItem}
+                    renderItem={this.renderItem}
                     onRefresh={(...args)=>{this.onRefresh('news',...args)}}
-                ></List>
-                <List tabLabel='信息'
+                />
+                <List 
+                    tabLabel='信息'
                     data={this.props.info}
-                    renderItem={this.renderInfomationItem}
+                    renderItem={this.renderItem}
                     onRefresh={(...args)=>{this.onRefresh('info',...args)}}
-                >
-                </List>
+                />
             </ScrollableTabView>
         );
     }

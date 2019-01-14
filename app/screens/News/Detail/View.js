@@ -13,8 +13,8 @@ import {
     FooterTab,
     Footer
 } from "native-base";
-
-import {API} from 'aws-amplify';
+import {Image} from 'react-native';
+import styles from './styles'
 
 class View extends Component {
 
@@ -25,17 +25,23 @@ class View extends Component {
     componentDidMount() {
 
     }
-
     render() {
         return (
             <Container>
-                <Header/>
+                <Left>
+                    <Button transparent onPress={this.goBack}>
+                        <Image source={require('../../../images/icon_back_white.png')}/>
+                    </Button>
+                </Left>
                 <Content>
                     <Text>news detail</Text>
                 </Content>
                 <Footer/>
             </Container>
         );
+    }
+    goBack = ()=>{
+        this.props.navigation.pop()
     }
 }
 
