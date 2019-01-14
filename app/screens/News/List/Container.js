@@ -1,24 +1,19 @@
 import React, { Component } from 'react';
 import View from './View';
 import { connect } from 'react-redux';
+import * as  feedActions from 'app/actions/feedActions';
 
-class Container extends Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return <View {...this.props} />;
-    }
+function mapStateToProps({feedReducer}) {
+    console.log('feedReducer',feedReducer)
+    return {...feedReducer};
 }
-
-function mapStateToProps() {
-    return {};
-}
-function mapDispatchToProps() {
-    return {};
+function mapDispatchToProps(dispatch) {
+    return {
+        getList: (...args)=>dispatch(feedActions.getList(...args))
+    };
 }
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Container);
+)(View);

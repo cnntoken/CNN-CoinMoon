@@ -14,7 +14,7 @@ const config = {
     // 存储引擎、 一个 Engine，例如 LocalStorage 和 AsyncStorage
     storage,
     // 黑名单数组，可以忽略一些 reducers 中的 key
-    blacklist: ['nav', 'loadingReducer'],
+    blacklist: ['nav', 'loadingReducer','feedReducer'],
     debug: true //to get useful logging
 };
 

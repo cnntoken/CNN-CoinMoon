@@ -3,18 +3,15 @@
  */
 import {takeEvery, all, take} from 'redux-saga/effects';
 import * as types from '../actions/types';
-import loginSaga from './loginSaga';
-import listSaga from './listSaga';
 // import appSaga from './appSaga';
 import * as authSaga from './authSaga';
 import * as disCloseSaga from './disCloseSaga';
+import * as feedSaga from './feedSaga';
 
 export default function* watch() {
     yield all([
-        takeEvery(types.LOGIN_REQUEST, loginSaga),
-        takeEvery(types.GET_LIST, listSaga),
-        // takeEvery(types.APP_INIT, appSaga),
 
+        // Auth
         takeEvery(types.AUTH_LOGIN, authSaga.login),
         takeEvery(types.AUTH_REGISTER, authSaga.register),
         takeEvery(types.AUTH_VERIFY, authSaga.verify),
@@ -34,6 +31,12 @@ export default function* watch() {
         takeEvery(types.DISCLOSE_COMMENTDISCLOSE, disCloseSaga.commentDisclose),
         takeEvery(types.DISCLOSE_LIKECOMMENT, disCloseSaga.likeComment),
         takeEvery(types.DISCLOSE_DELETECOMMENT, disCloseSaga.deleteComment),
+
+        /////////////////// 资讯
+        takeEvery(types.FEED_GETLIST, feedSaga.getList),
+        takeEvery(types.FEED_GETDETAIL, feedSaga.getDetail),
+        takeEvery(types.FEED_LIKE, feedSaga.like),
+
 
     ]);
 }
