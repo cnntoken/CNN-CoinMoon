@@ -1,38 +1,10 @@
 import React,{ PureComponent } from 'react';
 import { ListItem, Text,Left,Body,Button,Thumbnail,View } from 'native-base';
 import { Image,TouchableOpacity } from 'react-native';
-import { Col, Row, Grid } from 'react-native-easy-grid';
+import { Row, Grid } from 'react-native-easy-grid';
+import IconText from 'app/components/IconText';
 import styles from './item-styles'
 import moment from 'moment'
-
-
-const iconType = {
-    view: require('app/images/icon_view.png'),
-    comment: require('app/images/icon_comment_small.png'),
-    like: require('app/images/icon_like_small.png'),
-    liked: require('app/images/icon_liked_small.png'),
-    time: require('app/images/icon_time.png'),
-}
-
-class Icon extends PureComponent{
-    onPress = ()=>{
-        this.props.onPress && this.props.onPress()
-    }
-    render (){
-        const {type,text,normal} = this.props;
-        if(normal){
-            return <View style={{flexDirection:'row',alignItems:'center'}}>
-            <Image source={iconType[type]}/>
-            <Text style={styles.number}>{text}</Text>
-        </View>
-        }
-        return  <Button transparent light onPress={this.onPress} style={{height: null}}>
-                    <Image source={iconType[type]}/>
-                    <Text style={styles.number}>{text}</Text>
-                </Button>
-    }
-}
-
 
 export default class Item extends PureComponent{
 
@@ -64,7 +36,7 @@ export default class Item extends PureComponent{
                     <TouchableOpacity onPress={this.clickItem}>
                         <Grid>
                             <Row style={styles.firstRow}>
-                                <Text style={styles.name}>{info.user.nickname}</Text><Icon type='time' normal={true} text={moment(styles.createdAt).format('HH:MM')}/>
+                                <Text style={styles.name}>{info.user.nickname}</Text><IconText type='time' normal={true} text={moment(info.updatedAt).format('HH:mm')}/>
                             </Row>
                             <Row><Text numberOfLines={2} style={styles.title}>{info.title}</Text></Row>
                         </Grid>
@@ -74,9 +46,9 @@ export default class Item extends PureComponent{
                             :null
                         } 
                         <View style={[styles.itemRow,styles.interact]}>
-                            <Icon type='view' text={info.viewNum || 0}/>
-                            <Icon type='comment' text={info.commentNum || 0}/>
-                            <Icon type='like' text={info.likeNum || 0} onPress={this.like}/>
+                            <IconText type='view' text={info.viewNum || 0}/>
+                            <IconText type='comment_small' text={info.commentNum || 0}/>
+                            <IconText type='like_small' text={info.likeNum || 0} onPress={this.like}/>
                         </View>
                     </TouchableOpacity>
                 </Body>

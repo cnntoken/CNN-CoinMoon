@@ -39,12 +39,6 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 160,
         borderRadius: 6
-    },
-    number: {
-        color: '#666',
-        fontSize: 12,
-        paddingLeft: 3,
-        marginLeft: 0,
     }
 });
 

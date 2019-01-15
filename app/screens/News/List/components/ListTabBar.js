@@ -13,9 +13,9 @@ const WINDOW_WIDTH = Dimensions.get('window').width;
 class TabBar extends PureComponent{
     constructor(props){
         super(props)
-        const toValue = props.isActive ? 24 : 16;
+        const scale = props.isActive ? 24/16 : 1;
         this.state = {
-            fontSize: new Animated.Value(toValue)
+            scale: new Animated.Value(scale)
         }
     }
     onPress = ()=>{
@@ -23,25 +23,29 @@ class TabBar extends PureComponent{
         this.props.onPress(page);
     }
     scaleText = ()=>{
-        const toValue = this.props.isActive ? 24 : 16;
+        const scale = this.props.isActive ? 24/16 : 1;
         Animated.timing(
-            this.state.fontSize,
+            this.state.scale,
             {
-              toValue: toValue,
-              duration: 300
+              toValue: scale,
+              duration: 200,
+              useNativeDriver: true
             }
         ).start();
     }
-    componentDidMount = ()=>{
-        console.log("componentDidMount tabbar", this.props)
-    }
+    // componentDidMount = ()=>{
+    //     console.log("componentDidMount tabbar", this.props)
+    // }
     componentDidUpdate = (prevProps)=>{
         if(prevProps.isActive !== this.props.isActive){
             this.scaleText()
         }
     }
     render(){
-       const styleArr = [styles.text,{fontSize: this.state.fontSize}]
+       const styleArr = [styles.text,{transform: [
+        { scale: this.state.scale },
+        { perspective: 1000 }
+      ]}]
        if(this.props.isActive){
             styleArr.push(styles.active)
        }

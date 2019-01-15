@@ -11,6 +11,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     text:{
+        fontSize: 14,
         color: '#fff'
     },
     active:{

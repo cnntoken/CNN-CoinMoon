@@ -23,11 +23,6 @@ class ViewControl extends Component {
     constructor(props) {
         super(props);
     }
-
-    onChangeTab = (...args)=>{
-        console.log('on change tab')
-        console.log(...args)
-    }
     onRefresh = (category,params)=>{
         console.log('onRefresh',params)
         this.props.getList({isRefresh: true,category})
@@ -42,7 +37,7 @@ class ViewControl extends Component {
     goDetail = (info)=>{
         const {_id, category} = info;
         this.props.navigation.navigate('NewsDetail',{_id,category})
-        console.log('goDetail', info)
+        // console.log('goDetail', info)
     }
 
     componentDidMount() {

@@ -38,17 +38,31 @@ export function* like({payload}) {
     }
 }
 
+const getDetailFromStateByIdAndCategory = (id,category)=>{
+   
+    return (state)=>{
+        const {feedReducer} = state;
+        if(feedReducer[category]){
+            return feedReducer[category].find(item=>item._id === id)
+        }
+        return false
+    }
+}
 
 // 获取详情
-export function* getDetail({payload}) {
-    const {id, callback} = payload;
+export function* getDetail({payload,callback}) {
+    const {id, category} = payload;
+    const info = yield select(getDetailFromStateByIdAndCategory(id, category));
+    if(info){
+        callback && callback(info);
+        return false;
+    }
     try {
         const res = yield call(services.getDetail, id);
-        console.log('res', res);
-        if (callback) callback(res);
+        callback && callback(res);
     } catch (e) {
         $toast(`getDiscloseDetail fail: ${e.message}`);
-        if (callback) callback(e)
+        // callback && callback(e);
     }
 }
 
