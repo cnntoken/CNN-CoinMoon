@@ -1,35 +1,16 @@
 import React, {Component} from 'react';
-// import PropTypes from 'prop-types'
-import DoubleClicker from '../../../components/DoubleClicker';
+import DoubleClicker from 'app/components/DoubleClicker';
 import styles from './styles';
-import {
-    Container,
-    Header,
-    Content,
-    Text,
-    Button,
-    Left,
-    Right,
-    Body,
-    Title,
-    Footer,
-    Spinner,
-    // List,
-    ListItem, Icon, Switch, Thumbnail
-} from "native-base";
-import {
-    View, TouchableOpacity, RefreshControl, FlatList, ActivityIndicator, Image, PixelRatio,
-} from 'react-native';
+import {Container, Header, Content, Text, Button, Left, Right, Body, Title, Spinner} from "native-base";
+import {View, RefreshControl, FlatList, Image, PixelRatio} from 'react-native';
 
-import {Col, Row, Grid} from "react-native-easy-grid";
 import Modal from "react-native-modal";
-import {$toast} from '../../../utils';
+import {$toast} from 'app/utils';
 
 import * as navigationActions from 'app/actions/navigationActions';
 import DiscloseListItem from 'app/components/DiscloseListItem';
 
 import {API} from 'aws-amplify';
-
 
 const avatars = [
     require("../../../images/avatar_1.png"),
@@ -82,15 +63,32 @@ class Screen extends Component {
 
     // 点赞
     like = (item) => {
-        item.liked = true;
-        item.likeNum = item.likeNum + 1;
-        this.setState({
-            Items: [...this.state.Items]
-        });
+        let actionValue = item.userAction.actionValue;
+        item.userAction.actionValue = !actionValue;
+        item.likeNum = !actionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
+        this.setState({});
         this.props.like({
             id: item._id,
             field: 'likeNum',
+            cancel: actionValue,
             callback: (data) => {
+                // 更新用户对该资源的行为数据
+                this.props.updateAction({
+                    _id: item.userAction._id,
+                    obj: {
+                        objectId: item._id,
+                        userId: this.props.user.id,
+                        actionType: 1,  // 点赞
+                        objectType: 3,   // 爆料资源
+                        actionValue: !actionValue
+                    },
+                    callback: (res) => {
+                        if (!item.userAction._id) {
+                            item.userAction._id = res.data._id;
+                            this.setState({});
+                        }
+                    }
+                });
             }
         });
     };
@@ -142,6 +140,7 @@ class Screen extends Component {
     };
 
 
+    //  下滑刷新
     handleRefresh = () => {
         const {refreshing} = this.state;
         if (refreshing) {
@@ -150,54 +149,36 @@ class Screen extends Component {
         this.setState({
             refreshing: true
         });
-        this.props.getList({
-            params: {
-                // 向上拉刷新最新数据的话，则更新当前所有展示的Items个数
-                limit: this.state.Items.length || 10,
-                LastEvaluatedKey: null,
-            },
-            callback: (data) => {
-                if (data.success) {
-                    let {Items, Count, LastEvaluatedKey} = data.data;
-                    Items.forEach((item, index) => {
-                        // todo 用户信息怎么绑定
-                        item.source = avatars[index % 5];
-                        item.userName = '匿名';
-                    });
-                    this.setState({
-                        Items: [...Items],
-                        Count: Count,
-                        LastEvaluatedKey: LastEvaluatedKey,
-                        refreshing: false
-                    });
-
-                    $toast('已是最新数据!');
-                }
-            }
-        });
+        this.getList(this.state.Items.length, null, true);
     };
 
     // 上拉加载更多
     handleLoadMore = () => {
         const {loadMoreing, LastEvaluatedKey} = this.state;
-
         if (loadMoreing) {
             return false;
         }
-
         if (!LastEvaluatedKey) {
             $toast('没有更多数据了!');
             return;
         }
-
         this.setState({
             loadMoreing: true
         });
+        this.getList(10, this.state.LastEvaluatedKey);
+    };
 
+    /**
+     * 获取爆料列表数据和获取每条爆料条目对应用户的行为数据
+     * @param limit 返回限制
+     * @param LastEvaluatedKey 标识下一次请求从哪个条目开始
+     * @param refresh 是否重新刷新
+     * */
+    getList = (limit, LastEvaluatedKey, refresh) => {
         this.props.getList({
             params: {
-                limit: 10,
-                LastEvaluatedKey: this.state.LastEvaluatedKey
+                limit: limit || 10,
+                LastEvaluatedKey: LastEvaluatedKey || null
             },
             callback: (data) => {
                 if (data.success) {
@@ -208,47 +189,55 @@ class Screen extends Component {
                         item.userName = '匿名';
                     });
                     this.setState({
-                        Items: [...this.state.Items, ...Items],
+                        Items: refresh ? [...Items] : [...(this.state.Items || []), ...Items],
                         Count: Count,
                         LastEvaluatedKey: LastEvaluatedKey,
-                        loadMoreing: false
+                        loadMoreing: false,
+                        refreshing: false
                     });
 
+                    if (!LastEvaluatedKey) {
+                        $toast('没有更多数据了!');
+                    }
+
+                    /////////// 获取用户行为集合
+                    let params = [];
+                    Items.forEach((item) => {
+                        params.push({
+                            objectId: item._id,
+                            userId: this.props.user.id,
+                            actionType: 1,   // 点赞
+                            objectType: 3   // 爆料评论回复资源
+                        })
+                    });
+
+                    // 查询用户对该资源的行为数据
+                    this.props.getActions({
+                        params,
+                        callback: (res) => {
+                            let userAction = res.data;
+                            // console.log(params, '\\\n\\\\',res);
+                            // 批量更新用户的点赞信息
+                            this.state.Items.forEach((item) => {
+                                item.userAction = userAction[item._id];
+                            });
+                            this.setState({});
+                            console.log(this.state.Items);
+                        }
+                    });
                 }
             }
         });
     };
 
-
     componentDidMount() {
-        this.props.getList({
-            params: {
-                limit: 10,
-                LastEvaluatedKey: this.state.LastEvaluatedKey
-            },
-            callback: (data) => {
-                if (data.success) {
-                    let {Items, Count, LastEvaluatedKey} = data.data;
-                    Items.forEach((item, index) => {
-                        // todo 用户信息怎么绑定
-                        item.source = avatars[index % 5];
-                        item.userName = '匿名';
-                    });
-                    this.setState({
-                        Items: Items,
-                        Count: Count,
-                        LastEvaluatedKey: LastEvaluatedKey
-                    })
-                }
-            }
-        });
+        this.getList(10, null);
     }
 
     render() {
         const {refreshing, loadMoreing, Items} = this.state;
         return (
             <Container>
-
                 <Header>
                     <Left/>
                     <Body>
@@ -263,7 +252,6 @@ class Screen extends Component {
                         </Button>
                     </Right>
                 </Header>
-
                 {
                     Items ? <FlatList
                         ref={(flatlist) => this._flatList = flatlist}
@@ -285,10 +273,7 @@ class Screen extends Component {
                         onEndReachedThreshold={0.1}
                     /> : <Content><Spinner color={'#408EF5'}/></Content>
                 }
-
-
                 {loadMoreing ? <Spinner color={'#408EF5'}/> : null}
-
                 {/*需要删除爆料时，弹框提示确定modal*/}
                 <View>
                     <Modal isVisible={this.state.isModalVisible}>
@@ -303,9 +288,7 @@ class Screen extends Component {
                         </View>
                     </Modal>
                 </View>
-
             </Container>
-
         );
     }
 }

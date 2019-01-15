@@ -55,8 +55,11 @@ export default class DiscloseListItem extends Component {
         if (!item) {
             return null;
         }
+
         // 容错
         item.images = item.images || [];
+        item.userAction = item.userAction || {};
+
         return (
             <ListItem avatar>
                 {/* 左侧图标 */}
@@ -152,7 +155,7 @@ export default class DiscloseListItem extends Component {
                             </Button>
                             <Button transparent light onPress={this.like.bind(this, item)}>
                                 {
-                                    !item.liked ? <Image source={require('../../images/icon_like_small.png')}/> :
+                                    !item.userAction.actionValue ? <Image source={require('../../images/icon_like_small.png')}/> :
                                         <Image source={require('../../images/icon_liked_small.png')}/>
                                 }
                                 <Text style={styles.number}>{item.likeNum}</Text>
@@ -161,7 +164,6 @@ export default class DiscloseListItem extends Component {
                     </Col>
                 </Grid>
                 </Body>
-
             </ListItem>
         )
     }

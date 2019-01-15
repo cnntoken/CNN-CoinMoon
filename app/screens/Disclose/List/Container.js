@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Page from './View';
 import {connect} from 'react-redux';
 import * as disCloseActions from "../../../actions/disCloseActions";
+import * as userAction from "../../../actions/userAction";
 
 
 class Container extends Component {
@@ -36,7 +37,15 @@ function mapDispatchToProps(dispatch) {
         },
         deleteDisclose: (...args) => {
             dispatch(disCloseActions.deleteDisclose(...args))
-        }
+        },
+        // 查询用户行为
+        getActions: (...args) => {
+            dispatch(userAction.getActions(...args));
+        },
+        // 更新用户行为
+        updateAction: (...args) => {
+            dispatch(userAction.update(...args))
+        },
     };
 }
 

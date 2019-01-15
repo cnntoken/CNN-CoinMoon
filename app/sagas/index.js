@@ -7,6 +7,7 @@ import * as types from '../actions/types';
 import * as authSaga from './authSaga';
 import * as disCloseSaga from './disCloseSaga';
 import * as feedSaga from './feedSaga';
+import * as userActionSaga from './userActionSaga';
 
 export default function* watch() {
     yield all([
@@ -37,6 +38,9 @@ export default function* watch() {
         takeEvery(types.FEED_GETDETAIL, feedSaga.getDetail),
         takeEvery(types.FEED_LIKE, feedSaga.like),
 
+        // 用户行为
+        takeEvery(types.USERACTION_GETACTION, userActionSaga.getActions),
+        takeEvery(types.USERACTION_UPDATE, userActionSaga.update),
 
     ]);
 }

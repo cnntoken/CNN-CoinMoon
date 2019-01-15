@@ -16,8 +16,8 @@ import {Col, Row, Grid} from "react-native-easy-grid";
 import {API} from 'aws-amplify';
 import {Image, Text, View} from "react-native";
 import Carousel from "react-native-snap-carousel";
-import FooterInput from './FooterInput';
-import CommentList from './CommentList';
+import FooterInput from 'app/components/FooterInput';
+import CommentList from 'app/components/CommentList';
 import {sliderWidth} from "../Publish/styles";
 import Modal from "react-native-modal";
 import {$toast} from "../../../utils";
@@ -33,7 +33,7 @@ class Page extends Component {
             isPreview: false,
             activeSlide: 0,
             data: null,
-            comments: [],
+            comments: null,
             isModalVisible: false,
             activeComment: null,
             // 用于标识是否还有更多数据
@@ -94,7 +94,6 @@ class Page extends Component {
 
     // 评论
     onComment = (item, text, completeCallback) => {
-        console.log('评论ddd', item, text);
         // 如果传入的对象不含有images字段，则是回复某条评论
         if (item && !item.images) {
             this.props.commentDisclose({
@@ -148,6 +147,7 @@ class Page extends Component {
 
     };
 
+
     onFocus = (item) => {
 
     };
@@ -155,34 +155,72 @@ class Page extends Component {
 
     // 点赞
     like = (item) => {
-        this.state.data.liked = true;
-        this.state.data.likeNum = this.state.data.likeNum + 1;
+        let actionValue = item.userAction.actionValue;
+        item.userAction.actionValue = !actionValue;
+        item.likeNum = !actionValue ? item.likeNum + 1 : item.likeNum - 1;
         this.setState({});
         this.props.like({
             id: item._id,
             field: 'likeNum',
+            cancel: actionValue,
             callback: (data) => {
-                console.log(data);
+                // 查询用户对该资源的行为数据
+                this.props.updateAction({
+                    _id: item.userAction._id,
+                    obj: {
+                        objectId: item._id,
+                        userId: this.props.user.id,
+                        actionType: 1,  // 点赞
+                        objectType: 3,   // 爆料资源
+                        actionValue: !actionValue
+                    },
+                    callback: (res) => {
+                        if (!this.state.data.userAction._id) {
+                            this.state.data.userAction._id = res.data._id;
+                            this.setState({});
+                        }
+                    }
+                });
             }
         });
     };
 
     // 给评论点赞
     likeComment = (item) => {
+        let actionValue = item.userAction.actionValue;
+        item.userAction.actionValue = !actionValue;
+        item.likeNum = !actionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
+        this.state.activeComment = null;
+
+        this.setState({
+            comments: JSON.parse(JSON.stringify(this.state.comments))
+        });
+
 
         this.props.likeComment({
             id: item._id,
             field: 'likeNum',
+            cancel: !actionValue,
             callback: (data) => {
                 if (data.success) {
-                    let index = this.state.comments.indexOf(item);
-
-                    this.state.comments[index].liked = true;
-                    this.state.comments[index].likeNum = item.likeNum + 1;
-
-                    this.setState({
-                        comments: [...this.state.comments],
-                        activeComment: null
+                    // 更新用户对该资源的行为数据
+                    this.props.updateAction({
+                        _id: item.userAction._id,
+                        obj: {
+                            objectId: item._id,
+                            userId: this.props.user.id,
+                            actionType: 1,  // 点赞
+                            objectType: 4,  // 爆料评论回复资源
+                            actionValue: !actionValue
+                        },
+                        callback: (res) => {
+                            if (!item.userAction._id) {
+                                item.userAction._id = res.data._id;
+                                this.setState({
+                                    comments: JSON.parse(JSON.stringify(this.state.comments))
+                                });
+                            }
+                        }
                     });
                 }
 
@@ -212,105 +250,117 @@ class Page extends Component {
     };
 
     // loadmore 加载更多评论
-    loadMore = (item) => {
-
-        const {navigation} = this.props;
-        const id = navigation.getParam('id');
-
-        const {loadMoreing, LastEvaluatedKey} = this.state;
-
+    loadMore = () => {
+        const {loadMoreing} = this.state;
         if (loadMoreing) {
             return false;
         }
-
-        if (!LastEvaluatedKey) {
-            $toast('没有更多数据了!');
-            return;
-        }
-
         this.setState({
             loadMoreing: true
         });
-
-        this.props.getDiscloseComments({
-            id: id,
-            params: {
-                limit: 1,
-                LastEvaluatedKey: this.state.LastEvaluatedKey
-            },
-            callback: (data) => {
-                if (data.success) {
-                    let {Items, LastEvaluatedKey} = data.data;
-                    this.setState({
-                        comments: [...this.state.comments, ...Items],
-                        LastEvaluatedKey: LastEvaluatedKey,
-                        activeComment: null,
-                        loadMoreing: false
-                    })
-                }
-            }
-        });
+        this.getDiscloseComments();
     };
 
     commentOk = () => {
-        const {navigation} = this.props;
-        const id = navigation.getParam('id');
-        this.props.getDiscloseComments({
-            id: id,
-            params: {
-                limit: this.state.comments.length + 1,
-                LastEvaluatedKey: null
-            },
-            callback: (data) => {
-                if (data.success) {
-                    let {Items, LastEvaluatedKey} = data.data;
-                    this.setState({
-                        comments: Items,
-                        LastEvaluatedKey: LastEvaluatedKey,
-                    })
-                }
-            }
-        });
+        this.getDiscloseComments(this.state.comments.length + 1, true);
     };
 
-
-    componentDidMount() {
-
+    /**
+     * @desc 获取爆料详情
+     * */
+    getDiscloseDetail = () => {
         const {navigation} = this.props;
         const id = navigation.getParam('id');
-
         this.props.getDiscloseDetail({
             id: id,
             callback: (data) => {
                 if (data.success) {
                     this.setState({
                         data: Object.assign(data.data, {
-                            source: source
+                            source: source,
+                            userAction: {}
                         })
-                    })
+                    });
+                    // 查询用户对该资源的行为数据
+                    this.props.getActions({
+                        params: [{
+                            objectId: id,
+                            userId: this.props.user.id,
+                            actionType: 1,  // 点赞
+                            objectType: 3  // 爆料资源
+                        }],
+                        callback: (res) => {
+                            this.state.data.userAction = res.data[id];
+                            this.setState({});
+                            console.log(this.state.data);
+                        }
+                    });
                 }
             }
         });
+    };
 
+    /**
+     * @desc   获取具体爆料id的评论列表
+     * */
+    getDiscloseComments = (limit, refresh) => {
+        const {navigation} = this.props;
+        const id = navigation.getParam('id');
         this.props.getDiscloseComments({
             id: id,
             params: {
-                limit: 1,
+                limit: limit || 1,
                 LastEvaluatedKey: this.state.LastEvaluatedKey
             },
             callback: (data) => {
                 if (data.success) {
                     let {Items, LastEvaluatedKey} = data.data;
+                    Items.forEach((item) => {
+                        item.userAction = {};
+                    });
                     this.setState({
-                        comments: Items,
+                        comments: refresh ? [...Items] : [...(this.state.comments || []), ...Items],
                         LastEvaluatedKey: LastEvaluatedKey,
-                    })
+                        loadMoreing: false,
+                        activeComment: null,
+                    });
+
+                    if (!LastEvaluatedKey) {
+                        $toast('没有更多数据了!');
+                    }
+                    /////////// 获取用户行为集合
+                    let params = [];
+                    Items.forEach((item) => {
+                        params.push({
+                            objectId: item._id,
+                            userId: this.props.user.id,
+                            actionType: 1,   // 点赞
+                            objectType: 4   // 爆料评论回复资源
+                        })
+                    });
+                    // 查询用户对该资源的行为数据
+                    this.props.getActions({
+                        params,
+                        callback: (res) => {
+                            let userAction = res.data;
+                            // 批量更新用户的点赞信息
+                            this.state.comments.forEach((item) => {
+                                item.userAction = userAction[item._id] || {};
+                            });
+                            this.setState({
+                                comments: JSON.parse(JSON.stringify(this.state.comments))
+                            });
+                        }
+                    });
                 }
             }
         });
+    };
 
+    componentDidMount() {
+        this.getDiscloseDetail();
+        this.getDiscloseComments();
     }
-
 
     // 显示删除弹框
     showDeleteDialog = () => {
@@ -326,7 +376,6 @@ class Page extends Component {
             callback: (data) => {
                 // 删除成功
                 if (data.success) {
-                    // todo 国际化
                     $toast('删除爆料成功');
                     navigationActions.navigateToDiscloseList();
                 }
@@ -341,10 +390,9 @@ class Page extends Component {
         })
     };
 
-
     render() {
 
-        let {data, comments, isPreview, activeComment, loadMoreing} = this.state;
+        let {data, comments, isPreview, activeComment, loadMoreing, LastEvaluatedKey} = this.state;
 
         // 预览九宫格图片
         if (isPreview && data) {
@@ -514,7 +562,7 @@ class Page extends Component {
                                             <Button block transparent light onPress={this.like.bind(this, data)}>
                                                 <View>
                                                     {
-                                                        !data.liked ?
+                                                        !data.userAction.actionValue ?
                                                             <Image
                                                                 source={require('../../../images/icon_like_big.png')}/> :
                                                             <Image
@@ -530,15 +578,17 @@ class Page extends Component {
                             {/***********************内容详情区域 end********************** /}
 
                              {/****************************评论列表 start****************************/}
-                            <CommentList data={data}
-                                         comments={comments}
-                                         deleteComment={this.deleteComment.bind(this)}
-                                         loadMore={this.loadMore.bind(this)}
-                                         likeComment={this.likeComment.bind(this)}
-                                         reply={this.reply.bind(this)}/>
-                            {loadMoreing ? <Spinner color={'#408EF5'}/> : null}
-                            {/**************评论列表 end**************/}
-
+                            {this.state.comments ?
+                                <CommentList data={data}
+                                             comments={comments}
+                                             loadedAllData={!LastEvaluatedKey}
+                                             loadMoreing={loadMoreing}
+                                             deleteComment={this.deleteComment.bind(this)}
+                                             loadMore={this.loadMore.bind(this)}
+                                             likeComment={this.likeComment.bind(this)}
+                                             reply={this.reply.bind(this)}/>
+                                : <Spinner color={'#408EF5'}/>}
+                            {/******************************评论列表 end*****************************/}
                         </View>
 
                         {/*************删除确认弹框modal***************/}
