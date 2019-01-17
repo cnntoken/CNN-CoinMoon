@@ -1,6 +1,6 @@
 // General api to access data
 import ApiConstants from './ApiConstants';
-
+export * from './awsApi'
 /**
  *  @desc 封装fetch接口
  *  @param path 请求路径，如果带有query参数，直接放到url中

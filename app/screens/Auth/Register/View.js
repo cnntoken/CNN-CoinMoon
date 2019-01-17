@@ -100,6 +100,7 @@ class ViewControl extends Component {
                         <FocusInput
                             style={styles.item}
                             value={info.password}
+                            secureTextEntry={true}
                             onChangeText={this.onChangePassword}
                             placeholder='请输入密码'
                             kclearButtonMode='while-editing'
@@ -108,6 +109,7 @@ class ViewControl extends Component {
                         <FocusInput
                             style={styles.item}
                             value={info.password2}
+                            secureTextEntry={true}
                             onChangeText={this.onChangePassword2}
                             placeholder='请再次输入密码'
                             kclearButtonMode='while-editing'

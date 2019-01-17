@@ -51,6 +51,7 @@ class FocusInput extends Component {
                     onChangeText={onChangeText}
                     placeholderTextColor='#999'
                     clearButtonMode='while-editing'
+                    autoCapitalize='none'
                     {...rest}
                 />
             </Item>

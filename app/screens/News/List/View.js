@@ -13,13 +13,31 @@ import {
     FooterTab,
     Footer
 } from "native-base";
-
-import {API} from 'aws-amplify';
-
-class View extends Component {
+import {View} from 'react-native'
+import ScrollableTabView from 'react-native-scrollable-tab-view';
+import ListTabBar from './components/ListTabBar'
+import List from './components/List'
+import Item from './components/Item'
+class ViewControl extends Component {
 
     constructor(props) {
         super(props);
+    }
+    onRefresh = (category,params)=>{
+        console.log('onRefresh',params)
+        this.props.getList({isRefresh: true,category})
+    }
+    // renderInfomationItem = ({item, separators})=>{
+    //     return <Item info={item} key={item._id} onItemClick={this.goDetail}/>
+    // }
+    renderItem = ({item, separators})=>{
+        return <Item info={item} key={item._id} onItemClick={this.goDetail}/>
+    }
+    
+    goDetail = (info)=>{
+        const {_id, category} = info;
+        this.props.navigation.navigate('NewsDetail',{_id,category})
+        // console.log('goDetail', info)
     }
 
     componentDidMount() {
@@ -28,19 +46,26 @@ class View extends Component {
 
     render() {
         return (
-            <Container>
-                <Header>
-                    <Button transparent light><Text>频道1</Text></Button>
-                    <Button transparent light><Text>频道2</Text></Button>
-                    <Button transparent light><Text>频道3</Text></Button>
-                    <Button transparent light><Text>频道4</Text></Button>
-                </Header>
-                <Content>
-                    <Text>news list</Text>
-                </Content>
-            </Container>
+            <ScrollableTabView
+                initialPage={0}
+                renderTabBar={() => <ListTabBar/>}
+                // onChangeTab={this.onChangeTab}
+                >
+                <List
+                    tabLabel='新闻'
+                    data={this.props.news}
+                    renderItem={this.renderItem}
+                    onRefresh={(...args)=>{this.onRefresh('news',...args)}}
+                />
+                <List 
+                    tabLabel='信息'
+                    data={this.props.info}
+                    renderItem={this.renderItem}
+                    onRefresh={(...args)=>{this.onRefresh('info',...args)}}
+                />
+            </ScrollableTabView>
         );
     }
 }
 
-export default View;
+export default ViewControl;
