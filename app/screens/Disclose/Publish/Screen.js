@@ -12,12 +12,11 @@ import {
     Left, Body, Right,
 } from "native-base";
 
-import {Col, Row, Grid} from 'react-native-easy-grid';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {View, Image} from 'react-native';
 
 import ImagePicker from 'react-native-image-picker';
-import Carousel, {ParallaxImage, Pagination} from 'react-native-snap-carousel';
+import Carousel from 'react-native-snap-carousel';
 import {$toast} from '../../../utils';
 import * as navigationActions from 'app/actions/navigationActions';
 
@@ -64,8 +63,6 @@ class Screen extends Component {
         try {
             ImagePicker.launchImageLibrary(options, (response) => {
                 console.log('Response = ', response);
-                // console.log('Response = ', response.type);
-                // console.log(window.atob);
                 if (response.didCancel) {
                     console.log('User cancelled photo picker');
                 } else if (response.error) {
@@ -97,8 +94,7 @@ class Screen extends Component {
         });
     };
 
-    addImage = (item, index) => {
-        // console.log('上传图片');
+    addImage = () => {
         this.selectPhotoTapped();
     };
 
@@ -110,14 +106,16 @@ class Screen extends Component {
             $toast(`请输入爆料内容`);
             return;
         }
+
         let images = this.state.images.slice(0, this.state.images.length - 1);
 
-        let source = [];
-        images.forEach((item) => {
-            source.push({
-                data: item.data,
-                fileName: item.fileName
-            })
+        const formData = new FormData();
+        images.forEach((file) => {
+            formData.append('images', {
+                uri: file.uri,
+                name: file.fileName,
+                // type: file.type || 'image/png'
+            });
         });
 
         // 添加loading
@@ -126,7 +124,7 @@ class Screen extends Component {
         });
 
         this.props.upload({
-            images: images,
+            images: formData,
             callback: (data) => {
                 console.log(data);
                 let uris = [];
@@ -156,14 +154,12 @@ class Screen extends Component {
     };
 
     textareaChange = (text) => {
-        // console.log(text);
         this.setState({
             title: text
         })
     };
 
     renderImagePreview({item, index}) {
-        console.log('****', item);
         return (
             <View style={styles.carousel_slide}>
                 <Image
@@ -287,17 +283,21 @@ class Screen extends Component {
                         </Button>
                     </Right>
                 </Header>
+
                 <Content>
-                    <Form>
-                        <Textarea bordered
-                                  onChangeText={this.textareaChange.bind(this)}
-                                  rowSpan={5}
-                                  value={this.state.title}
-                                  placeholder="请输入爆料内容"/>
+                    {/******************* 间隔********************/}
+                    <View style={styles.divider}/>
+                    {/********************  文本域 ******************* */}
+                    <Form style={styles.form}>
+                        <Textarea
+                            style={styles.textarea}
+                            onChangeText={this.textareaChange.bind(this)}
+                            rowSpan={5}
+                            value={this.state.title}
+                            placeholder=""/>
                     </Form>
                     <View>
-                        <Text>最多输入9张图片</Text>
-
+                        <Text style={styles.imagesLabel}>最多输入9张图片</Text>
                         <View style={styles.items}>
                             {
                                 images.map((item, index) => {
@@ -326,10 +326,8 @@ class Screen extends Component {
                             }
                         </View>
                     </View>
-
                 </Content>
             </Container>
-
         );
     }
 }

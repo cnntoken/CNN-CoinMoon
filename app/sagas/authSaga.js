@@ -20,7 +20,7 @@ export function* refresh({user}){
             attributes: payload ? {...payload,...attr} : attr,
             username: user.username,
             userDataKey: user.userDataKey
-        }
+        };
         yield put({type: Types.SET_USER_INFO, info: info})
     }catch(e){
         yield put({type: Types.SET_USER_INFO, info: {}})
@@ -52,7 +52,7 @@ export function* register({payload}) {
     const {email, password} = payload;
     const essentialAttributes = userService.generateRandomAttributes();
     try{
-        const res = yield Auth.signUp({ 
+        const res = yield Auth.signUp({
             username: email,
             password,
             attributes: {
@@ -80,7 +80,7 @@ export function* verify({payload,callback}) {
             forceAliasCreation: true
         })
         console.log('verify res', res)
-       
+
         callback()
     }catch(e){
         console.log('verify fail')

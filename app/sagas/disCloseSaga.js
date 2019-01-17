@@ -16,6 +16,7 @@ export function* upload({payload}) {
     } catch (e) {
         // console.log('upload image fail');
         // console.log(e);
+        debugger;
         $toast(`upload image fail: ${e.message}`);
         if (callback) callback(e);
     }

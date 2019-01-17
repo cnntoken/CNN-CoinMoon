@@ -1,13 +1,35 @@
 import React, {Component} from 'react';
 import NotLogin from './NotLogin';
 import Main from './Main';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
+import * as disCloseActions from "../../../actions/disCloseActions";
+import * as userAction from "../../../actions/userAction";
 
-function mapStateToProps({userReducer:{info}}) {
-    return {userInfo:info};
+function mapStateToProps({userReducer: {info}}) {
+    return {userInfo: info};
 }
 
-
+function mapDispatchToProps(dispatch) {
+    return {
+        getList: (...args) => {
+            dispatch(disCloseActions.getList(...args))
+        },
+        like: (...args) => {
+            dispatch(disCloseActions.like(...args))
+        },
+        deleteDisclose: (...args) => {
+            dispatch(disCloseActions.deleteDisclose(...args))
+        },
+        // 查询用户行为
+        getActions: (...args) => {
+            dispatch(userAction.getActions(...args));
+        },
+        // 更新用户行为
+        updateAction: (...args) => {
+            dispatch(userAction.update(...args))
+        },
+    };
+}
 
 class Container extends Component {
     // static navigationOptions = ({ navigation })=>{
@@ -19,14 +41,15 @@ class Container extends Component {
     // }
     render() {
         const {userInfo} = this.props;
-        if(userInfo.attributes && userInfo.attributes.sub){
+        if (userInfo.attributes && userInfo.attributes.sub) {
             return <Main {...this.props}/>
-        }else{
+        } else {
             return <NotLogin {...this.props}/>
         }
     }
 }
 
 export default connect(
-    mapStateToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(Container);

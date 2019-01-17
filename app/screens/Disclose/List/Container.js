@@ -16,13 +16,12 @@ class Container extends Component {
 }
 
 
-function mapStateToProps(state) {
-    console.log(state);
+function mapStateToProps({userReducer: {info}}) {
     return {
         user: {
-            "id": "3ecd2ff0-f731-4faf-be97-f5e76abf69e7",
-            "name": 'liguwe',
-            "icon": ''
+            "id": info.attributes.sub,
+            "name": info.attributes['custom:disclose_name'],
+            "icon": info.attributes.picture
         }
     };
 }

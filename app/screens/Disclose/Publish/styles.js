@@ -1,5 +1,4 @@
 import {StyleSheet, Dimensions, Platform} from 'react-native';
-import {colors} from './index.style';
 
 const IS_IOS = Platform.OS === 'ios';
 const {width: viewportWidth, height: viewportHeight} = Dimensions.get('window');
@@ -18,6 +17,14 @@ export const itemWidth = slideWidth + itemHorizontalMargin * 2;
 
 const entryBorderRadius = 8;
 
+const colors = {
+    black: '#1a1917',
+    gray: '#888888',
+    background1: '#B721FF',
+    background2: '#21D4FD'
+};
+
+
 export default StyleSheet.create({
     container: {
         flex: 1,
@@ -31,22 +38,54 @@ export default StyleSheet.create({
     mb: {
         marginBottom: 15
     },
+
+
+    // 表单信息
+    form: {
+        paddingTop: 15,
+        paddingLeft: 15,
+        paddingBottom: 15,
+        paddingRight: 15,
+    },
+
+    divider: {
+        height: 10,
+        backgroundColor: '#F5F5F5'
+    },
+    textarea: {
+        fontSize: 16,
+        color: '#333',
+        lineHeight: 24
+    },
+    imagesLabel: {
+        fontSize: 14,
+        lineHeight: 20,
+        color: '#999999',
+        marginLeft: 16,
+    },
+
+
+    //  九宫格图片
     items: {
         display: 'flex',
         flexDirection: 'row',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
         // flex: 1
+        marginTop: 15,
+
     },
     item: {
-        marginLeft: 30,
-        marginTop: 30,
-        width: 90,
-        height: 90,
+        marginLeft: 15,
+        marginRight: 15,
+        marginBottom: 15,
+        marginTop: 15,
+        width: 75,
+        height: 75,
         position: 'relative',
     },
     itemImg: {
-        width: 90,
-        height: 90,
+        width: 75,
+        height: 75,
         borderRadius: 8,
         position: 'absolute',
         zIndex: 1,
@@ -79,7 +118,7 @@ export default StyleSheet.create({
         backgroundColor: '#fff'
     },
 
-    //  add ///////// todo 待提出成组件
+    //  add /////////
     carousel_container: {
         backgroundColor: '#000',
     },
@@ -191,5 +230,6 @@ export default StyleSheet.create({
     subtitleEven: {
         color: 'rgba(255, 255, 255, 0.7)'
     },
+
 
 });

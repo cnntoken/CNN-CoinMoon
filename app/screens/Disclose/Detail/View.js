@@ -39,6 +39,7 @@ class Page extends Component {
             // 用于标识是否还有更多数据
             LastEvaluatedKey: null,
             loadMoreing: false,
+            initLoading: true
         }
     }
 
@@ -303,7 +304,7 @@ class Page extends Component {
     /**
      * @desc   获取具体爆料id的评论列表
      * */
-    getDiscloseComments = (limit, refresh) => {
+    getDiscloseComments = (limit, refresh, initLoading) => {
         const {navigation} = this.props;
         const id = navigation.getParam('id');
         this.props.getDiscloseComments({
@@ -325,7 +326,7 @@ class Page extends Component {
                         activeComment: null,
                     });
 
-                    if (!LastEvaluatedKey) {
+                    if (!LastEvaluatedKey && !initLoading) {
                         $toast('没有更多数据了!');
                     }
                     /////////// 获取用户行为集合
@@ -359,7 +360,7 @@ class Page extends Component {
 
     componentDidMount() {
         this.getDiscloseDetail();
-        this.getDiscloseComments();
+        this.getDiscloseComments(1, false, true);
     }
 
     // 显示删除弹框

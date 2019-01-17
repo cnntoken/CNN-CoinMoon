@@ -10,7 +10,6 @@ import {$toast} from 'app/utils';
 import * as navigationActions from 'app/actions/navigationActions';
 import DiscloseListItem from 'app/components/DiscloseListItem';
 
-import {API} from 'aws-amplify';
 
 const avatars = [
     require("../../../images/avatar_1.png"),
@@ -260,6 +259,8 @@ class Screen extends Component {
                         ListEmptyComponent={<Text>none data!</Text>}
                         refreshControl={
                             <RefreshControl
+                                size={'small'}
+                                colors={['#408EF5']}
                                 refreshing={this.state.refreshing}
                                 onRefresh={this.handleRefresh}
                             />
@@ -273,7 +274,7 @@ class Screen extends Component {
                         onEndReachedThreshold={0.1}
                     /> : <Content><Spinner color={'#408EF5'}/></Content>
                 }
-                {loadMoreing ? <Spinner color={'#408EF5'}/> : null}
+                {loadMoreing ? <Spinner size={'small'} color={'#408EF5'}/> : null}
                 {/*需要删除爆料时，弹框提示确定modal*/}
                 <View>
                     <Modal isVisible={this.state.isModalVisible}>

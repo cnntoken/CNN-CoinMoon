@@ -26,13 +26,10 @@ export default function api(path, params, method, token) {
     let url;
     if (path.indexOf('http') === 0) {
         url = path;
-    } else if (path.includes('/image/upload')) {
-        url = ApiConstants.BASE_URL + path;
-    } else if (path.includes('disclose') || path.includes('discloseComment')) {
-        url = ApiConstants.TESTLAMBDAURL + path;
     } else {
         url = ApiConstants.BASE_URL + path;
     }
+
 
     return fetch(url, options)
         .then((resp) => {
@@ -48,5 +45,6 @@ export default function api(path, params, method, token) {
             return error
         });
 }
+
 
 

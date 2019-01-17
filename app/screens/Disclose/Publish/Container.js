@@ -15,15 +15,17 @@ class Container extends Component {
     }
 }
 
-function mapStateToProps() {
+function mapStateToProps({userReducer: {info}}) {
+    console.log(info.payload.sub['custom:disclose_name']);
     return {
-        // 具体匿名用户
         user: {
-            name: '预言家',
-            icon: 'https://s3.ap-south-1.amazonaws.com/a.fslk.co/activity3/medium/test/6088a3f0-f6b7-457f-b868-5490ceb54df8.png'
+            "id": info.attributes.sub,
+            "name": info.attributes['custom:disclose_name'],
+            "icon": info.attributes.picture
         }
     };
 }
+
 
 function mapDispatchToProps(dispatch) {
     return {

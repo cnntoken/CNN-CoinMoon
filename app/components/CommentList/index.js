@@ -99,7 +99,12 @@ class CommentList extends Component {
             {/*评论列表*/}
             {
                 comments.length === 0 ?
-                    <View><Text>没有评论</Text></View> :
+                    <View><Text style={{
+                        textAlign: 'center',
+                        color: '#666666',
+                        fontSize: 14,
+                        lineHeight: 17
+                    }}>暂无评论~</Text></View> :
                     <List
                         dataArray={comments}
                         renderRow={item =>
