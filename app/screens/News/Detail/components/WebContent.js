@@ -37,11 +37,10 @@ class WebContent extends PureComponent {
         `
     }
     handleMessage = (event)=>{
-        console.log('handle message', event)
-        console.log(event.nativeEvent.data)
         this.setState({
             WebViewHeight: parseInt(event.nativeEvent.data)
         })
+        this.props.onReady && this.props.onReady()
     }
     webViewLoaded = ()=>{
         this._webview.injectJavaScript(`

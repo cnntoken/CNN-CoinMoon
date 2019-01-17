@@ -175,9 +175,9 @@ class Page extends Component {
                         objectType: 3,   // 爆料资源
                         actionValue: !actionValue
                     },
-                    callback: (res) => {
+                    callback: (data) => {
                         if (!this.state.data.userAction._id) {
-                            this.state.data.userAction._id = res.data._id;
+                            this.state.data.userAction._id = data._id;
                             this.setState({});
                         }
                     }
@@ -214,9 +214,9 @@ class Page extends Component {
                             objectType: 4,  // 爆料评论回复资源
                             actionValue: !actionValue
                         },
-                        callback: (res) => {
+                        callback: (data) => {
                             if (!item.userAction._id) {
-                                item.userAction._id = res.data._id;
+                                item.userAction._id = data._id;
                                 this.setState({
                                     comments: JSON.parse(JSON.stringify(this.state.comments))
                                 });

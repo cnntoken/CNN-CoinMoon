@@ -11,10 +11,12 @@ export function* getActions({payload}) {
     const {params, callback} = payload;
     try {
         const res = yield call(services.getActions, params);
+        console.log('查询用户行为集合 getActions',res)
         if (callback) callback(res);
     } catch (e) {
-        $toast(`upload image fail: ${e.message}`);
-        if (callback) callback(e);
+        console.log(e);
+        // $toast(`upload image fail: ${e.message}`);
+        // if (callback) callback(e);
     }
 }
 
@@ -23,10 +25,12 @@ export function* update({payload}) {
     const {_id, obj, callback} = payload;
     try {
         const res = yield call(services.update, _id, obj);
+        console.log('update useraction', res);
         if (callback) callback(res);
     } catch (e) {
+        console.log(e);
         // console.log('publish fail');
-        $toast(`publish fail: ${e.message}`);
-        if (callback) callback(e)
+        // $toast(`publish fail: ${e.message}`);
+        // if (callback) callback(e)
     }
 }

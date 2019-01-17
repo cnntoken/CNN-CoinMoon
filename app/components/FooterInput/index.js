@@ -155,11 +155,23 @@ class FooterInput extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
+    // componentDidUpdate(prevProps){
+    //     if(this.props.activeComment !== prevProps.activeComment){
+    //         if(this.props.activeComment){
+    //             if(!this._input._root.isFocused()){
+    //                 this._input._root.focus();
+    //             }
+    //         }else{
+    //             this.dissmissKeyboard();
+    //         }
+    //     }
+    // }
+
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps && nextProps.activeComment && !this._input._root.isFocused()) {
             this._input._root.focus();
         } else {
-            this.dissmissKeyboard();
+             this.dissmissKeyboard();
         }
     }
 

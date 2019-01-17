@@ -7,6 +7,7 @@ import {
     List,
     ListItem, Spinner
 } from "native-base";
+import Modal from "react-native-modal";
 
 import {Col, Row, Grid} from "react-native-easy-grid";
 
@@ -48,11 +49,25 @@ class CommentList extends Component {
 
     // 删除评论
     deleteComment = (item) => {
-        if (this.props.deleteComment) {
-            this.props.deleteComment(item);
-        }
+       
+        this.cacheDeleteItem = item;
+        this.setState({
+            isModalVisible: true
+        })
     };
-
+    cancelDelete = ()=>{
+        this.setState({
+            isModalVisible: false
+        })
+    }
+    confirmDelete = ()=>{
+        this.setState({
+            isModalVisible: false
+        })
+         if (this.props.deleteComment) {
+            this.props.deleteComment(this.cacheDeleteItem);
+        }
+    }
     // loadmore 加载更多评论
     loadMore = (item) => {
         if (this.props.loadMore) {
@@ -111,7 +126,7 @@ class CommentList extends Component {
                             <ListItem style={styles.listitem} avatar>
                                 {/* 左侧图标 */}
                                 <Left>
-                                    <Image source={item.avatar}/>
+                                    <Image source={{uri:item.avatar}}/>
                                 </Left>
                                 <Body style={styles.comments_listitem_body}>
                                 {/* 评论人，评论时间、评论内容*/}
@@ -178,6 +193,19 @@ class CommentList extends Component {
             <Grid style={styles.loadmore}>
                 {loadMoreing ? <Spinner color={'#408EF5'}/> : loadMoreBtn}
             </Grid>
+            {/*************删除确认弹框modal***************/}
+            <Modal isVisible={this.state.isModalVisible}>
+                <View>
+                    <Button style={styles.modal_btn} block transparent light
+                            onPress={this.confirmDelete}>
+                        <Text style={styles.modal_btn_del_text}>删除</Text>
+                    </Button>
+                    <Button style={styles.modal_btn} block transparent light
+                            onPress={this.cancelDelete}>
+                        <Text style={styles.modal_btn_calcel_text}>取消</Text>
+                    </Button>
+                </View>
+            </Modal>
         </View>)
     }
 }

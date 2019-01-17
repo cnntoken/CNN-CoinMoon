@@ -22,10 +22,19 @@ class ViewControl extends Component {
 
     constructor(props) {
         super(props);
+        this.LastEvaluatedKey = {}
     }
     onRefresh = (category,params)=>{
         console.log('onRefresh',params)
-        this.props.getList({isRefresh: true,category})
+        this.props.getList({isRefresh: true,category},
+            (LastEvaluatedKey)=>{
+            this.LastEvaluatedKey[category] = LastEvaluatedKey;
+        })
+    }
+    onLoadMore = (category,params)=>{
+        console.log('onloadmore',params)
+        this.props.getList({category,params:{LastEvaluatedKey:this.LastEvaluatedKey[category]}},
+            (LastEvaluatedKey)=>{ this.LastEvaluatedKey[category] = LastEvaluatedKey;})
     }
     // renderInfomationItem = ({item, separators})=>{
     //     return <Item info={item} key={item._id} onItemClick={this.goDetail}/>
@@ -55,13 +64,17 @@ class ViewControl extends Component {
                     tabLabel='新闻'
                     data={this.props.news}
                     renderItem={this.renderItem}
+                    hasMore={this.props.news_hasMore}
                     onRefresh={(...args)=>{this.onRefresh('news',...args)}}
+                    onLoadMore={(...args)=>{this.onLoadMore('news',...args)}}
                 />
                 <List 
                     tabLabel='信息'
                     data={this.props.info}
                     renderItem={this.renderItem}
+                    hasMore={this.props.info_hasMore}
                     onRefresh={(...args)=>{this.onRefresh('info',...args)}}
+                    onLoadMore={(...args)=>{this.onLoadMore('info',...args)}}
                 />
             </ScrollableTabView>
         );

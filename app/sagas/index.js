@@ -36,7 +36,12 @@ export default function* watch() {
         /////////////////// 资讯
         takeEvery(types.FEED_GETLIST, feedSaga.getList),
         takeEvery(types.FEED_GETDETAIL, feedSaga.getDetail),
+        takeEvery(types.FEED_GETCOMMENTLIST, feedSaga.getCommentList),
         takeEvery(types.FEED_LIKE, feedSaga.like),
+        takeEvery(types.FEED_COMMENT, feedSaga.comment),
+        takeEvery(types.FEED_LIKE_COMMENT, feedSaga.likeComment),
+        takeEvery(types.FEED_DELETE_COMMENT, feedSaga.deleteComment),
+        
 
         // 用户行为
         takeEvery(types.USERACTION_GETACTION, userActionSaga.getActions),
