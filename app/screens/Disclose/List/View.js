@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import DoubleClicker from 'app/components/DoubleClicker';
 import styles from './styles';
 import {Container, Header, Content, Text, Button, Left, Right, Body, Title, Spinner} from "native-base";
-import {View, RefreshControl, FlatList, Image, PixelRatio} from 'react-native';
+import {View, Image, DeviceEventEmitter} from 'react-native';
 
 import Modal from "react-native-modal";
 import {$toast, uniqueById} from 'app/utils';
@@ -12,6 +12,8 @@ import DiscloseListItem from 'app/components/DiscloseListItem';
 
 import i18n from 'app/i18n';
 import avatars from 'app/services/constants'
+import RefreshListView, {RefreshState} from 'app/components/RefreshListView';
+
 
 class Screen extends Component {
 
@@ -26,7 +28,9 @@ class Screen extends Component {
             activeItem: null,
             // 用于标识是否还有更多数据
             LastEvaluatedKey: null,
-            initLoading: true
+            initLoading: true,
+
+            refreshState: RefreshState.Idle,
         }
     }
 
@@ -42,17 +46,27 @@ class Screen extends Component {
 
     // 进入具体详情页面
     pressItem = (item) => {
-        navigationActions.navigateToDiscloseDetail({
-            id: item._id
-        });
+        // navigationActions.navigateToDiscloseDetail({
+        //     id: item._id,
+        //     updateData: this.updateData
+        // });
+        this.props.navigation.navigate('DiscloseDetail', {
+            id: item._id,
+            updateData: this.updateData
+        })
+    };
+
+    // 跳往详情页面时，再返回来时更新list页面的state
+    updateData = (data) => {
+        console.log(data);
     };
 
     // 点击用户头像跳到该用户的个人中心
-    clickAvatar = (item) => {
-        navigationActions.navigateToMine({
-            id: item.userId
-        });
-    };
+    // clickAvatar = (item) => {
+    //     navigationActions.navigateToMine({
+    //         id: item.userId
+    //     });
+    // };
 
     // 点赞
     like = (item) => {
@@ -65,8 +79,9 @@ class Screen extends Component {
         let actionValue = item.userAction.actionValue;
         item.userAction.actionValue = !actionValue;
         item.likeNum = !actionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
-        this.setState({});
-
+        this.setState({
+            Items: [...this.state.Items]
+        });
         // 更新爆料条目中的数据
         this.props.like({
             id: item._id,
@@ -138,11 +153,12 @@ class Screen extends Component {
 
     //  下滑刷新
     handleRefresh = () => {
-        if (this.state.refreshing) {
-            return false;
-        }
+        // if (this.state.refreshing) {
+        //     return false;
+        // }
         this.setState({
-            refreshing: true
+            // refreshing: true,
+            refreshState: RefreshState.HeaderRefreshing
         });
         this.getList(this.state.Items.length, null, true, false);
     };
@@ -153,7 +169,8 @@ class Screen extends Component {
             return false;
         }
         this.setState({
-            loadMoreing: true
+            loadMoreing: true,
+            refreshState: RefreshState.FooterRefreshing
         });
         this.getList(10, this.state.LastEvaluatedKey, false, true);
     };
@@ -183,35 +200,71 @@ class Screen extends Component {
                     let list = [];
                     // 向下拉时，更新最新前面的数据
                     if (refresh) {
-                        list = uniqueById([...Items, this.state.Items]);
+                        list = uniqueById([...Items, ...this.state.Items]);
                     }
                     // 加载更多
                     else if (loadmore) {
-                        list = uniqueById([this.state.Items, ...Items]);
+                        list = uniqueById([...this.state.Items, ...Items]);
                     } else {
                         list = Items;
                     }
                     this.setState({
                         Items: list,
+                        refreshState: list.length < 1 ? RefreshState.EmptyData : RefreshState.Idle,
                         LastEvaluatedKey: LastEvaluatedKey,
                         loadMoreing: false,
                         refreshing: false,
+                        initLoading: false
                     }, () => {
-                        // if (loadMoreing && scrollIndex > 4) {
-                        //     this._flatList.scrollToIndex({viewPosition: 0, index: scrollIndex - 4});
-                        // }
+
                     });
-                    // if (!LastEvaluatedKey && loadmore) {
-                    //     $toast(i18n.t('disclose.list_nomore_tip'));
-                    // }
+
                 }
             }
         });
     };
 
+    /**
+     * 监听更新列表的回调函数
+     * @param type 操作类型
+     * @param data 更新数据
+     * */
+    updateState = (type, data) => {
+        if (!data._id) {
+            return;
+        }
+        let Items = this.state.Items;
+        let index = Items.findIndex((item) => {
+            return item._id === data._id
+        });
+
+        switch (type) {
+            case 'update':
+                Items[index] = data;
+                break;
+            case 'delete':
+                Items.splice(index, 1);
+                break;
+            case 'unshift':
+                Items.unshift(data);
+                break;
+            default:
+                break;
+        }
+
+        this.setState({
+            Items: [...Items]
+        });
+    };
+
     componentDidMount() {
         this.getList(10, null, false, false);
+        this.subscription = DeviceEventEmitter.addListener('updateDiscloseListData', this.updateState);
     }
+
+    componentWillUnmount() {
+        this.subscription.remove();
+    };
 
     render() {
         const {refreshing, loadMoreing, Items} = this.state;
@@ -231,23 +284,27 @@ class Screen extends Component {
                         </Button>
                     </Right>
                 </Header>
-                {
-                    Items ? <FlatList
-                        ref={(flatlist) => this._flatList = flatlist}
-                        initialNumToRender={4}
-                        keyExtractor={(item, index) => item + index}
-                        ListEmptyComponent={<Text style={styles.nodata}>{i18n.t('disclose.no_data_tip')}</Text>}
-                        ItemSeparatorComponent={() => <View
-                            style={{height: 1 / PixelRatio.getPixelSizeForLayoutSize(1), backgroundColor: '#E6E6E6'}}/>}
-                        data={Items}
-                        refreshing={refreshing}
-                        onRefresh={this.handleRefresh}
-                        renderItem={this.renderListItem}
-                        onEndReached={this.handleLoadMore}
-                        onEndReachedThreshold={-0.2}
-                        ListFooterComponent={loadMoreing ? <Spinner size={'small'} color={'#408EF5'}/> : null}
-                    /> : <Content><Spinner size={'small'} color={'#408EF5'}/></Content>
+
+                {/* todo bug fix 如果内容比较少的时候，会导致一直loadmore */}
+
+                {Items ? <RefreshListView
+                    data={Items}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={this.renderListItem}
+                    refreshState={this.state.refreshState}
+                    onHeaderRefresh={this.handleRefresh}
+                    onFooterRefresh={this.handleLoadMore}
+
+                    // 可选
+                    footerRefreshingText='玩命加载中....'
+                    footerFailureText='我擦嘞，居然失败了 =.=!'
+                    footerNoMoreDataText='-我是有底线的-'
+                    footerEmptyDataText='-好像什么东西都没有-'
+                /> : <Content><Spinner size={'small'} color={'#408EF5'}/></Content>
+
                 }
+
+
                 {/*需要删除爆料时，弹框提示确定modal*/}
                 <View>
                     <Modal isVisible={this.state.isModalVisible}>

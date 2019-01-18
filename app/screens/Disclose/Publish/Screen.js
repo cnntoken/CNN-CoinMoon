@@ -13,7 +13,7 @@ import {
 } from "native-base";
 
 import Spinner from 'react-native-loading-spinner-overlay';
-import {View, Image} from 'react-native';
+import {View, Image, DeviceEventEmitter} from 'react-native';
 
 import ImagePicker from 'react-native-image-picker';
 import Carousel from 'react-native-snap-carousel';
@@ -114,6 +114,7 @@ class Screen extends Component {
                         activeSlide: 0,
                         publishing: false
                     });
+                    DeviceEventEmitter.emit('updateDiscloseListData', 'unshift', data.data);
                     navigationActions.navigateToDiscloseList();
                 }
             }

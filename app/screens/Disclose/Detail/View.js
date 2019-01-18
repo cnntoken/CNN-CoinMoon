@@ -14,7 +14,7 @@ import {
 } from "native-base";
 import {Col, Row, Grid} from "react-native-easy-grid";
 import {API} from 'aws-amplify';
-import {Image, Text, View} from "react-native";
+import {Image, Text, View, DeviceEventEmitter} from "react-native";
 import Carousel from "react-native-snap-carousel";
 import FooterInput from 'app/components/FooterInput';
 import CommentList from 'app/components/CommentList';
@@ -116,7 +116,7 @@ class Page extends Component {
                         this.setState({
                             activeComment: null,
                         });
-                        this.commentOk();
+                        this.commentOk(data.data);
                     }
                 }
             });
@@ -139,7 +139,7 @@ class Page extends Component {
                         this.setState({
                             activeComment: null,
                         });
-                        this.commentOk();
+                        this.commentOk(data.data);
                     }
                 }
             });
@@ -154,7 +154,6 @@ class Page extends Component {
     onFocus = (item) => {
 
     };
-
 
     // 点赞
     like = (item) => {
@@ -175,6 +174,7 @@ class Page extends Component {
             field: 'likeNum',
             cancel: actionValue,
             callback: () => {
+                DeviceEventEmitter.emit('updateDiscloseListData', 'update', item);
             }
         });
         // 更新用户对该资源的行为数据
@@ -191,36 +191,41 @@ class Page extends Component {
             }
         });
     };
-
     // 给评论点赞
     likeComment = (item) => {
-        let actionValue = item.userAction.actionValue;
-        item.userAction.actionValue = !actionValue;
-        item.likeNum = !actionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
-        this.state.activeComment = null;
+        // 必须登录才能点赞
+        if (!this.props.user.id) {
+            $toast(i18n.t('disclose.needlogin_tip'));
+            return;
+        }
+        // 先在界面上更改点赞行为
+        let postActionValue = !item.userAction.actionValue;
+        item.userAction.actionValue = postActionValue;
+        item.likeNum = postActionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
         this.setState({
-            comments: JSON.parse(JSON.stringify(this.state.comments))
+            comments: JSON.parse(JSON.stringify(this.state.comments)),
+            activeComment: null
         });
+
         this.props.likeComment({
             id: item._id,
             field: 'likeNum',
-            cancel: !actionValue,
+            cancel: !postActionValue,
             callback: (data) => {
-                if (data.success) {
-                    // 更新用户对该资源的行为数据
-                    this.props.updateAction({
-                        _id: item.userAction._id,
-                        obj: {
-                            objectId: item._id,
-                            userId: this.props.user.id,
-                            actionType: 1,  // 点赞
-                            objectType: 4,  // 爆料评论回复资源
-                            actionValue: !actionValue
-                        },
-                        callback: (res) => {
-                        }
-                    });
-                }
+            }
+        });
+
+        // 更新用户对该资源的行为数据
+        this.props.updateAction({
+            _id: item.userAction._id,
+            obj: {
+                objectId: item._id,
+                userId: this.props.user.id,
+                actionType: 1,  // 点赞
+                objectType: 4,  // 爆料评论回复资源
+                actionValue: postActionValue
+            },
+            callback: (res) => {
             }
         });
     };
@@ -234,7 +239,7 @@ class Page extends Component {
             callback: (data) => {
                 // 删除成功
                 if (data.success) {
-                    $toast('删除爆料成功');
+                    $toast('删除成功');
                     let index = this.state.comments.indexOf(item);
                     this.state.comments.splice(index, 1);
                     this.setState({
@@ -257,8 +262,19 @@ class Page extends Component {
         this.getDiscloseComments();
     };
 
-    commentOk = () => {
-        this.getDiscloseComments(this.state.comments.length + 1, true);
+    commentOk = (data) => {
+        this.state.comments.unshift(Object.assign(data, {
+            userAction: {
+                objectId: data._id,
+                userId: this.props.user.id,
+                actionType: 1,  // 点赞
+                objectType: 4,  // 爆料评论回复资源
+                actionValue: false
+            }
+        }));
+        this.setState({
+            comments: JSON.parse(JSON.stringify(this.state.comments))
+        });
     };
 
     /**
@@ -329,13 +345,14 @@ class Page extends Component {
     };
 
     // 确定删除
-    confirmDelete = (item) => {
+    confirmDelete = () => {
         this.props.deleteDisclose({
-            id: item._id,
+            id: this.state.data._id,
             callback: (data) => {
                 // 删除成功
                 if (data.success) {
-                    $toast('删除爆料成功');
+                    // $toast('删除爆料成功');
+                    DeviceEventEmitter.emit('updateDiscloseListData', 'delete', this.state.data);
                     navigationActions.navigateToDiscloseList();
                 }
             }
@@ -416,8 +433,9 @@ class Page extends Component {
 
                         <View>
                             {/***********************内容详情区域  start**********************/}
-                            <View style={styles.divider}>
+                            <View>
                                 {/*****爆料详情区域****/}
+
                                 <List
                                     dataArray={[data]}
                                     renderRow={item =>
@@ -492,46 +510,51 @@ class Page extends Component {
                                             </Body>
                                         </ListItem>}
                                 />
-                                {/* 查看次数 */}
-                                <Grid style={styles.viewNum}>
-                                    <Col style={styles.viewNum_image}>
-                                        <Image source={require('app/images/icon_view.png')}/>
-                                    </Col>
-                                    <Col>
-                                        <Text style={styles.viewNum_text}>{data.viewNum}</Text>
-                                    </Col>
-                                </Grid>
-                                <View style={styles.divider}/>
-                                {/* 点赞、评论按钮等*/}
-                                <Grid style={styles.btns}>
-                                    <Col style={styles.btns_btn_col}>
-                                        <View style={styles.btns_btn}>
-                                            <Button block transparent light onPress={this.comment.bind(this, data)}>
-                                                <View>
-                                                    <Image
-                                                        source={require('app/images/icon_comment_big.png')}/>
-                                                    <Text style={styles.btns_text}>{data.commentsNum}</Text>
-                                                </View>
-                                            </Button>
-                                        </View>
-                                    </Col>
-                                    <Col style={styles.btns_btn_col}>
-                                        <View style={styles.btns_btn}>
-                                            <Button block transparent light onPress={this.like.bind(this, data)}>
-                                                <View>
-                                                    {
-                                                        !data.userAction.actionValue ?
-                                                            <Image
-                                                                source={require('app/images/icon_like_big.png')}/> :
-                                                            <Image
-                                                                source={require('app/images/icon_liked_big.png')}/>
-                                                    }
-                                                    <Text style={styles.btns_text}>{data.likeNum}</Text>
-                                                </View>
-                                            </Button>
-                                        </View>
-                                    </Col>
-                                </Grid>
+
+                                <View>
+                                    {/* 查看次数 */}
+                                    <Grid style={styles.viewNum}>
+                                        <Col style={styles.viewNum_image}>
+                                            <Image source={require('app/images/icon_view.png')}/>
+                                        </Col>
+                                        <Col>
+                                            <Text style={styles.viewNum_text}>{data.viewNum}</Text>
+                                        </Col>
+                                    </Grid>
+                                    <View style={styles.divider}/>
+                                    {/* 点赞、评论按钮等*/}
+                                    <Grid style={styles.btns}>
+                                        <Col style={styles.btns_btn_col}>
+                                            <View style={styles.btns_btn}>
+                                                <Button block transparent light onPress={this.comment.bind(this, data)}>
+                                                    <View>
+                                                        <Image
+                                                            source={require('app/images/icon_comment_big.png')}/>
+                                                        <Text style={styles.btns_text}>{data.commentsNum}</Text>
+                                                    </View>
+                                                </Button>
+                                            </View>
+                                        </Col>
+                                        <Col style={styles.btns_btn_col}>
+                                            <View style={styles.btns_btn}>
+                                                <Button block transparent light onPress={this.like.bind(this, data)}>
+                                                    <View>
+                                                        {
+                                                            !data.userAction.actionValue ?
+                                                                <Image
+                                                                    source={require('app/images/icon_like_big.png')}/> :
+                                                                <Image
+                                                                    source={require('app/images/icon_liked_big.png')}/>
+                                                        }
+                                                        <Text style={styles.btns_text}>{data.likeNum}</Text>
+                                                    </View>
+                                                </Button>
+                                            </View>
+                                        </Col>
+                                    </Grid>
+                                    <View style={styles.divider}/>
+                                </View>
+
                             </View>
                             {/***********************内容详情区域 end********************** /}
 

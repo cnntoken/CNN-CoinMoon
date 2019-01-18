@@ -31,11 +31,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 20,
     },
-
-
     divider: {
-        borderBottomWidth: 0.5,
-        borderBottomColor: '#E6E6E6'
+        borderBottomWidth: 1,
+        borderBottomColor: '#E6E6E6',
+        height: 0.5
     },
     listitem_body: {
         borderBottomWidth: 0

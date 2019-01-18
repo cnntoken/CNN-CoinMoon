@@ -49,22 +49,21 @@ class CommentList extends Component {
 
     // 删除评论
     deleteComment = (item) => {
-       
         this.cacheDeleteItem = item;
         this.setState({
             isModalVisible: true
         })
     };
-    cancelDelete = ()=>{
+    cancelDelete = () => {
         this.setState({
             isModalVisible: false
         })
     }
-    confirmDelete = ()=>{
+    confirmDelete = () => {
         this.setState({
             isModalVisible: false
         })
-         if (this.props.deleteComment) {
+        if (this.props.deleteComment) {
             this.props.deleteComment(this.cacheDeleteItem);
         }
     }
@@ -81,7 +80,6 @@ class CommentList extends Component {
             return <Image
                 source={require('app/images/icon_like_small.png')}/>
         } else {
-
             return <Image
                 source={require('app/images/icon_liked_small.png')}/>
         }
@@ -109,7 +107,8 @@ class CommentList extends Component {
         return (<View>
             {/*评论头部*/}
             <View style={styles.comments_header}>
-                <Text style={styles.comments_header_text}>所有评论({comments.length})</Text>
+                {/*<Text style={styles.comments_header_text}>所有评论({comments.length})</Text>*/}
+                <Text style={styles.comments_header_text}>所有评论</Text>
             </View>
             {/*评论列表*/}
             {
@@ -126,7 +125,7 @@ class CommentList extends Component {
                             <ListItem style={styles.listitem} avatar>
                                 {/* 左侧图标 */}
                                 <Left>
-                                    <Image source={{uri:item.avatar}}/>
+                                    <Image source={{uri: item.avatar}}/>
                                 </Left>
                                 <Body style={styles.comments_listitem_body}>
                                 {/* 评论人，评论时间、评论内容*/}

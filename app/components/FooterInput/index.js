@@ -98,7 +98,6 @@ class FooterInput extends Component {
     // 强制隐藏键盘
     dissmissKeyboard() {
         Keyboard.dismiss();
-        // console.log("输入框当前焦点状态：" + this._input._root.isFocused());
     }
 
 
@@ -127,8 +126,7 @@ class FooterInput extends Component {
         }
         if (this.props.onComment) {
             this.props.onComment(item, text, () => {
-                // console.log('评论成功回调');
-                $toast('评论成功回调');
+                $toast('评论成功');
                 this.setState({
                     text: ''
                 })
@@ -171,7 +169,7 @@ class FooterInput extends Component {
         if (nextProps && nextProps.activeComment && !this._input._root.isFocused()) {
             this._input._root.focus();
         } else {
-             this.dissmissKeyboard();
+            this.dissmissKeyboard();
         }
     }
 
