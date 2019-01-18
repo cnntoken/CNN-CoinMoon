@@ -14,9 +14,6 @@ export function* upload({payload}) {
         // console.log(res);
         if (callback) callback(res);
     } catch (e) {
-        // console.log('upload image fail');
-        // console.log(e);
-        debugger;
         $toast(`upload image fail: ${e.message}`);
         if (callback) callback(e);
     }
@@ -24,9 +21,9 @@ export function* upload({payload}) {
 
 // 发布保存
 export function* publish({payload}) {
-    const {title, images, callback} = payload;
+    const {title, images, userId, userName, callback} = payload;
     try {
-        const res = yield call(services.publish, title, images);
+        const res = yield call(services.publish, title, images, userId , userName);
         if (callback) callback(res);
     } catch (e) {
         console.log('publish fail');
@@ -76,9 +73,9 @@ export function* deleteDisclose({payload}) {
 
 // 获取爆料详情
 export function* getDiscloseDetail({payload}) {
-    const {id, callback} = payload;
+    const {id, userId, callback} = payload;
     try {
-        const res = yield call(services.getDiscloseDetail, id);
+        const res = yield call(services.getDiscloseDetail, id,userId);
         console.log('res', res);
         if (callback) callback(res);
     } catch (e) {

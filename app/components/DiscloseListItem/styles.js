@@ -2,15 +2,6 @@ import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
 
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-
-    title: {
-        color: '#fff'
-    },
 
     col_img: {
         width: 100,
@@ -27,19 +18,38 @@ const styles = StyleSheet.create({
         // resizeMode: 'cover'
     },
 
+    avatar: {
+        width: 30,
+        height: 30,
+    },
+
     name: {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
     },
+
+    userName: {
+        color: '#333333',
+        fontSize: 14,
+        lineHeight: 20,
+        fontWeight: 'bold'
+    },
+
     time: {
         color: '#666',
         fontSize: 12,
-        marginLeft: -6,
-        paddingLeft: 0,
-        // alignSelf: 'baseline',
+        marginLeft: 0,
+        lineHeight: 17
     },
+
+    title: {
+        color: '#333333',
+        fontSize: 14,
+        lineHeight: 20,
+    },
+
     edit: {
         textAlign: 'right'
     },
@@ -59,25 +69,7 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 10,
     },
-    noData: {
-        paddingTop: 10,
-        paddingBottom: 10,
-        textAlign: 'center',
-    },
 
-
-    // 删除弹框
-    modal_btn: {
-        borderRadius: 8,
-        backgroundColor: '#FFFFFF',
-        marginBottom: 15
-    },
-    modal_btn_del_text: {
-        color: '#FF3B30'
-    },
-    modal_btn_calcel_text: {
-        color: '#007AFF'
-    }
 });
 
 export default styles;

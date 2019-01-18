@@ -76,7 +76,7 @@ class ViewControl extends PureComponent {
     selectPhotoTapped = () => {
         const options = {
             title: '请选择',
-            quality: 0.1,
+            quality: 1,
             mediaType: 'photo',
             cancelButtonTitle: '取消',
             takePhotoButtonTitle: '拍照',
@@ -92,8 +92,6 @@ class ViewControl extends PureComponent {
         try {
             ImagePicker.launchImageLibrary(options, (response) => {
                 console.log('Response = ', response);
-                // console.log('Response = ', response.type);
-                // console.log(window.atob);
                 if (response.didCancel) {
                     console.log('User cancelled photo picker');
                 } else if (response.error) {
@@ -129,7 +127,7 @@ class ViewControl extends PureComponent {
                         <TouchableOpacity onPress={this.selectPhotoTapped}>
                             <View style={styles.imgbox}>
                                 <Image
-                                    source={image ? {uri: image.dataUrl} : (avatar ? {uri: avatar} : require('app/images/avatar_default.png'))}
+                                    source={image && image.dataUrl ? {uri: image.dataUrl} : (avatar ? {uri: avatar} : require('app/images/avatar_default.png'))}
                                     style={{width: 80, height: 80}}/>
                                 <Image source={require('app/images/icon_camera.png')} style={styles.camera}/>
                             </View>

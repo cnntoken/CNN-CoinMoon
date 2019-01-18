@@ -7,9 +7,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-
+    //////////////////// header 部分
     title: {
-        color: '#fff'
+        color: '#fff',
+        fontSize: 24
+    },
+    writeDiscloseBtn: {
+        width: 27,
+        height: 27,
+    },
+
+    // 无数据提示
+    nodata: {
+        fontSize: 14,
+        color: '#333',
+        textAlign: 'center',
+        marginTop: 30
     },
 
     col_img: {
@@ -77,7 +90,9 @@ const styles = StyleSheet.create({
     },
     modal_btn_calcel_text: {
         color: '#007AFF'
-    }
+    },
+
+
 });
 
 export default styles;

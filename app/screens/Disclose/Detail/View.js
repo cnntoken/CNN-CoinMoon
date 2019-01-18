@@ -22,8 +22,10 @@ import {sliderWidth} from "../Publish/styles";
 import Modal from "react-native-modal";
 import {$toast} from "../../../utils";
 import * as navigationActions from 'app/actions/navigationActions';
+import avatars from "../../../services/constants";
+import i18n from "../../../i18n";
 
-const source = require("../../../images/avatar_1.png");
+const moment = require('moment');
 
 class Page extends Component {
 
@@ -60,7 +62,7 @@ class Page extends Component {
         return (
             <View style={styles.carousel_slide}>
                 <Image
-                    source={{uri: item.uri}}
+                    source={{uri: item}}
                     style={styles.carousel_image}
                 />
             </View>
@@ -102,7 +104,7 @@ class Page extends Component {
                     content: text,
                     discloseId: item.discloseId,
                     atCommentId: item._id,
-                    userId: "3ecd2ff0-f731-4faf-be97-f5e76abf69e7",
+                    userId: this.props.user.id,
                     atUserId: item.userId,
                     "likeNum": 0,
                     "replayNum": 0,
@@ -125,7 +127,7 @@ class Page extends Component {
                 params: {
                     content: text,
                     discloseId: this.state.data._id,
-                    "userId": "3ecd2ff0-f731-4faf-be97-f5e76abf69e7",
+                    "userId": this.props.user.id,
                     "likeNum": 0,
                     "replayNum": 0,
                     "dislikeNum": 0
@@ -156,32 +158,36 @@ class Page extends Component {
 
     // 点赞
     like = (item) => {
+        // 必须登录才能点赞
+        if (!this.props.user.id) {
+            $toast(i18n.t('disclose.needlogin_tip'));
+            return;
+        }
+        // 先在界面上更改点赞行为
         let actionValue = item.userAction.actionValue;
         item.userAction.actionValue = !actionValue;
-        item.likeNum = !actionValue ? item.likeNum + 1 : item.likeNum - 1;
+        item.likeNum = !actionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
         this.setState({});
+
+        // 更新爆料条目中的数据
         this.props.like({
             id: item._id,
             field: 'likeNum',
             cancel: actionValue,
-            callback: (data) => {
-                // 查询用户对该资源的行为数据
-                this.props.updateAction({
-                    _id: item.userAction._id,
-                    obj: {
-                        objectId: item._id,
-                        userId: this.props.user.id,
-                        actionType: 1,  // 点赞
-                        objectType: 3,   // 爆料资源
-                        actionValue: !actionValue
-                    },
-                    callback: (res) => {
-                        if (!this.state.data.userAction._id) {
-                            this.state.data.userAction._id = res.data._id;
-                            this.setState({});
-                        }
-                    }
-                });
+            callback: () => {
+            }
+        });
+        // 更新用户对该资源的行为数据
+        this.props.updateAction({
+            _id: item.userAction._id,
+            obj: {
+                objectId: item._id,
+                userId: this.props.user.id,
+                actionType: 1,  // 点赞
+                objectType: 3,   // 爆料资源
+                actionValue: !actionValue
+            },
+            callback: (res) => {
             }
         });
     };
@@ -192,12 +198,9 @@ class Page extends Component {
         item.userAction.actionValue = !actionValue;
         item.likeNum = !actionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
         this.state.activeComment = null;
-
         this.setState({
             comments: JSON.parse(JSON.stringify(this.state.comments))
         });
-
-
         this.props.likeComment({
             id: item._id,
             field: 'likeNum',
@@ -215,16 +218,9 @@ class Page extends Component {
                             actionValue: !actionValue
                         },
                         callback: (res) => {
-                            if (!item.userAction._id) {
-                                item.userAction._id = res.data._id;
-                                this.setState({
-                                    comments: JSON.parse(JSON.stringify(this.state.comments))
-                                });
-                            }
                         }
                     });
                 }
-
             }
         });
     };
@@ -238,7 +234,6 @@ class Page extends Component {
             callback: (data) => {
                 // 删除成功
                 if (data.success) {
-                    // todo 国际化
                     $toast('删除爆料成功');
                     let index = this.state.comments.indexOf(item);
                     this.state.comments.splice(index, 1);
@@ -274,27 +269,14 @@ class Page extends Component {
         const id = navigation.getParam('id');
         this.props.getDiscloseDetail({
             id: id,
+            userId: this.props.user.id,
             callback: (data) => {
                 if (data.success) {
                     this.setState({
                         data: Object.assign(data.data, {
-                            source: source,
-                            userAction: {}
+                            source: avatars[(data.avatarType || 0) % 5],
+                            userName: data.userName || 'Anonymity'
                         })
-                    });
-                    // 查询用户对该资源的行为数据
-                    this.props.getActions({
-                        params: [{
-                            objectId: id,
-                            userId: this.props.user.id,
-                            actionType: 1,  // 点赞
-                            objectType: 3  // 爆料资源
-                        }],
-                        callback: (res) => {
-                            this.state.data.userAction = res.data[id];
-                            this.setState({});
-                            console.log(this.state.data);
-                        }
                     });
                 }
             }
@@ -311,13 +293,14 @@ class Page extends Component {
             id: id,
             params: {
                 limit: limit || 1,
-                LastEvaluatedKey: this.state.LastEvaluatedKey
+                LastEvaluatedKey: this.state.LastEvaluatedKey,
+                userId: this.props.user.id,
             },
             callback: (data) => {
                 if (data.success) {
                     let {Items, LastEvaluatedKey} = data.data;
                     Items.forEach((item) => {
-                        item.userAction = {};
+                        item.userAction = item.userAction || {};
                     });
                     this.setState({
                         comments: refresh ? [...Items] : [...(this.state.comments || []), ...Items],
@@ -325,34 +308,9 @@ class Page extends Component {
                         loadMoreing: false,
                         activeComment: null,
                     });
-
                     if (!LastEvaluatedKey && !initLoading) {
                         $toast('没有更多数据了!');
                     }
-                    /////////// 获取用户行为集合
-                    let params = [];
-                    Items.forEach((item) => {
-                        params.push({
-                            objectId: item._id,
-                            userId: this.props.user.id,
-                            actionType: 1,   // 点赞
-                            objectType: 4   // 爆料评论回复资源
-                        })
-                    });
-                    // 查询用户对该资源的行为数据
-                    this.props.getActions({
-                        params,
-                        callback: (res) => {
-                            let userAction = res.data;
-                            // 批量更新用户的点赞信息
-                            this.state.comments.forEach((item) => {
-                                item.userAction = userAction[item._id] || {};
-                            });
-                            this.setState({
-                                comments: JSON.parse(JSON.stringify(this.state.comments))
-                            });
-                        }
-                    });
                 }
             }
         });
@@ -395,7 +353,7 @@ class Page extends Component {
 
         let {data, comments, isPreview, activeComment, loadMoreing, LastEvaluatedKey} = this.state;
 
-        // 预览九宫格图片
+        // 预览图片
         if (isPreview && data) {
             let list = [data];
             return <Container style={styles.carousel_container}>
@@ -404,7 +362,7 @@ class Page extends Component {
                     <Left>
                         <Button transparent onPress={this.goBack}>
                             <Image style={styles.carousel_back_icon}
-                                   source={require('../../../images/icon_back_white.png')}/>
+                                   source={require('app/images/icon_back_white.png')}/>
                         </Button>
                     </Left>
                 </Header>
@@ -441,14 +399,14 @@ class Page extends Component {
                     <Left>
                         <Button transparent onPress={this.goListScreen}>
                             <Image style={styles.carousel_back_icon}
-                                   source={require('../../../images/icon_back_white.png')}/>
+                                   source={require('app/images/icon_back_white.png')}/>
                         </Button>
                     </Left>
                     <Body/>
                     <Right>
                         <Button transparent light onPress={this.showDeleteDialog}>
                             <Image style={styles.writeDiscloseBtn}
-                                   source={require('../../../images/icon_more_white.png')}/>
+                                   source={require('app/images/icon_more_white.png')}/>
                         </Button>
                     </Right>
                 </Header>
@@ -473,12 +431,12 @@ class Page extends Component {
                                             {/* item 标题 ， 用户 时间等 */}
                                             <Grid style={styles.grid_con}>
                                                 <Row>
-                                                    <Col style={styles.col_username}>
-                                                        <Text
-                                                            style={styles.col_username_text}>{item.userName}</Text>
-                                                    </Col>
-                                                    <Col style={styles.col_time}>
-                                                        <Text style={styles.col_time_text}>{item.time}</Text>
+                                                    <Col>
+                                                        <View style={styles.name}>
+                                                            <Text style={styles.userName}>{item.userName}</Text>
+                                                            <Text
+                                                                style={styles.time}>{moment(item.createdAt).format('HH:MM')}</Text>
+                                                        </View>
                                                     </Col>
                                                 </Row>
                                                 <Row>
@@ -495,13 +453,12 @@ class Page extends Component {
                                                             return <Col style={styles.col_img}>
                                                                 <Button onPress={this.previewImage.bind(this, idx)}>
                                                                     <Image style={styles.image} key={idx}
-                                                                           source={{uri: i.uri}}/>
+                                                                           source={{uri: i}}/>
                                                                 </Button>
                                                             </Col>
                                                         })
                                                     }
                                                 </Row>
-
                                                 <Row>
                                                     {
                                                         item.images.length > 3 ?
@@ -510,7 +467,7 @@ class Page extends Component {
                                                                     <Button
                                                                         onPress={this.previewImage.bind(this, idx + 3)}>
                                                                         <Image style={styles.image} key={idx}
-                                                                               source={{uri: i.uri}}/>
+                                                                               source={{uri: i}}/>
                                                                     </Button>
 
                                                                 </Col>
@@ -525,7 +482,7 @@ class Page extends Component {
                                                                     <Button
                                                                         onPress={this.previewImage.bind(this, idx + 6)}>
                                                                         <Image style={styles.image} key={idx}
-                                                                               source={{uri: i.uri}}/>
+                                                                               source={{uri: i}}/>
                                                                     </Button>
                                                                 </Col>
                                                             }) : null
@@ -538,7 +495,7 @@ class Page extends Component {
                                 {/* 查看次数 */}
                                 <Grid style={styles.viewNum}>
                                     <Col style={styles.viewNum_image}>
-                                        <Image source={require('../../../images/icon_view.png')}/>
+                                        <Image source={require('app/images/icon_view.png')}/>
                                     </Col>
                                     <Col>
                                         <Text style={styles.viewNum_text}>{data.viewNum}</Text>
@@ -552,7 +509,7 @@ class Page extends Component {
                                             <Button block transparent light onPress={this.comment.bind(this, data)}>
                                                 <View>
                                                     <Image
-                                                        source={require('../../../images/icon_comment_big.png')}/>
+                                                        source={require('app/images/icon_comment_big.png')}/>
                                                     <Text style={styles.btns_text}>{data.commentsNum}</Text>
                                                 </View>
                                             </Button>
@@ -565,9 +522,9 @@ class Page extends Component {
                                                     {
                                                         !data.userAction.actionValue ?
                                                             <Image
-                                                                source={require('../../../images/icon_like_big.png')}/> :
+                                                                source={require('app/images/icon_like_big.png')}/> :
                                                             <Image
-                                                                source={require('../../../images/icon_liked_big.png')}/>
+                                                                source={require('app/images/icon_liked_big.png')}/>
                                                     }
                                                     <Text style={styles.btns_text}>{data.likeNum}</Text>
                                                 </View>
@@ -588,7 +545,7 @@ class Page extends Component {
                                              loadMore={this.loadMore.bind(this)}
                                              likeComment={this.likeComment.bind(this)}
                                              reply={this.reply.bind(this)}/>
-                                : <Spinner color={'#408EF5'}/>}
+                                : <Spinner size={'small'} color={'#408EF5'}/>}
                             {/******************************评论列表 end*****************************/}
                         </View>
 
@@ -608,7 +565,7 @@ class Page extends Component {
                             </Modal>
                         </View>
 
-                    </Content>) : <Content><Spinner color={'#408EF5'}/></Content>
+                    </Content>) : <Content><Spinner size={'small'} color={'#408EF5'}/></Content>
                 }
 
                 {/* 底部评论框 */}

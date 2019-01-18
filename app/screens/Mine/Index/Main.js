@@ -16,11 +16,11 @@ import UserAvatar from './Components/UserAvatar';
 
 
 const avatars = [
-    require("../../../images/avatar_1.png"),
-    require("../../../images/avatar_2.png"),
-    require("../../../images/avatar_3.png"),
-    require("../../../images/avatar_4.png"),
-    require("../../../images/avatar_4.png")
+    require("app/images/avatar_1.png"),
+    require("app/images/avatar_2.png"),
+    require("app/images/avatar_3.png"),
+    require("app/images/avatar_4.png"),
+    require("app/images/avatar_4.png")
 ];
 
 
@@ -317,7 +317,9 @@ class ViewControl extends Component {
                         </View>
                     </View>
 
-
+                    {/******************* 间隔空白 ********************/}
+                    <View style={styles.divider}/>
+                    {/******************* 爆料列表 ********************/}
                     {
                         Items ? <FlatList
                             ref={(flatlist) => this._flatList = flatlist}

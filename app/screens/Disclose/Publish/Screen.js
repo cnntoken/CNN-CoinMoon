@@ -20,21 +20,21 @@ import Carousel from 'react-native-snap-carousel';
 import {$toast} from '../../../utils';
 import * as navigationActions from 'app/actions/navigationActions';
 
+import i18n from 'app/i18n';
 
-// const btn_add_source = require("../../../images/btn_add.png");
+// const btn_add_source = require("app/images/btn_add.png");
 
 class Screen extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            avatarSource: null,
             isPreview: false,
             title: '',
             images: [
                 // 默认展示添加图片按钮
                 {
-                    dataurl: require("../../../images/btn_add.png"),
+                    dataurl: require("app/images/btn_add.png"),
                     fileName: "btn_add.png"
                 },
             ],
@@ -46,12 +46,12 @@ class Screen extends Component {
     selectPhotoTapped = () => {
         const options = {
             title: '请选择',
-            quality: 0.1,
+            quality: 0.2,
             mediaType: 'photo',
             cancelButtonTitle: '取消',
             takePhotoButtonTitle: '拍照',
             chooseFromLibraryButtonTitle: '选择相册',
-            allowsEditing: true,
+            allowsEditing: false,
             noData: false,
             storageOptions: {
                 skipBackup: true,
@@ -98,57 +98,64 @@ class Screen extends Component {
         this.selectPhotoTapped();
     };
 
+    handlePublish = (title, images) => {
+        this.props.publish({
+            title: title,
+            images: images,
+            userId: this.props.user.id || '',
+            userName: this.props.user.name || '',
+            callback: (data) => {
+                if (data.success) {
+                    let images = this.state.images.slice(-1);
+                    this.setState({
+                        images: images,
+                        isPreview: false,
+                        title: '',
+                        activeSlide: 0,
+                        publishing: false
+                    });
+                    navigationActions.navigateToDiscloseList();
+                }
+            }
+        });
+    };
+
     // 发布爆料
     publish = () => {
         let title = this.state.title;
         if (!title) {
-            // TODO 国际化
-            $toast(`请输入爆料内容`);
+            $toast(i18n.t('disclose.publish_valid_textarea'));
             return;
         }
-
-        let images = this.state.images.slice(0, this.state.images.length - 1);
-
-        const formData = new FormData();
-        images.forEach((file) => {
-            formData.append('images', {
-                uri: file.uri,
-                name: file.fileName,
-                // type: file.type || 'image/png'
-            });
-        });
-
         // 添加loading
         this.setState({
             publishing: true
         });
-
+        // 直接发布，没有选中图片
+        if (this.state.images.length === 1) {
+            this.handlePublish(title, []);
+            return;
+        }
+        // 发布图片和文字
+        let images = this.state.images.slice(0, this.state.images.length - 1);
+        const formData = new FormData();
+        images.forEach((file) => {
+            formData.append('images', {
+                uri: file.uri,
+                name: file.fileName
+            });
+        });
         this.props.upload({
             images: formData,
             callback: (data) => {
                 console.log(data);
-                let uris = [];
-                data.data.forEach((item) => {
-                    uris.push(item.uri);
-                });
-                this.props.publish({
-                    title: title,
-                    images: uris,
-                    callback: (data) => {
-                        if (data.success) {
-                            let images = this.state.images.slice(-1);
-                            this.setState({
-                                images: images,
-                                avatarSource: null,
-                                isPreview: false,
-                                title: '',
-                                activeSlide: 0,
-                                publishing: false
-                            });
-                            navigationActions.navigateToDiscloseList();
-                        }
-                    }
-                });
+                if (data.success) {
+                    let uris = [];
+                    data.data.forEach((item) => {
+                        uris.push(item.uri);
+                    });
+                    this.handlePublish(title, uris);
+                }
             }
         });
     };
@@ -182,17 +189,15 @@ class Screen extends Component {
     previewDel = () => {
         if (this.state.images.length > 1) {
             this.state.images.splice(this.state.activeSlide, 1);
-            this.setState({
-                // isPreview: false
-            });
+            this.setState({});
         }
     };
 
     // 放弃写爆料，返回爆料列表页面
     cancelWriteDisclose = () => {
-        // console.log('写爆料');
         this.props.navigation.navigate('DiscloseList');
     };
+
     // 跳到用户首页
     goUserHome = () => {
         this.props.navigation.navigate('Mine');
@@ -200,12 +205,12 @@ class Screen extends Component {
 
 
     componentDidMount() {
-        // console.log("hhhh");
+
     };
 
     render() {
 
-        let {images, title, isPreview, publishing} = this.state;
+        let {images, isPreview, publishing} = this.state;
         let user = this.props.user;
 
         // 预览图片页面
@@ -216,13 +221,13 @@ class Screen extends Component {
                     <Left>
                         <Button transparent onPress={this.preview2Publish}>
                             <Image style={styles.carousel_back_icon}
-                                   source={require('../../../images/icon_back_white.png')}/>
+                                   source={require('app/images/icon_back_white.png')}/>
                         </Button>
                     </Left>
                     <Right>
                         <Button transparent onPress={this.previewDel}>
                             <Image style={styles.carousel_del_icon}
-                                   source={require('../../../images/icon_delete_white.png')}/>
+                                   source={require('app/images/icon_delete_white.png')}/>
                         </Button>
                     </Right>
                 </Header>
@@ -256,18 +261,15 @@ class Screen extends Component {
         return (
 
             <Container>
-
                 <Spinner
                     visible={publishing}
                     textContent={'Loading...'}
                     textStyle={{color: "white", fontSize: 17, lineHeight: 22}}
                 />
-
-
                 <Header style={styles.publish_header}>
                     <Left>
                         <Button transparent onPress={this.cancelWriteDisclose}>
-                            <Text style={styles.btnText}>取消</Text>
+                            <Text style={styles.btnText}>{i18n.t('disclose.cancel')}</Text>
                         </Button>
                     </Left>
                     <Body>
@@ -279,13 +281,13 @@ class Screen extends Component {
                     </Body>
                     <Right>
                         <Button transparent onPress={this.publish}>
-                            <Text style={styles.btn_pubish_text}>发布</Text>
+                            <Text style={styles.btn_pubish_text}>{i18n.t('disclose.publish')}</Text>
                         </Button>
                     </Right>
                 </Header>
 
                 <Content>
-                    {/******************* 间隔********************/}
+                    {/******************* 间隔空白 ********************/}
                     <View style={styles.divider}/>
                     {/********************  文本域 ******************* */}
                     <Form style={styles.form}>
@@ -297,7 +299,7 @@ class Screen extends Component {
                             placeholder=""/>
                     </Form>
                     <View>
-                        <Text style={styles.imagesLabel}>最多输入9张图片</Text>
+                        <Text style={styles.imagesLabel}>{i18n.t('disclose.publish_input_tip')}</Text>
                         <View style={styles.items}>
                             {
                                 images.map((item, index) => {
@@ -312,7 +314,7 @@ class Screen extends Component {
                                                              transparent
                                                              style={styles.delBtn}>
                                                         <Image style={styles.delIcon}
-                                                               source={require('../../../images/icon_delete_small.png')}/>
+                                                               source={require('app/images/icon_delete_small.png')}/>
                                                     </Button>
                                                 </View> :
                                                 <View style={styles.item}>

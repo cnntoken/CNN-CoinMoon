@@ -5,19 +5,13 @@ import {Container, Header, Content, Text, Button, Left, Right, Body, Title, Spin
 import {View, RefreshControl, FlatList, Image, PixelRatio} from 'react-native';
 
 import Modal from "react-native-modal";
-import {$toast} from 'app/utils';
+import {$toast, uniqueById} from 'app/utils';
 
 import * as navigationActions from 'app/actions/navigationActions';
 import DiscloseListItem from 'app/components/DiscloseListItem';
 
-
-const avatars = [
-    require("../../../images/avatar_1.png"),
-    require("../../../images/avatar_2.png"),
-    require("../../../images/avatar_3.png"),
-    require("../../../images/avatar_4.png"),
-    require("../../../images/avatar_4.png")
-];
+import i18n from 'app/i18n';
+import avatars from 'app/services/constants'
 
 class Screen extends Component {
 
@@ -28,11 +22,11 @@ class Screen extends Component {
             loadMoreing: false,
             hasData: true,
             Items: null,
-            Count: 0,
             isModalVisible: false,
             activeItem: null,
             // 用于标识是否还有更多数据
-            LastEvaluatedKey: null
+            LastEvaluatedKey: null,
+            initLoading: true
         }
     }
 
@@ -62,32 +56,36 @@ class Screen extends Component {
 
     // 点赞
     like = (item) => {
+        // 必须登录才能点赞
+        if (!this.props.user.id) {
+            $toast(i18n.t('disclose.needlogin_tip'));
+            return;
+        }
+        // 先在界面上更改点赞行为
         let actionValue = item.userAction.actionValue;
         item.userAction.actionValue = !actionValue;
         item.likeNum = !actionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
         this.setState({});
+
+        // 更新爆料条目中的数据
         this.props.like({
             id: item._id,
             field: 'likeNum',
             cancel: actionValue,
-            callback: (data) => {
-                // 更新用户对该资源的行为数据
-                this.props.updateAction({
-                    _id: item.userAction._id,
-                    obj: {
-                        objectId: item._id,
-                        userId: this.props.user.id,
-                        actionType: 1,  // 点赞
-                        objectType: 3,   // 爆料资源
-                        actionValue: !actionValue
-                    },
-                    callback: (res) => {
-                        if (!item.userAction._id) {
-                            item.userAction._id = res.data._id;
-                            this.setState({});
-                        }
-                    }
-                });
+            callback: () => {
+            }
+        });
+        // 更新用户对该资源的行为数据
+        this.props.updateAction({
+            _id: item.userAction._id,
+            obj: {
+                objectId: item._id,
+                userId: this.props.user.id,
+                actionType: 1,  // 点赞
+                objectType: 3,   // 爆料资源
+                actionValue: !actionValue
+            },
+            callback: (res) => {
             }
         });
     };
@@ -132,105 +130,87 @@ class Screen extends Component {
     renderListItem = ({item, index}) => {
         const {hasData, Items} = this.state;
         return <DiscloseListItem showDeleteDialog={this.showDeleteDialog}
-                                 clickAvatar={this.clickAvatar}
+            // clickAvatar={this.clickAvatar}
                                  like={this.like}
-                                 opt={{item, index, hasData, Items}}
+                                 opt={{item, index, hasData, Items, userId: this.props.user.id}}
                                  pressItem={this.pressItem}/>
     };
 
-
     //  下滑刷新
     handleRefresh = () => {
-        const {refreshing} = this.state;
-        if (refreshing) {
+        if (this.state.refreshing) {
             return false;
         }
         this.setState({
             refreshing: true
         });
-        this.getList(this.state.Items.length, null, true);
+        this.getList(this.state.Items.length, null, true, false);
     };
 
     // 上拉加载更多
     handleLoadMore = () => {
-        const {loadMoreing, LastEvaluatedKey} = this.state;
-        if (loadMoreing) {
+        if (this.state.loadMoreing) {
             return false;
-        }
-        if (!LastEvaluatedKey) {
-            $toast('没有更多数据了!');
-            return;
         }
         this.setState({
             loadMoreing: true
         });
-        this.getList(10, this.state.LastEvaluatedKey);
+        this.getList(10, this.state.LastEvaluatedKey, false, true);
     };
 
     /**
      * 获取爆料列表数据和获取每条爆料条目对应用户的行为数据
      * @param limit 返回限制
      * @param LastEvaluatedKey 标识下一次请求从哪个条目开始
-     * @param refresh 是否重新刷新
+     * @param refresh      向下拉刷新
+     * @param loadmore     加载更多
      * */
-    getList = (limit, LastEvaluatedKey, refresh) => {
+    getList = (limit, LastEvaluatedKey, refresh, loadmore) => {
         this.props.getList({
             params: {
                 limit: limit || 10,
-                LastEvaluatedKey: LastEvaluatedKey || null
+                LastEvaluatedKey: LastEvaluatedKey || null,
+                userId: this.props.user.id
             },
             callback: (data) => {
                 if (data.success) {
-                    let {Items, Count, LastEvaluatedKey} = data.data;
-                    Items.forEach((item, index) => {
-                        // todo 用户信息怎么绑定
-                        item.source = avatars[index % 5];
-                        item.userName = '匿名';
+                    let {Items, LastEvaluatedKey} = data.data;
+                    Items.forEach((item) => {
+                        item.source = avatars[(item.avatarType || 0) % 5];
+                        item.userName = item.userName || 'Anonymity';
                     });
+                    let scrollIndex = (this.state.Items || []).length;
+                    let list = [];
+                    // 向下拉时，更新最新前面的数据
+                    if (refresh) {
+                        list = uniqueById([...Items, this.state.Items]);
+                    }
+                    // 加载更多
+                    else if (loadmore) {
+                        list = uniqueById([this.state.Items, ...Items]);
+                    } else {
+                        list = Items;
+                    }
                     this.setState({
-                        Items: refresh ? [...Items] : [...(this.state.Items || []), ...Items],
-                        Count: Count,
+                        Items: list,
                         LastEvaluatedKey: LastEvaluatedKey,
                         loadMoreing: false,
-                        refreshing: false
+                        refreshing: false,
+                    }, () => {
+                        // if (loadMoreing && scrollIndex > 4) {
+                        //     this._flatList.scrollToIndex({viewPosition: 0, index: scrollIndex - 4});
+                        // }
                     });
-
-                    if (!LastEvaluatedKey) {
-                        $toast('没有更多数据了!');
-                    }
-
-                    /////////// 获取用户行为集合
-                    let params = [];
-                    Items.forEach((item) => {
-                        params.push({
-                            objectId: item._id,
-                            userId: this.props.user.id,
-                            actionType: 1,   // 点赞
-                            objectType: 3   // 爆料评论回复资源
-                        })
-                    });
-
-                    // 查询用户对该资源的行为数据
-                    this.props.getActions({
-                        params,
-                        callback: (res) => {
-                            let userAction = res.data;
-                            // console.log(params, '\\\n\\\\',res);
-                            // 批量更新用户的点赞信息
-                            this.state.Items.forEach((item) => {
-                                item.userAction = userAction[item._id];
-                            });
-                            this.setState({});
-                            console.log(this.state.Items);
-                        }
-                    });
+                    // if (!LastEvaluatedKey && loadmore) {
+                    //     $toast(i18n.t('disclose.list_nomore_tip'));
+                    // }
                 }
             }
         });
     };
 
     componentDidMount() {
-        this.getList(10, null);
+        this.getList(10, null, false, false);
     }
 
     render() {
@@ -241,13 +221,13 @@ class Screen extends Component {
                     <Left/>
                     <Body>
                     <DoubleClicker onClick={this.titleDoubleClick}>
-                        <Title style={styles.title}>Disclose</Title>
+                        <Title style={styles.title}>{i18n.t('disclose.title')}</Title>
                     </DoubleClicker>
                     </Body>
                     <Right>
                         <Button transparent light onPress={this.writeDisclose}>
                             <Image style={styles.writeDiscloseBtn}
-                                   source={require('../../../images/btn_post.png')}/>
+                                   source={require('app/images/btn_post.png')}/>
                         </Button>
                     </Right>
                 </Header>
@@ -256,25 +236,18 @@ class Screen extends Component {
                         ref={(flatlist) => this._flatList = flatlist}
                         initialNumToRender={4}
                         keyExtractor={(item, index) => item + index}
-                        ListEmptyComponent={<Text>none data!</Text>}
-                        refreshControl={
-                            <RefreshControl
-                                size={'small'}
-                                colors={['#408EF5']}
-                                refreshing={this.state.refreshing}
-                                onRefresh={this.handleRefresh}
-                            />
-                        }
+                        ListEmptyComponent={<Text style={styles.nodata}>{i18n.t('disclose.no_data_tip')}</Text>}
                         ItemSeparatorComponent={() => <View
                             style={{height: 1 / PixelRatio.getPixelSizeForLayoutSize(1), backgroundColor: '#E6E6E6'}}/>}
                         data={Items}
-                        renderItem={this.renderListItem}
                         refreshing={refreshing}
+                        onRefresh={this.handleRefresh}
+                        renderItem={this.renderListItem}
                         onEndReached={this.handleLoadMore}
-                        onEndReachedThreshold={0.1}
-                    /> : <Content><Spinner color={'#408EF5'}/></Content>
+                        onEndReachedThreshold={-0.2}
+                        ListFooterComponent={loadMoreing ? <Spinner size={'small'} color={'#408EF5'}/> : null}
+                    /> : <Content><Spinner size={'small'} color={'#408EF5'}/></Content>
                 }
-                {loadMoreing ? <Spinner size={'small'} color={'#408EF5'}/> : null}
                 {/*需要删除爆料时，弹框提示确定modal*/}
                 <View>
                     <Modal isVisible={this.state.isModalVisible}>

@@ -5,8 +5,7 @@ import {
     Button,
     Left,
     Body,
-    ListItem,
-    Thumbnail
+    ListItem
 } from "native-base";
 import {
     View,
@@ -50,7 +49,7 @@ export default class DiscloseListItem extends Component {
     };
 
     render() {
-        const {item} = this.props.opt;
+        const {item, userId} = this.props.opt;
 
         if (!item) {
             return null;
@@ -60,12 +59,17 @@ export default class DiscloseListItem extends Component {
         item.images = item.images || [];
         item.userAction = item.userAction || {};
 
+        // 是否是我发布的，如果是，则可以删除
+        const isMine = userId === item.userId;
+
         return (
-            <ListItem avatar>
+            <ListItem style={{
+                marginBottom: -15
+            }} avatar>
                 {/* 左侧图标 */}
                 <Left>
                     <Button transparent light onPress={this.clickAvatar.bind(this, item)}>
-                        <Thumbnail small source={item.source}/>
+                        <Image style={styles.avatar} source={item.source}/>
                     </Button>
                 </Left>
                 <Body style={{borderBottomWidth: 0}}>
@@ -75,17 +79,22 @@ export default class DiscloseListItem extends Component {
                     <Row>
                         <Col size={5}>
                             <View style={styles.name}>
-                                <Text>{item.userName}</Text>
+                                <Text style={styles.userName}>{item.userName}</Text>
                                 <Text style={styles.time}>{moment(item.createdAt).format('HH:MM')}</Text>
                             </View>
                         </Col>
-                        <Col size={1}>
-                            <View style={styles.edit}>
-                                <Button block transparent light onPress={this.showDeleteDialog.bind(this, item)}>
-                                    <Image source={require('../../images/icon_more_black.png')}/>
-                                </Button>
-                            </View>
-                        </Col>
+                        {/* 仅仅只有自己发布的匿名信息可以删除 */}
+                        {
+                            isMine ?
+                                <Col size={1}>
+                                    <View style={styles.edit}>
+                                        <Button block transparent light
+                                                onPress={this.showDeleteDialog.bind(this, item)}>
+                                            <Image source={require('app/images/icon_more_black.png')}/>
+                                        </Button>
+                                    </View></Col> : null
+
+                        }
                     </Row>
                 </Grid>
 
@@ -95,7 +104,7 @@ export default class DiscloseListItem extends Component {
                         <Grid>
                             <Row>
                                 <Col>
-                                    <Text>{item.title}</Text>
+                                    <Text style={styles.title}>{item.title}</Text>
                                 </Col>
                             </Row>
                         </Grid>
@@ -146,17 +155,18 @@ export default class DiscloseListItem extends Component {
                     <Col>
                         <View style={styles.interact}>
                             <Button transparent light onPress={this.pressItem.bind(this, item)}>
-                                <Image source={require('../../images/icon_view.png')}/>
+                                <Image source={require('app/images/icon_view.png')}/>
                                 <Text style={styles.number}>{item.viewNum}</Text>
                             </Button>
                             <Button transparent light onPress={this.pressItem.bind(this, item)}>
-                                <Image source={require('../../images/icon_comment_small.png')}/>
+                                <Image source={require('app/images/icon_comment_small.png')}/>
                                 <Text style={styles.number}>{item.commentsNum}</Text>
                             </Button>
                             <Button transparent light onPress={this.like.bind(this, item)}>
                                 {
-                                    !item.userAction.actionValue ? <Image source={require('../../images/icon_like_small.png')}/> :
-                                        <Image source={require('../../images/icon_liked_small.png')}/>
+                                    !item.userAction.actionValue ?
+                                        <Image source={require('app/images/icon_like_small.png')}/> :
+                                        <Image source={require('app/images/icon_liked_small.png')}/>
                                 }
                                 <Text style={styles.number}>{item.likeNum}</Text>
                             </Button>

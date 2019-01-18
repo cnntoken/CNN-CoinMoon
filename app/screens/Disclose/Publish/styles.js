@@ -38,8 +38,6 @@ export default StyleSheet.create({
     mb: {
         marginBottom: 15
     },
-
-
     // 表单信息
     form: {
         paddingTop: 15,

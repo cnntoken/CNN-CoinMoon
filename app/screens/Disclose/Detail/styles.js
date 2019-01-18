@@ -4,6 +4,35 @@ const IS_IOS = Platform.OS === 'ios';
 const {width: viewportWidth, height: viewportHeight} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+
+    name: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+    },
+
+    userName: {
+        color: '#333333',
+        fontSize: 14,
+        lineHeight: 20,
+        fontWeight: 'bold'
+    },
+
+    time: {
+        color: '#666',
+        fontSize: 12,
+        marginLeft: 6,
+        lineHeight: 17
+    },
+
+    title: {
+        color: '#333333',
+        fontSize: 14,
+        lineHeight: 20,
+    },
+
+
     divider: {
         borderBottomWidth: 0.5,
         borderBottomColor: '#E6E6E6'
@@ -29,7 +58,8 @@ const styles = StyleSheet.create({
     col_title_text: {
         color: '#333333',
         fontSize: 14,
-        marginTop: 4
+        marginTop: 4,
+        lineHeight: 14
     },
     col_time: {
         color: '#666666',
@@ -116,7 +146,8 @@ const styles = StyleSheet.create({
     btns_text: {
         lineHeight: 17,
         color: '#333',
-        fontSize: 12
+        fontSize: 12,
+        textAlign: 'center'
     },
     //////////////////// 评论
     comments_header: {
