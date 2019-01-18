@@ -12,6 +12,12 @@ export default class List extends PureComponent{
             loadingText: '下拉刷新'
         }
     }
+    _onLoadMore = ()=>{
+        if(!this.props.hasMore || this.state.refreshing || this.loadingMore){
+            return false;
+        }
+        this.props.onLoadMore()
+    }
     refreshData = ()=>{
         this.setState({
             refreshing: true,
@@ -38,7 +44,8 @@ export default class List extends PureComponent{
         // 当data变动, 说明新数据已经加载完成
         if(data !== prevProps.data){
             this.setState({
-                refreshing: false
+                refreshing: false,
+                loadingMore: false
             })
             setTimeout(()=>{
                 this.setState({
@@ -60,7 +67,7 @@ export default class List extends PureComponent{
                     data={this.props.data || []}
                     renderItem={this.props.renderItem}
                     onEndReachedThreshold={0.5}
-                    onEndReached={this.props.onEndReached}
+                    onEndReached={this._onLoadMore}
                     refreshing={refreshing}
                     onScrollEndDrag={this._onScrollEndDrag}
                     refreshControl={

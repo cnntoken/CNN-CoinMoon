@@ -14,3 +14,40 @@ export const getDetail = (payload,callback)=> {
         callback
     };
 }
+export const getCommentList = (payload,callback)=> {
+    return {
+        type: types.FEED_GETCOMMENTLIST,
+        payload,
+        callback
+    };
+}
+
+export const comment = (payload,callback)=> {
+    return {
+        type: types.FEED_COMMENT,
+        payload,
+        callback
+    };
+}
+export const like = (payload,callback)=> {
+    return {
+        type: types.FEED_LIKE,
+        payload,
+        callback
+    };
+}
+
+export const likeComment = (payload,callback)=> {
+    return {
+        type: types.FEED_LIKE_COMMENT,
+        payload,
+        callback
+    };
+}
+export const deleteComment = (payload,callback)=> {
+    return {
+        type: types.FEED_DELETE_COMMENT,
+        payload,
+        callback
+    };
+}
