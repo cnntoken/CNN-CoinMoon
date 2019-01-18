@@ -45,6 +45,18 @@ export function* getList({payload}) {
     }
 }
 
+export function* getListByUserId({payload}) {
+    const {params, callback} = payload;
+    try {
+        const res = yield call(services.getListByUserId, params);
+        console.log('res', res);
+        if (callback) callback(res);
+    } catch (e) {
+        $toast(`getList fail: ${e.message}`);
+        if (callback) callback(e)
+    }
+}
+
 // 点赞爆料
 export function* like({payload}) {
     const {id, field, cancel, callback} = payload;
@@ -85,7 +97,7 @@ export function* getDiscloseDetail({payload}) {
 }
 
 
-// 获取所有的爆料评论列表，一次获取多条数据再在前端分页
+// 获取所有的爆料评论列表
 export function* getDiscloseComments({payload}) {
     const {id, params, callback} = payload;
     try {
@@ -97,6 +109,8 @@ export function* getDiscloseComments({payload}) {
         if (callback) callback(e)
     }
 }
+
+
 
 // 评论爆料，或者回复评论
 export function* commentDisclose({payload}) {

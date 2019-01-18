@@ -6,13 +6,20 @@ import * as disCloseActions from "../../../actions/disCloseActions";
 import * as userAction from "../../../actions/userAction";
 
 function mapStateToProps({userReducer: {info}}) {
-    return {userInfo: info};
+    return {
+        userInfo: info,
+        user: {
+            "id": info.attributes.sub,
+            "name": info.attributes['custom:disclose_name'],
+            "icon": info.attributes.picture
+        }
+    };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         getList: (...args) => {
-            dispatch(disCloseActions.getList(...args))
+            dispatch(disCloseActions.getListByUserId(...args))
         },
         like: (...args) => {
             dispatch(disCloseActions.like(...args))

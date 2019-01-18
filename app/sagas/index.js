@@ -32,6 +32,7 @@ export default function* watch() {
         takeEvery(types.DISCLOSE_COMMENTDISCLOSE, disCloseSaga.commentDisclose),
         takeEvery(types.DISCLOSE_LIKECOMMENT, disCloseSaga.likeComment),
         takeEvery(types.DISCLOSE_DELETECOMMENT, disCloseSaga.deleteComment),
+        takeEvery(types.DISCLOSE_GETLISTBYUSERID, disCloseSaga.getListByUserId),
 
         /////////////////// 资讯
         takeEvery(types.FEED_GETLIST, feedSaga.getList),
@@ -41,7 +42,7 @@ export default function* watch() {
         takeEvery(types.FEED_COMMENT, feedSaga.comment),
         takeEvery(types.FEED_LIKE_COMMENT, feedSaga.likeComment),
         takeEvery(types.FEED_DELETE_COMMENT, feedSaga.deleteComment),
-        
+
 
         // 用户行为
         takeEvery(types.USERACTION_GETACTION, userActionSaga.getActions),

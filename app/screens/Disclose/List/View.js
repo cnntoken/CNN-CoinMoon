@@ -29,7 +29,6 @@ class Screen extends Component {
             // 用于标识是否还有更多数据
             LastEvaluatedKey: null,
             initLoading: true,
-
             refreshState: RefreshState.Idle,
         }
     }
@@ -303,8 +302,6 @@ class Screen extends Component {
                 /> : <Content><Spinner size={'small'} color={'#408EF5'}/></Content>
 
                 }
-
-
                 {/*需要删除爆料时，弹框提示确定modal*/}
                 <View>
                     <Modal isVisible={this.state.isModalVisible}>

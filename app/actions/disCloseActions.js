@@ -27,6 +27,14 @@ export const getList  = (payload, callback) => {
     };
 };
 
+export const getListByUserId  = (payload, callback) => {
+    return {
+        type: types.DISCLOSE_GETLISTBYUSERID,
+        payload,
+        callback
+    };
+};
+
 export const like = (payload, callback) => {
     return {
         type: types.DISCLOSE_LIKE,

@@ -45,7 +45,7 @@ class Index extends PureComponent<Props, State> {
         footerFailureText: '点击重新加载',
         footerNoMoreDataText: '已加载全部数据',
         footerEmptyDataText: '暂时没有相关数据',
-    }
+    };
 
     componentWillReceiveProps(nextProps: Props) {
         log('[RefreshListView]  RefreshListView componentWillReceiveProps ' + nextProps.refreshState)
