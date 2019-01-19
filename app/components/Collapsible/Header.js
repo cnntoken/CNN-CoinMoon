@@ -1,5 +1,6 @@
 import React from 'react';
 import {Animated, Platform, StyleSheet, View, TouchableOpacity, Dimensions} from 'react-native';
+// import LinearGradient from 'react-native-linear-gradient';
 
 const ios = Platform.OS === 'ios';
 const {width, height} = Dimensions.get('window');
@@ -12,6 +13,9 @@ const paddingTop = ios ? 18 : 0;
 const topInset = isIphoneX ? iphoneXTopInset : 0;
 
 const toolbarHeight = initToolbarHeight + topInset + paddingTop + 20;
+
+// const AnimatedGradient = Animated.create(LinearGradient);
+
 
 export default class Header extends React.PureComponent {
 
@@ -107,45 +111,54 @@ export default class Header extends React.PureComponent {
         const headerStyle = this.props.noBorder ? undefined : {borderBottomWidth: 1, borderColor: '#a7a6ab'}
 
         return (
-            <Animated.View
-                style={[
-                    styles.header,
-                    headerStyle,
-                    {
-                        height: height,
-                        backgroundColor: toolbarColor,
-                    },
-                ]}>
-                {imageSource && <Animated.Image
-                    style={[StyleSheet.absoluteFill, {width: null, height: null, opacity: imageOpacity}]}
-                    source={imageSource}
-                    resizeMode='cover'
-                />}
-                <View style={styles.toolbarContainer}>
-                    <View style={styles.statusBar}/>
-                    <View style={styles.toolbar}>
-                        {this.props.renderLeft && this.props.renderLeft()}
-                        <TouchableOpacity disabled={!onBackPress} onPress={onBackPress} activeOpacity={0.8}
-                                          style={[styles.titleButton, backStyle]} onLayout={this.onBackLayout}>
-                            <Animated.Text style={[backTextStyle, {
-                                alignSelf: 'center',
-                                opacity: opacity
-                            }]}>{this.props.backText}</Animated.Text>
-                        </TouchableOpacity>
-                        <View style={styles.flexView}/>
-                        {this.props.renderRight && this.props.renderRight()}
+
+                <Animated.View
+                    style={[
+                        styles.header,
+                        headerStyle,
+                        {
+                            height: height,
+                            backgroundColor: toolbarColor,
+                            // background: 'linear-gradient(#000000 50%, #333 50%)'
+                            // borderBottomWidth: 10,
+                            // borderColor: '#eee'
+                        },
+                    ]}>
+
+                    {imageSource && <Animated.Image
+                        style={[StyleSheet.absoluteFill, {width: null, height: null, opacity: imageOpacity}]}
+                        source={imageSource}
+                        resizeMode='cover'
+                    />}
+
+                    <View style={styles.toolbarContainer}>
+                        <View style={styles.statusBar}/>
+                        <View style={styles.toolbar}>
+                            {this.props.renderLeft && this.props.renderLeft()}
+                            <TouchableOpacity disabled={!onBackPress} onPress={onBackPress} activeOpacity={0.8}
+                                              style={[styles.titleButton, backStyle]} onLayout={this.onBackLayout}>
+                                <Animated.Text style={[backTextStyle, {
+                                    alignSelf: 'center',
+                                    opacity: opacity
+                                }]}>{this.props.backText}</Animated.Text>
+                            </TouchableOpacity>
+                            <View style={styles.flexView}/>
+                            {this.props.renderRight && this.props.renderRight()}
+                        </View>
                     </View>
-                </View>
-                <Animated.View style={[titleStyle, {
-                    position: 'absolute',
-                    left: left,
-                    bottom: bottom,
-                    fontSize,
-                }]}>
-                    {this.props.title()}
+                    <Animated.View style={[titleStyle, {
+                        position: 'absolute',
+                        left: left,
+                        bottom: bottom,
+                        fontSize,
+                        // backgroundColor: '#fff'
+                    }]}>
+                        {this.props.title()}
+                    </Animated.View>
+
                 </Animated.View>
 
-            </Animated.View>
+
         );
     }
 }
@@ -155,7 +168,9 @@ const styles = StyleSheet.create({
         height: toolbarHeight
     },
     statusBar: {
-        height: topInset + paddingTop
+        height: topInset + paddingTop,
+        borderBottomWidth: 1,
+        borderColor: '#eee'
     },
     toolbar: {
         flex: 1,
@@ -168,11 +183,13 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
     },
+
     titleButton: {
         flexDirection: 'row',
     },
     flexView: {
         flex: 1,
+        backgroundColor: "#fff"
     },
 });
 

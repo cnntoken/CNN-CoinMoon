@@ -22,6 +22,7 @@ import {sliderWidth} from "../Publish/styles";
 import Modal from "react-native-modal";
 import {$toast} from "../../../utils";
 import * as navigationActions from 'app/actions/navigationActions';
+import  NavigationService from 'app/navigation/NavigationService';
 import avatars from "../../../services/constants";
 import i18n from "../../../i18n";
 
@@ -45,9 +46,9 @@ class Page extends Component {
         }
     }
 
-    // 放弃写爆料，返回爆料列表页面
+
     goListScreen = () => {
-        navigationActions.navigateToDiscloseList();
+        NavigationService.goBack();
     };
 
     previewImage = (index) => {
@@ -353,7 +354,7 @@ class Page extends Component {
                 if (data.success) {
                     // $toast('删除爆料成功');
                     DeviceEventEmitter.emit('updateDiscloseListData', 'delete', this.state.data);
-                    navigationActions.navigateToDiscloseList();
+                    this.props.navigation.pop();
                 }
             }
         });
