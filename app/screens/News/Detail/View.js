@@ -9,7 +9,7 @@ import {
     Left,
     Spinner
 } from 'native-base';
-import {Image,View} from 'react-native';
+import {Image,View,SafeAreaView} from 'react-native';
 import styles from './styles';
 import moment from 'moment';
 import WebContent from './components/WebContent';

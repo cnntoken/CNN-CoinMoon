@@ -6,7 +6,7 @@ const getBaseConfig = ()=>{
 
 const $API = (method, url, config)=>{
     return new Promise((resolve,reject)=>{
-        API[method]('stark', url, config).then((response)=>{
+        API[method]('cnn-stark', url, config).then((response)=>{
             if(response.code === 200){
                 resolve(response.result)
             }else{
