@@ -27,13 +27,15 @@ const computeStyles = (height) => {
         },
         footer: {
             height: height,
+            alignItems: 'center',
+            justifyContent: 'center',
             backgroundColor: '#fff',
         },
         footer_grid: {
             display: 'flex',
             alignItems: 'center',
-            height: 40,
-            paddingTop: 15,
+            height: 33,
+            // paddingTop: 15,
             backgroundColor: '#fff',
         },
         footer_form: {
@@ -72,7 +74,7 @@ class FooterInput extends Component {
         this.state = {
             activeComment: null,
             KeyboardShown: false,
-            footerHeight: 40,
+            footerHeight: 50,
             text: ''
         }
     }

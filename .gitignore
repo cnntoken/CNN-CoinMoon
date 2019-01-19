@@ -66,3 +66,7 @@ amplify/\#current-cloud-backend
 amplify/.config/local-*
 amplify/backend/function/**/*.zip
 awsconfiguration.json
+
+
+!aws-lambda/lambda-layer/nodejs/node8/node_modules
+aws-lambda/lambda-layer/*.zip

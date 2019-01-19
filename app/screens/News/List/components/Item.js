@@ -29,7 +29,7 @@ export default class Item extends PureComponent{
             <ListItem avatar style={styles.item}>
                 <Left style={{paddingTop:0}}>
                     <Button transparent light onPress={this.clickAvatar} style={{height: null}}>
-                        <Image style={styles.thumbnail} small source={info.user && info.user.picture ? {uri:info.user.picture} : require('app/images/avatar_default.png')}/>
+                        <Thumbnail style={styles.thumbnail} small source={info.user && info.user.picture ? {uri: info.user.picture} : require('app/images/avatar_default.png')}/>
                     </Button>
                 </Left>
                 <Body style={{borderBottomWidth: 0,paddingVertical:0,marginLeft:6}}>
