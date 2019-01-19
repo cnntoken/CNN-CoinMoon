@@ -68,5 +68,5 @@ amplify/backend/function/**/*.zip
 awsconfiguration.json
 
 
-!lambda-layer/nodejs/node8/node_modules
-lambda-layer/*.zip
+!test-lambda/lambda-layer/nodejs/node8/node_modules
+test-lambda/lambda-layer/*.zip

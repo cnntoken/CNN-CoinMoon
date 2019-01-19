@@ -58,7 +58,9 @@ class ViewControl extends Component {
         if(this.check()){
             console.log('all right')
             const {info} = this.state;
-            this.props.onRegister({email: info.email, password: info.password});
+            this.props.onRegister({email: info.email, password: info.password},()=>{
+                this.goBack()
+            });
             $toast('正在提交, 请稍后!!!')
         }
     }

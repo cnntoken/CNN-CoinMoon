@@ -47,7 +47,7 @@ export function* login({payload,callback}) {
     }
 }
 
-export function* register({payload}) {
+export function* register({payload,callback}) {
     console.log(payload)
     const {email, password} = payload;
     const essentialAttributes = userService.generateRandomAttributes();
@@ -63,6 +63,7 @@ export function* register({payload}) {
         })
         console.log('register res', res)
         $toast('注册成功')
+        callback && callback()
     }catch(e){
         console.log('register fail')
         console.log(e);
