@@ -204,7 +204,7 @@ class ViewControl extends Component {
                 userId: this.props.userInfo.id,
                 actionType: 1,  // 点赞
                 objectType: 1,   // feed
-                actionValue: !actionValue
+                actionValue: !actionValue ? 1 : 0
             },
             callback: (data) => {
                 $toast('点赞成功');
