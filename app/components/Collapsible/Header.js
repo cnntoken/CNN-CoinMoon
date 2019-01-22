@@ -12,7 +12,7 @@ const initToolbarHeight = ios ? 46 : 56;
 const paddingTop = ios ? 18 : 0;
 const topInset = isIphoneX ? iphoneXTopInset : 0;
 
-const toolbarHeight = initToolbarHeight + topInset + paddingTop + 20;
+const toolbarHeight = initToolbarHeight + topInset + paddingTop + 30;
 
 export default class Header extends React.PureComponent {
 
@@ -34,38 +34,47 @@ export default class Header extends React.PureComponent {
         this.state.scrollOffset.setValue(e.nativeEvent.contentOffset.y);
     };
 
-    onBackLayout = (e) => {
-        const layout = e.nativeEvent.layout;
-        const bottom = toolbarHeight - layout.y - layout.height - paddingTop - topInset;
-        this.setState({bottom: bottom, left: e.nativeEvent.layout.x})
-    }
+    // onBackLayout = (e) => {
+    //     const layout = e.nativeEvent.layout;
+    //     const bottom = toolbarHeight - layout.y - layout.height - paddingTop - topInset;
+    //     this.setState({bottom: bottom, left: e.nativeEvent.layout.x})
+    // };
 
-    _getFontSize = () => {
-        const {scrollOffset} = this.state;
-        const backFontSize = this.props.backTextStyle.fontSize || Header.defaultProps.backTextStyle.fontSize;
-        const titleFontSize = this.props.titleStyle.fontSize || Header.defaultProps.titleStyle.fontSize;
-        return scrollOffset.interpolate({
-            inputRange: [0, this.headerHeight - toolbarHeight],
-            outputRange: [titleFontSize, backFontSize],
-            extrapolate: 'clamp',
-        });
-    }
+    // _getFontSize = () => {
+    //     const {scrollOffset} = this.state;
+    //     const backFontSize = this.props.backTextStyle.fontSize || Header.defaultProps.backTextStyle.fontSize;
+    //     const titleFontSize = this.props.titleStyle.fontSize || Header.defaultProps.titleStyle.fontSize;
+    //     return scrollOffset.interpolate({
+    //         inputRange: [0, this.headerHeight - toolbarHeight],
+    //         outputRange: [titleFontSize, backFontSize],
+    //         extrapolate: 'clamp',
+    //     });
+    // }
 
-    _getLeft = () => {
-        const {scrollOffset} = this.state;
-        const left = this.props.titleStyle.left || Header.defaultProps.titleStyle.left;
-        return scrollOffset.interpolate({
-            inputRange: [0, this.headerHeight - toolbarHeight],
-            outputRange: [left, this.state.left],
-            extrapolate: 'clamp',
-        });
-    }
+    // _getLeft = () => {
+    //     const {scrollOffset} = this.state;
+    //     const left = this.props.titleStyle.left || Header.defaultProps.titleStyle.left;
+    //     return scrollOffset.interpolate({
+    //         inputRange: [0, this.headerHeight - toolbarHeight],
+    //         outputRange: [left, this.state.left],
+    //         extrapolate: 'clamp',
+    //     });
+    // }
 
     _getHeight = () => {
         const {scrollOffset} = this.state;
         return scrollOffset.interpolate({
             inputRange: [0, this.headerHeight - toolbarHeight],
             outputRange: [this.headerHeight, toolbarHeight],
+            extrapolate: 'clamp',
+        })
+    };
+
+    _blankHeight = () => {
+        const {scrollOffset} = this.state;
+        return scrollOffset.interpolate({
+            inputRange: [0, this.headerHeight - toolbarHeight],
+            outputRange: [20, 0],
             extrapolate: 'clamp',
         })
     };
@@ -97,34 +106,55 @@ export default class Header extends React.PureComponent {
 
     };
 
-    _getImageOpacity = () => {
+    _disOpacity = () => {
         const {scrollOffset} = this.state;
-        return this.props.imageSource ? scrollOffset.interpolate({
+        // return this.props.backText ? scrollOffset.interpolate({
+        //     inputRange: [0, this.headerHeight - toolbarHeight],
+        //     outputRange: [1, 0],
+        //     extrapolate: 'clamp',
+        // }) : 0
+
+        return scrollOffset.interpolate({
             inputRange: [0, this.headerHeight - toolbarHeight],
-            outputRange: [1, 0],
+            outputRange: [0, 1],
             extrapolate: 'clamp',
-        }) : 0
-    }
+        });
+    };
+
+    // _getImageOpacity = () => {
+    //     const {scrollOffset} = this.state;
+    //     return this.props.imageSource ? scrollOffset.interpolate({
+    //         inputRange: [0, this.headerHeight - toolbarHeight],
+    //         outputRange: [1, 0],
+    //         extrapolate: 'clamp',
+    //     }) : 0
+    // };
 
     render() {
         const {imageSource, toolbarColor, titleStyle, onBackPress, backStyle, backTextStyle} = this.props;
+        // const height = this._getHeight();
         const height = this._getHeight();
-        const left = this._getLeft();
+        // const left = this._getLeft();
         const bottom = this._getBottom();
         const opacity = this._getOpacity();
-        const fontSize = this._getFontSize();
-        const imageOpacity = this._getImageOpacity();
+        const display = this._disOpacity();
+        const blankHeight = this._blankHeight();
+        // const fontSize = this._getFontSize();
+        // const imageOpacity = this._getImageOpacity();
+
+        // console.log(opacity);
+
         const headerStyle = this.props.noBorder ? undefined : {borderBottomWidth: 1, borderColor: '#a7a6ab'};
 
         return (
-
             <Animated.View
                 style={[
                     styles.header,
                     headerStyle,
                     {
                         height: height,
-                        backgroundColor: toolbarColor,
+                        // backgroundColor: '#408EF5',
+                        // backgroundColor: 'transpant',
                         // background: 'linear-gradient(#000000 50%, #333 50%)'
                         // borderBottomWidth: 10,
                         // borderColor: '#eee'
@@ -134,24 +164,56 @@ export default class Header extends React.PureComponent {
                 <View style={styles.toolbarContainer}>
                     <View style={styles.statusBar}/>
                     <View style={styles.toolbar}>
+                        <Animated.View style={{
+                            opacity: display,
+                            marginLeft: 16,
+                            marginTop: 16,
+                            // position: 'absolute',
+                            // top: 15,
+                            // left: 0,
+                            // right: 0,
+                            // zIndex: 3456
+                            // backgroundColor:'#fff'
+                        }}>
+                            {this.props.renderLeft && this.props.renderLeft()}
+                        </Animated.View>
                         <View style={styles.flexView}/>
                         {this.props.renderRight && this.props.renderRight()}
                     </View>
                 </View>
 
-                <Animated.View style={[titleStyle, {
-                    position: 'absolute',
-                    left: 0,
-                    bottom: bottom,
-                    opacity: opacity,
-                    // fontSize,
-                    backgroundColor: '#fff',
+                <Animated.View style={{
+                    // opacity: display,
+                    // marginLeft: 16,
+                    // marginTop: 16,
+                    height: blankHeight,
                     width: width,
-                    // marginTop:40
-                }]}>
-                    {this.props.title && this.props.title()}
+                    // position: 'absolute',
+                    // top: 15,
+                    // left: 0,
+                    // right: 0,
+                    // zIndex: 3456
+                    backgroundColor: '#408EF5'
+                }}/>
 
+                <Animated.View style={{
+                    // position: 'absolute',
+                    // left: 0,
+                    // zIndex: 999,
+                    // borderTopWidth:10,
+                    // borderColor:'#408EF5',
+                    // bottom: bottom,
+                    marginBottom: bottom,
+                    opacity: opacity,
+                    // display: !opacity ? 'none' : 'flex',
+                    // fontSize,
+                    // backgroundColor: '#fff',
+                    width: width,
+                    // marginTop: 100
+                }}>
+                    {this.props.title && this.props.title()}
                 </Animated.View>
+
             </Animated.View>
 
 
@@ -161,7 +223,13 @@ export default class Header extends React.PureComponent {
 
 const styles = StyleSheet.create({
     toolbarContainer: {
-        height: toolbarHeight
+        height: toolbarHeight,
+        backgroundColor: '#408EF5',
+        // position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        // zIndex: 1000
     },
     statusBar: {
         height: topInset + paddingTop,
@@ -196,7 +264,7 @@ Header.defaultProps = {
     renderRight: undefined,
     backStyle: {marginLeft: 10},
     backTextStyle: {fontSize: 16},
-    titleStyle: {fontSize: 20, left: 0, bottom: 0},
+    // titleStyle: {fontSize: 20, left: 0, bottom: 0},
     toolbarColor: '#FFF',
     headerMaxHeight: 223,
     disabled: false,

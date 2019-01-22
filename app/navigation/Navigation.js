@@ -94,20 +94,20 @@ const TabNavigator = createBottomTabNavigator({
                 }
             },
             tabBarLabel: ({ focused, horizontal, tintColor }) => {
-                console.log('defaultNavigationOptions tabBarLabel')
+                console.log('defaultNavigationOptions tabBarLabel');
                 const style = {
                     color: tintColor,
                     fontSize: 10
-                }
+                };
                 const { routeName } = navigation.state;
                 let text = '';
                 if(routeName === 'News'){
                     text = '资讯'
                 }else if(routeName === 'DiscloseList'){
-                    style.top = -3
+                    style.top = -3;
                     text = '先知'
                 }else if(routeName === 'Mine'){
-                    text = '我'
+                    text = '我';
                 }
                 return <Text style={style}>{text}</Text>
             },

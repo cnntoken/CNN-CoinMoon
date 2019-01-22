@@ -43,8 +43,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#408EF5',
     },
     userInfo: {
-        // height: 104,
-        backgroundColor: '#fff',
+        height: 104,
+        // backgroundColor: '#408EF5',
+        // borderTopColor:'#408EF5',
+        // borderTopWidth:20,
         flexDirection: 'row',
         alignItems: 'flex-start',
         justifyContent: 'space-between'
@@ -74,7 +76,8 @@ class ViewControl extends Component {
             isModalVisible: false,
             activeItem: null,
             // 用于标识是否还有更多数据
-            LastEvaluatedKey: null
+            LastEvaluatedKey: null,
+            userId: props.user.id
         }
     }
 
@@ -108,11 +111,14 @@ class ViewControl extends Component {
     };
 
     // 点击用户头像跳到该用户的个人中心
-    // clickAvatar = (item) => {
-    //     navigationActions.navigateToMine({
-    //         id: item.userId
-    //     });
-    // };
+    clickAvatar = (item) => {
+        this.setState({
+            userId: item.userId,
+            Items: null
+        });
+        this.getList(this.state.userId, 10, null, false, false);
+        this.subscription = DeviceEventEmitter.addListener('updateDiscloseListData', this.updateState);
+    };
 
     // 点赞
     like = (item) => {
@@ -187,7 +193,7 @@ class ViewControl extends Component {
     renderListItem = ({item, index}) => {
         const {hasData, Items} = this.state;
         return <DiscloseListItem showDeleteDialog={this.showDeleteDialog}
-            // clickAvatar={this.clickAvatar}
+                                 clickAvatar={this.clickAvatar}
                                  like={this.like}
                                  opt={{item, index, hasData, Items, userId: this.props.user.id}}
                                  pressItem={this.pressItem}/>
@@ -214,25 +220,26 @@ class ViewControl extends Component {
             loadMoreing: true,
             refreshState: RefreshState.FooterRefreshing
         });
-        this.getList(10, this.state.LastEvaluatedKey, false, true);
+        this.getList(this.state.userId, 10, this.state.LastEvaluatedKey, false, true);
     };
 
     /**
      * 获取爆料列表数据和获取每条爆料条目对应用户的行为数据
+     * @param userId
      * @param limit 返回限制
      * @param LastEvaluatedKey 标识下一次请求从哪个条目开始
      * @param refresh      向下拉刷新
      * @param loadmore     加载更多
      * */
-    getList = (limit, LastEvaluatedKey, refresh, loadmore) => {
+    getList = (userId, limit, LastEvaluatedKey, refresh, loadmore) => {
 
-        const {navigation} = this.props;
-        const id = navigation.getParam('id');
+        // const {navigation} = this.props;
+        // const id = navigation.getParam('id');
         this.props.getList({
             params: {
                 limit: limit || 10,
                 LastEvaluatedKey: LastEvaluatedKey || null,
-                userId: id || this.props.user.id
+                userId: userId
             },
             callback: (data) => {
                 let {Items, LastEvaluatedKey} = data;
@@ -301,7 +308,7 @@ class ViewControl extends Component {
     ////////////////////////////////////////////////////////////////////////////// 列表部分逻辑 end
 
     componentDidMount() {
-        this.getList(10, null, false, false);
+        this.getList(this.state.userId, 10, null, false, false);
         this.subscription = DeviceEventEmitter.addListener('updateDiscloseListData', this.updateState);
         StatusBar.setBarStyle('light-content', true);
     }
@@ -310,46 +317,81 @@ class ViewControl extends Component {
         this.subscription.remove();
     };
 
+    goBack = () => {
+        this.setState({
+            userId: this.props.user.id,
+            Items: null
+        });
+        this.getList(this.state.userId, 10, null, false, false);
+        this.subscription = DeviceEventEmitter.addListener('updateDiscloseListData', this.updateState);
+    };
+
 
     render() {
-        const {userInfo} = this.props;
-        const {refreshing, loadMoreing, Items} = this.state;
+
+        const {userInfo, navigation, user} = this.props;
+        const {refreshing, loadMoreing, Items, userId} = this.state;
+        const isMine = userId === user.id;
+
 
         return (
             <AnimatedHeader
                 style={{flex: 1}}
                 // backText='Back'
                 toolbarColor={'#408EF5'}
-                renderLeft={() => (<UserAvatar
-                    info={{avatar: userInfo.attributes.picture, nickname: userInfo.attributes.nickname}}/>)}
+                renderLeft={() => {
+
+                    // 自己的主页
+                    if (isMine) {
+                        return (<UserAvatar
+                            info={{avatar: userInfo.attributes.picture, nickname: userInfo.attributes.nickname}}
+                        />)
+                    }
+                    // 他人主页
+                    else {
+                        return (<UserAvatar
+                                goBack={this.goBack}
+                                info={{
+                                    avatar: userInfo.attributes.picture,
+                                    nickname: userInfo.attributes.nickname,
+                                }}
+                            />
+                        )
+                    }
+                }}
                 title={() => (
                     <View style={styles.userInfo}>
                         <UserAvatar style={styles.userAvatar} info={{
                             avatar: userInfo.attributes.picture,
                             nickname: userInfo.attributes.nickname
                         }} big/>
-                        <Button transparent onPress={this.goEdit}>
+
+                        {isMine ? <Button transparent onPress={this.goEdit}>
                             <Text>编辑信息</Text>
-                        </Button>
+                        </Button> : null}
+
                     </View>
                 )}
                 renderRight={() => (<Button style={{
                     marginRight: 16,
-                    marginTop: 16,
+                    marginTop: 26,
 
                 }} transparent onPress={this.goSettings}>
                     <Image source={require('app/images/icon_settings.png')}/>
                 </Button>)}
                 // backStyle={{marginLeft: 10}}
                 // backTextStyle={{fontSize: 14, color: '#fff'}}
-                titleStyle={{fontSize: 22, left: 20, bottom: 20, color: '#fff'}}
-                headerMaxHeight={200}
+                // titleStyle={{fontSize: 22, left: 20, bottom: 20, color: '#fff'}}
                 noBorder={true}
                 // imageSource={Bg}
                 disabled={false}
             >
                 {Items ? <RefreshListView
                     data={Items}
+                    ListHeaderComponent={<View style={{
+                        backgroundColor: '#F5F5F5',
+                        height: 10
+                    }}/>}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={this.renderListItem}
                     refreshState={this.state.refreshState}
@@ -432,7 +474,6 @@ class ViewControl extends Component {
 
 
             </Container>
-
         );
     }
 }

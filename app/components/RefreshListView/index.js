@@ -11,7 +11,9 @@ export const RefreshState = {
 };
 
 const DEBUG = false;
-const log = (text: string) => {DEBUG && console.log(text)}
+const log = (text: string) => {
+    DEBUG && console.log(text)
+}
 
 type Props = {
     refreshState: number,
@@ -34,9 +36,7 @@ type Props = {
     renderItem: Function,
 }
 
-type State = {
-
-}
+type State = {}
 
 class Index extends PureComponent<Props, State> {
 
@@ -64,7 +64,7 @@ class Index extends PureComponent<Props, State> {
         }
     }
 
-    onEndReached = (info: {distanceFromEnd: number}) => {
+    onEndReached = (info: { distanceFromEnd: number }) => {
         log('[RefreshListView]  onEndReached   ' + info.distanceFromEnd)
 
         if (this.shouldStartFooterRefreshing()) {
@@ -98,10 +98,11 @@ class Index extends PureComponent<Props, State> {
     render() {
         log('[RefreshListView]  render  refreshState:' + this.props.refreshState)
 
-        let {renderItem, ...rest} = this.props
+        let {renderItem, ListHeaderComponent, ...rest} = this.props;
 
         return (
             <FlatList
+                ListHeaderComponent={ListHeaderComponent || null}
                 ref={this.props.listRef}
                 onEndReached={this.onEndReached}
                 onRefresh={this.onHeaderRefresh}
@@ -129,11 +130,12 @@ class Index extends PureComponent<Props, State> {
             footerFailureComponent,
             footerNoMoreDataComponent,
             footerEmptyDataComponent,
+
         } = this.props
 
         switch (this.props.refreshState) {
             case RefreshState.Idle:
-                footer = (<View style={styles.footerContainer} />)
+                footer = (<View style={styles.footerContainer}/>)
                 break
             case RefreshState.Failure: {
                 footer = (
@@ -171,8 +173,8 @@ class Index extends PureComponent<Props, State> {
             }
             case RefreshState.FooterRefreshing: {
                 footer = footerRefreshingComponent ? footerRefreshingComponent : (
-                    <View style={styles.footerContainer} >
-                        <ActivityIndicator size="small" color="#888888" />
+                    <View style={styles.footerContainer}>
+                        <ActivityIndicator size="small" color="#888888"/>
                         <Text style={[styles.footerText, {marginLeft: 7}]}>{footerRefreshingText}</Text>
                     </View>
                 )
@@ -180,7 +182,7 @@ class Index extends PureComponent<Props, State> {
             }
             case RefreshState.NoMoreData: {
                 footer = footerNoMoreDataComponent ? footerNoMoreDataComponent : (
-                    <View style={styles.footerContainer} >
+                    <View style={styles.footerContainer}>
                         <Text style={styles.footerText}>{footerNoMoreDataText}</Text>
                     </View>
                 )
