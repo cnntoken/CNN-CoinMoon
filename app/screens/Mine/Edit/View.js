@@ -33,16 +33,22 @@ class ViewControl extends PureComponent {
 
     uploadPicture = async (fn) => {
         const {image} = this.state;
-        const formData = new FormData();
-        formData.append('images', {
-            uri: image.uri,
-            name: image.fileName
-        });
+        // const formData = new FormData();
+        // formData.append('images', {
+        //     uri: image.uri,
+        //     name: image.fileName
+        // });
+
+        let datas = [{
+            data: image.data,
+            uri: image.uri
+        }];
+
         this.props.upload({
-            images: formData,
+            images: datas,
             callback: (res) => {
-                if (res.data) {
-                    fn(res.data[0].uri)
+                if (res) {
+                    fn(res[0].uri)
                 }
             }
         })

@@ -15,6 +15,8 @@ import {Image, Text, View, Keyboard} from "react-native";
 
 import {$toast} from "app/utils";
 
+const moment = require('moment');
+
 const source = require("app/images/avatar_1.png");
 
 class CommentList extends Component {
@@ -133,13 +135,13 @@ class CommentList extends Component {
                                     <View style={styles.comments}>
                                         <Text style={styles.comments_username}>{item.username}</Text>
                                         <Text style={styles.comments_content}>{item.content}</Text>
-                                        <Text style={styles.comments_time}>{item.time}</Text>
+                                        <Text style={styles.comments_time}>{moment(item.time).format('HH:MM')}</Text>
                                         {
                                             item.at ? <View style={styles.comments_at}>
                                                 <Text
                                                     style={styles.comments_at_content}>@{item.at}: {item.atContent}</Text>
                                                 <Text
-                                                    style={styles.comments_at_time}>{item.atTime}</Text>
+                                                    style={styles.comments_at_time}>{moment(item.atTime).format('HH:MM')}</Text>
                                             </View> : null
                                         }
                                     </View>

@@ -138,29 +138,26 @@ class Screen extends Component {
         // 发布图片和文字
         let images = this.state.images.slice(0, this.state.images.length - 1);
 
-        // let datas = [];
-        // images.forEach((item) => {
-        //     datas.push({
-        //         data: item.dataurl,
-        //         uri: item.uri
-        //     })
-        // });
-
-
-        const formData = new FormData();
-        images.forEach((file) => {
-            formData.append('images', {
-                uri: file.uri,
-                name: file.fileName
-            });
+        let datas = [];
+        images.forEach((item) => {
+            datas.push({
+                data: item.data,
+                uri: item.uri
+            })
         });
-
+        // const formData = new FormData();
+        // images.forEach((file) => {
+        //     formData.append('images', {
+        //         uri: file.uri,
+        //         name: file.fileName
+        //     });
+        // });
         this.props.upload({
-            images: formData,
+            images: datas,
             callback: (data) => {
                 console.log(data);
                 let uris = [];
-                data.result.forEach((item) => {
+                data.forEach((item) => {
                     uris.push(item.uri);
                 });
                 this.handlePublish(title, uris);

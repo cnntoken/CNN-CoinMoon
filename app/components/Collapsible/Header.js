@@ -14,9 +14,6 @@ const topInset = isIphoneX ? iphoneXTopInset : 0;
 
 const toolbarHeight = initToolbarHeight + topInset + paddingTop + 20;
 
-// const AnimatedGradient = Animated.create(LinearGradient);
-
-
 export default class Header extends React.PureComponent {
 
     constructor(props) {
@@ -33,6 +30,7 @@ export default class Header extends React.PureComponent {
         if (this.props.disabled) {
             return;
         }
+        // console.log(e.nativeEvent.contentOffset.y);
         this.state.scrollOffset.setValue(e.nativeEvent.contentOffset.y);
     };
 
@@ -70,26 +68,34 @@ export default class Header extends React.PureComponent {
             outputRange: [this.headerHeight, toolbarHeight],
             extrapolate: 'clamp',
         })
-    }
+    };
 
     _getBottom = () => {
         const {scrollOffset} = this.state;
-        const bottom = this.props.titleStyle.bottom || Header.defaultProps.titleStyle.bottom;
+        // const bottom = this.props.titleStyle.bottom || Header.defaultProps.titleStyle.bottom;
+        const bottom = 0;
         return scrollOffset.interpolate({
             inputRange: [0, this.headerHeight - toolbarHeight],
             outputRange: [bottom, this.state.bottom],
             extrapolate: 'clamp',
         });
-    }
+    };
 
     _getOpacity = () => {
         const {scrollOffset} = this.state;
-        return this.props.backText ? scrollOffset.interpolate({
+        // return this.props.backText ? scrollOffset.interpolate({
+        //     inputRange: [0, this.headerHeight - toolbarHeight],
+        //     outputRange: [1, 0],
+        //     extrapolate: 'clamp',
+        // }) : 0
+
+        return scrollOffset.interpolate({
             inputRange: [0, this.headerHeight - toolbarHeight],
             outputRange: [1, 0],
             extrapolate: 'clamp',
-        }) : 0
-    }
+        });
+
+    };
 
     _getImageOpacity = () => {
         const {scrollOffset} = this.state;
@@ -108,55 +114,45 @@ export default class Header extends React.PureComponent {
         const opacity = this._getOpacity();
         const fontSize = this._getFontSize();
         const imageOpacity = this._getImageOpacity();
-        const headerStyle = this.props.noBorder ? undefined : {borderBottomWidth: 1, borderColor: '#a7a6ab'}
+        const headerStyle = this.props.noBorder ? undefined : {borderBottomWidth: 1, borderColor: '#a7a6ab'};
 
         return (
 
-                <Animated.View
-                    style={[
-                        styles.header,
-                        headerStyle,
-                        {
-                            height: height,
-                            backgroundColor: toolbarColor,
-                            // background: 'linear-gradient(#000000 50%, #333 50%)'
-                            // borderBottomWidth: 10,
-                            // borderColor: '#eee'
-                        },
-                    ]}>
+            <Animated.View
+                style={[
+                    styles.header,
+                    headerStyle,
+                    {
+                        height: height,
+                        backgroundColor: toolbarColor,
+                        // background: 'linear-gradient(#000000 50%, #333 50%)'
+                        // borderBottomWidth: 10,
+                        // borderColor: '#eee'
+                    },
+                ]}>
 
-                    {imageSource && <Animated.Image
-                        style={[StyleSheet.absoluteFill, {width: null, height: null, opacity: imageOpacity}]}
-                        source={imageSource}
-                        resizeMode='cover'
-                    />}
-
-                    <View style={styles.toolbarContainer}>
-                        <View style={styles.statusBar}/>
-                        <View style={styles.toolbar}>
-                            {this.props.renderLeft && this.props.renderLeft()}
-                            <TouchableOpacity disabled={!onBackPress} onPress={onBackPress} activeOpacity={0.8}
-                                              style={[styles.titleButton, backStyle]} onLayout={this.onBackLayout}>
-                                <Animated.Text style={[backTextStyle, {
-                                    alignSelf: 'center',
-                                    opacity: opacity
-                                }]}>{this.props.backText}</Animated.Text>
-                            </TouchableOpacity>
-                            <View style={styles.flexView}/>
-                            {this.props.renderRight && this.props.renderRight()}
-                        </View>
+                <View style={styles.toolbarContainer}>
+                    <View style={styles.statusBar}/>
+                    <View style={styles.toolbar}>
+                        <View style={styles.flexView}/>
+                        {this.props.renderRight && this.props.renderRight()}
                     </View>
-                    <Animated.View style={[titleStyle, {
-                        position: 'absolute',
-                        left: left,
-                        bottom: bottom,
-                        fontSize,
-                        // backgroundColor: '#fff'
-                    }]}>
-                        {this.props.title()}
-                    </Animated.View>
+                </View>
+
+                <Animated.View style={[titleStyle, {
+                    position: 'absolute',
+                    left: 0,
+                    bottom: bottom,
+                    opacity: opacity,
+                    // fontSize,
+                    backgroundColor: '#fff',
+                    width: width,
+                    // marginTop:40
+                }]}>
+                    {this.props.title && this.props.title()}
 
                 </Animated.View>
+            </Animated.View>
 
 
         );
@@ -169,8 +165,8 @@ const styles = StyleSheet.create({
     },
     statusBar: {
         height: topInset + paddingTop,
-        borderBottomWidth: 1,
-        borderColor: '#eee'
+        // borderBottomWidth: 1,
+        // borderColor: '#eee'
     },
     toolbar: {
         flex: 1,
@@ -183,7 +179,6 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
     },
-
     titleButton: {
         flexDirection: 'row',
     },
@@ -201,9 +196,9 @@ Header.defaultProps = {
     renderRight: undefined,
     backStyle: {marginLeft: 10},
     backTextStyle: {fontSize: 16},
-    titleStyle: {fontSize: 20, left: 40, bottom: 30},
+    titleStyle: {fontSize: 20, left: 0, bottom: 0},
     toolbarColor: '#FFF',
-    headerMaxHeight: 200,
+    headerMaxHeight: 223,
     disabled: false,
     imageSource: undefined,
 };

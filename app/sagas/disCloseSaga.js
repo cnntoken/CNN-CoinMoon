@@ -3,7 +3,7 @@ import {Auth} from 'aws-amplify';
 import {$toast} from '../utils';
 import * as Types from '../actions/types';
 import * as services from '../services/disclose';
-import {upload as uploadImgs} from '../services/upload';
+// import {upload as uploadImgs} from '../services/upload';
 import * as navigationActions from 'app/actions/navigationActions';
 
 
@@ -11,7 +11,7 @@ import * as navigationActions from 'app/actions/navigationActions';
 export function* upload({payload}) {
     const {images, callback} = payload;
     try {
-        const res = yield call(uploadImgs, images);
+        const res = yield call(services.upload, images);
         if (callback) callback(res);
     } catch (e) {
         $toast(`upload image fail: ${e.message}`);

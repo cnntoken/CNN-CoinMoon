@@ -310,6 +310,7 @@ class Screen extends Component {
                         </View>
                     </Modal>
                 </View>
+
             </Container>
         );
     }

@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#408EF5',
     },
     userInfo: {
-        height: 104,
+        // height: 104,
         backgroundColor: '#fff',
         flexDirection: 'row',
         alignItems: 'flex-start',
@@ -320,25 +320,28 @@ class ViewControl extends Component {
                 style={{flex: 1}}
                 // backText='Back'
                 toolbarColor={'#408EF5'}
+                renderLeft={() => (<UserAvatar
+                    info={{avatar: userInfo.attributes.picture, nickname: userInfo.attributes.nickname}}/>)}
                 title={() => (
-                    <View style={{
-                        marginRight: 16,
-                        marginTop: 16
-                    }}>
-                        <UserAvatar
-                            info={{avatar: userInfo.attributes.picture, nickname: userInfo.attributes.nickname}}/>
+                    <View style={styles.userInfo}>
+                        <UserAvatar style={styles.userAvatar} info={{
+                            avatar: userInfo.attributes.picture,
+                            nickname: userInfo.attributes.nickname
+                        }} big/>
+                        <Button transparent onPress={this.goEdit}>
+                            <Text>编辑信息</Text>
+                        </Button>
                     </View>
                 )}
-                // renderLeft={() => (<UserAvatar
-                //     info={{avatar: userInfo.attributes.picture, nickname: userInfo.attributes.nickname}}/>)}
                 renderRight={() => (<Button style={{
                     marginRight: 16,
-                    marginTop: 16
+                    marginTop: 16,
+
                 }} transparent onPress={this.goSettings}>
                     <Image source={require('app/images/icon_settings.png')}/>
                 </Button>)}
-                backStyle={{marginLeft: 10}}
-                backTextStyle={{fontSize: 14, color: '#fff'}}
+                // backStyle={{marginLeft: 10}}
+                // backTextStyle={{fontSize: 14, color: '#fff'}}
                 titleStyle={{fontSize: 22, left: 20, bottom: 20, color: '#fff'}}
                 headerMaxHeight={200}
                 noBorder={true}

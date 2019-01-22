@@ -22,7 +22,7 @@ import {sliderWidth} from "../Publish/styles";
 import Modal from "react-native-modal";
 import {$toast} from "../../../utils";
 import * as navigationActions from 'app/actions/navigationActions';
-import  NavigationService from 'app/navigation/NavigationService';
+import NavigationService from 'app/navigation/NavigationService';
 import avatars from "../../../services/constants";
 import i18n from "../../../i18n";
 
@@ -104,10 +104,13 @@ class Page extends Component {
             this.props.commentDisclose({
                 params: {
                     content: text,
-                    discloseId: item.discloseId,
-                    atCommentId: item._id,
-                    userId: this.props.user.id,
+                    at: item.userId,
                     atUserId: item.userId,
+                    atContent: item.content,
+                    atTime: item.createdAt,
+                    atCommentId: item._id,
+                    discloseId: item.discloseId,
+                    userId: this.props.user.id,
                     "likeNum": 0,
                     "replayNum": 0,
                     "dislikeNum": 0
@@ -284,7 +287,7 @@ class Page extends Component {
                 this.setState({
                     data: Object.assign(data, {
                         source: avatars[(data.avatarType || 0) % 5],
-                        userName: data.userName || 'Anonymity'
+                        userName: data.userName || 'Anonymity',
                     })
                 });
             }
@@ -308,6 +311,7 @@ class Page extends Component {
                 let {Items, LastEvaluatedKey} = data;
                 Items.forEach((item) => {
                     item.userAction = item.userAction || {};
+                    item.time = item.createdAt || new Date();
                 });
                 this.setState({
                     comments: refresh ? [...Items] : [...(this.state.comments || []), ...Items],
@@ -324,7 +328,7 @@ class Page extends Component {
 
     componentDidMount() {
         this.getDiscloseDetail();
-        // this.getDiscloseComments(1, false, true);
+        this.getDiscloseComments(1, false, true);
     }
 
     // 显示删除弹框
@@ -356,7 +360,6 @@ class Page extends Component {
     render() {
 
         let {data, comments, isPreview, activeComment, loadMoreing, LastEvaluatedKey} = this.state;
-
         // 预览图片
         if (isPreview && data) {
             let list = [data];
@@ -395,6 +398,7 @@ class Page extends Component {
                 </Content>
             </Container>;
         }
+
 
         // 展示详情
         return (
@@ -454,7 +458,7 @@ class Page extends Component {
                                             <Grid style={styles.grid_images_btns}>
                                                 <Row>
                                                     {
-                                                        item.images.slice(0, 3).map((i, idx) => {
+                                                        (item.images || []).slice(0, 3).map((i, idx) => {
                                                             return <Col style={styles.col_img}>
                                                                 <Button onPress={this.previewImage.bind(this, idx)}>
                                                                     <Image style={styles.image} key={idx}
@@ -466,7 +470,7 @@ class Page extends Component {
                                                 </Row>
                                                 <Row>
                                                     {
-                                                        item.images.length > 3 ?
+                                                        item.images && item.images.length > 3 ?
                                                             item.images.slice(3, 6).map((i, idx) => {
                                                                 return <Col style={styles.col_img}>
                                                                     <Button
@@ -481,7 +485,7 @@ class Page extends Component {
                                                 </Row>
                                                 <Row>
                                                     {
-                                                        item.images.length > 6 ?
+                                                        item.images && item.images.length > 6 ?
                                                             item.images.slice(6, 9).map((i, idx) => {
                                                                 return <Col style={styles.col_img}>
                                                                     <Button
