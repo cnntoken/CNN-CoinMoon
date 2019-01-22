@@ -52,7 +52,6 @@ class ViewControl extends Component {
                         <Text>请登录</Text>
                     </Button>
                 </View>
-                
             </Container>
         );
     }

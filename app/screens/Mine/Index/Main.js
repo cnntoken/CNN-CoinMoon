@@ -164,17 +164,13 @@ class ViewControl extends Component {
         this.props.deleteDisclose({
             id: item._id,
             callback: (data) => {
-                // 删除成功
-                if (data.success) {
-                    // todo 国际化
-                    $toast('删除爆料成功');
-                    let index = this.state.Items.indexOf(item);
-                    this.state.Items.splice(index, 1);
-                    this.setState({
-                        isModalVisible: false,
-                        activeItem: null
-                    });
-                }
+                $toast('删除爆料成功');
+                let index = this.state.Items.indexOf(item);
+                this.state.Items.splice(index, 1);
+                this.setState({
+                    isModalVisible: false,
+                    activeItem: null
+                });
             }
         });
     };
@@ -239,34 +235,32 @@ class ViewControl extends Component {
                 userId: id || this.props.user.id
             },
             callback: (data) => {
-                if (data.success) {
-                    let {Items, LastEvaluatedKey} = data.data;
-                    Items.forEach((item) => {
-                        item.source = avatars[(item.avatarType || 0) % 5];
-                        item.userName = item.userName || 'Anonymity';
-                    });
-                    let list = [];
-                    // 向下拉时，更新最新前面的数据
-                    if (refresh) {
-                        list = uniqueById([...Items, ...this.state.Items]);
-                    }
-                    // 加载更多
-                    else if (loadmore) {
-                        list = uniqueById([...this.state.Items, ...Items]);
-                    } else {
-                        list = Items;
-                    }
-                    this.setState({
-                        Items: list,
-                        refreshState: list.length < 1 ? RefreshState.EmptyData : RefreshState.Idle,
-                        LastEvaluatedKey: LastEvaluatedKey,
-                        loadMoreing: false,
-                        refreshing: false,
-                        initLoading: false
-                    }, () => {
-
-                    });
+                let {Items, LastEvaluatedKey} = data;
+                Items.forEach((item) => {
+                    item.source = avatars[(item.avatarType || 0) % 5];
+                    item.userName = item.userName || 'Anonymity';
+                });
+                let list = [];
+                // 向下拉时，更新最新前面的数据
+                if (refresh) {
+                    list = uniqueById([...Items, ...this.state.Items]);
                 }
+                // 加载更多
+                else if (loadmore) {
+                    list = uniqueById([...this.state.Items, ...Items]);
+                } else {
+                    list = Items;
+                }
+                this.setState({
+                    Items: list,
+                    refreshState: list.length < 1 ? RefreshState.EmptyData : RefreshState.Idle,
+                    LastEvaluatedKey: LastEvaluatedKey,
+                    loadMoreing: false,
+                    refreshing: false,
+                    initLoading: false
+                }, () => {
+
+                });
             }
         });
     };
@@ -309,7 +303,6 @@ class ViewControl extends Component {
     componentDidMount() {
         this.getList(10, null, false, false);
         this.subscription = DeviceEventEmitter.addListener('updateDiscloseListData', this.updateState);
-
         StatusBar.setBarStyle('light-content', true);
     }
 

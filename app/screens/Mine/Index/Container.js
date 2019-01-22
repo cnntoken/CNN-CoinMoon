@@ -5,14 +5,16 @@ import {connect} from 'react-redux';
 import * as disCloseActions from "../../../actions/disCloseActions";
 import * as userAction from "../../../actions/userAction";
 
+
 function mapStateToProps({userReducer: {info}}) {
+    let attributes = info.attributes || {};
     return {
-        userInfo: info,
         user: {
-            "id": info.attributes.sub,
-            "name": info.attributes['custom:disclose_name'],
-            "icon": info.attributes.picture
-        }
+            "id": attributes.sub,
+            "name": attributes['custom:disclose_name'],
+            "icon": attributes.picture
+        },
+        userInfo: info
     };
 }
 
@@ -47,8 +49,8 @@ class Container extends Component {
     //     }
     // }
     render() {
-        const {userInfo} = this.props;
-        if (userInfo.attributes && userInfo.attributes.sub) {
+        const {user = {}} = this.props;
+        if (user && user.id) {
             return <Main {...this.props}/>
         } else {
             return <NotLogin {...this.props}/>

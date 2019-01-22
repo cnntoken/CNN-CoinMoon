@@ -105,18 +105,16 @@ class Screen extends Component {
             userId: this.props.user.id || '',
             userName: this.props.user.name || '',
             callback: (data) => {
-                if (data.success) {
-                    let images = this.state.images.slice(-1);
-                    this.setState({
-                        images: images,
-                        isPreview: false,
-                        title: '',
-                        activeSlide: 0,
-                        publishing: false
-                    });
-                    DeviceEventEmitter.emit('updateDiscloseListData', 'unshift', data.data);
-                    navigationActions.navigateToDiscloseList();
-                }
+                let images = this.state.images.slice(-1);
+                this.setState({
+                    images: images,
+                    isPreview: false,
+                    title: '',
+                    activeSlide: 0,
+                    publishing: false
+                });
+                DeviceEventEmitter.emit('updateDiscloseListData', 'unshift', data);
+                navigationActions.navigateToDiscloseList();
             }
         });
     };
@@ -139,6 +137,16 @@ class Screen extends Component {
         }
         // 发布图片和文字
         let images = this.state.images.slice(0, this.state.images.length - 1);
+
+        // let datas = [];
+        // images.forEach((item) => {
+        //     datas.push({
+        //         data: item.dataurl,
+        //         uri: item.uri
+        //     })
+        // });
+
+
         const formData = new FormData();
         images.forEach((file) => {
             formData.append('images', {
@@ -146,17 +154,16 @@ class Screen extends Component {
                 name: file.fileName
             });
         });
+
         this.props.upload({
             images: formData,
             callback: (data) => {
                 console.log(data);
-                if (data.success) {
-                    let uris = [];
-                    data.data.forEach((item) => {
-                        uris.push(item.uri);
-                    });
-                    this.handlePublish(title, uris);
-                }
+                let uris = [];
+                data.result.forEach((item) => {
+                    uris.push(item.uri);
+                });
+                this.handlePublish(title, uris);
             }
         });
     };
@@ -217,7 +224,6 @@ class Screen extends Component {
         // 预览图片页面
         if (isPreview) {
             return <Container style={styles.carousel_container}>
-
                 <Header style={styles.carousel_header}>
                     <Left>
                         <Button transparent onPress={this.preview2Publish}>

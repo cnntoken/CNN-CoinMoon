@@ -17,12 +17,14 @@ class Container extends Component {
     }
 }
 
+
 function mapStateToProps({userReducer: {info}}) {
+    let attributes = info.attributes || {};
     return {
         user: {
-            "id": info.attributes.sub,
-            "name": info.attributes['custom:disclose_name'],
-            "icon": info.attributes.picture
+            "id": attributes.sub,
+            "name": attributes['custom:disclose_name'],
+            "icon": attributes.picture
         }
     };
 }

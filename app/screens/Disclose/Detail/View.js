@@ -60,6 +60,7 @@ class Page extends Component {
     };
 
     renderImagePreview({item}) {
+        return null;
         return (
             <View style={styles.carousel_slide}>
                 <Image
@@ -112,13 +113,11 @@ class Page extends Component {
                     "dislikeNum": 0
                 },
                 callback: (data) => {
-                    if (data.success) {
-                        completeCallback(data);
-                        this.setState({
-                            activeComment: null,
-                        });
-                        this.commentOk(data.data);
-                    }
+                    completeCallback(data);
+                    this.setState({
+                        activeComment: null,
+                    });
+                    this.commentOk(data);
                 }
             });
         }
@@ -134,14 +133,11 @@ class Page extends Component {
                     "dislikeNum": 0
                 },
                 callback: (data) => {
-                    console.log(data);
-                    if (data.success) {
-                        completeCallback(data);
-                        this.setState({
-                            activeComment: null,
-                        });
-                        this.commentOk(data.data);
-                    }
+                    completeCallback(data);
+                    this.setState({
+                        activeComment: null,
+                    });
+                    this.commentOk(data);
                 }
             });
         }
@@ -238,15 +234,12 @@ class Page extends Component {
         this.props.deleteComment({
             id: item._id,
             callback: (data) => {
-                // 删除成功
-                if (data.success) {
-                    $toast('删除成功');
-                    let index = this.state.comments.indexOf(item);
-                    this.state.comments.splice(index, 1);
-                    this.setState({
-                        activeComment: null
-                    });
-                }
+                $toast('删除成功');
+                let index = this.state.comments.indexOf(item);
+                this.state.comments.splice(index, 1);
+                this.setState({
+                    activeComment: null
+                });
             }
         });
     };
@@ -288,14 +281,12 @@ class Page extends Component {
             id: id,
             userId: this.props.user.id,
             callback: (data) => {
-                if (data.success) {
-                    this.setState({
-                        data: Object.assign(data.data, {
-                            source: avatars[(data.avatarType || 0) % 5],
-                            userName: data.userName || 'Anonymity'
-                        })
-                    });
-                }
+                this.setState({
+                    data: Object.assign(data, {
+                        source: avatars[(data.avatarType || 0) % 5],
+                        userName: data.userName || 'Anonymity'
+                    })
+                });
             }
         });
     };
@@ -314,20 +305,18 @@ class Page extends Component {
                 userId: this.props.user.id,
             },
             callback: (data) => {
-                if (data.success) {
-                    let {Items, LastEvaluatedKey} = data.data;
-                    Items.forEach((item) => {
-                        item.userAction = item.userAction || {};
-                    });
-                    this.setState({
-                        comments: refresh ? [...Items] : [...(this.state.comments || []), ...Items],
-                        LastEvaluatedKey: LastEvaluatedKey,
-                        loadMoreing: false,
-                        activeComment: null,
-                    });
-                    if (!LastEvaluatedKey && !initLoading) {
-                        $toast('没有更多数据了!');
-                    }
+                let {Items, LastEvaluatedKey} = data;
+                Items.forEach((item) => {
+                    item.userAction = item.userAction || {};
+                });
+                this.setState({
+                    comments: refresh ? [...Items] : [...(this.state.comments || []), ...Items],
+                    LastEvaluatedKey: LastEvaluatedKey,
+                    loadMoreing: false,
+                    activeComment: null,
+                });
+                if (!LastEvaluatedKey && !initLoading) {
+                    $toast('没有更多数据了!');
                 }
             }
         });
@@ -335,7 +324,7 @@ class Page extends Component {
 
     componentDidMount() {
         this.getDiscloseDetail();
-        this.getDiscloseComments(1, false, true);
+        // this.getDiscloseComments(1, false, true);
     }
 
     // 显示删除弹框
@@ -350,12 +339,9 @@ class Page extends Component {
         this.props.deleteDisclose({
             id: this.state.data._id,
             callback: (data) => {
-                // 删除成功
-                if (data.success) {
-                    // $toast('删除爆料成功');
-                    DeviceEventEmitter.emit('updateDiscloseListData', 'delete', this.state.data);
-                    this.props.navigation.pop();
-                }
+                // $toast('删除爆料成功');
+                DeviceEventEmitter.emit('updateDiscloseListData', 'delete', this.state.data);
+                this.props.navigation.pop();
             }
         });
     };

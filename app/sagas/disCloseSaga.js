@@ -3,6 +3,7 @@ import {Auth} from 'aws-amplify';
 import {$toast} from '../utils';
 import * as Types from '../actions/types';
 import * as services from '../services/disclose';
+import {upload as uploadImgs} from '../services/upload';
 import * as navigationActions from 'app/actions/navigationActions';
 
 
@@ -10,12 +11,10 @@ import * as navigationActions from 'app/actions/navigationActions';
 export function* upload({payload}) {
     const {images, callback} = payload;
     try {
-        const res = yield call(services.upload, images);
-        // console.log(res);
+        const res = yield call(uploadImgs, images);
         if (callback) callback(res);
     } catch (e) {
         $toast(`upload image fail: ${e.message}`);
-        if (callback) callback(e);
     }
 }
 
@@ -23,12 +22,12 @@ export function* upload({payload}) {
 export function* publish({payload}) {
     const {title, images, userId, userName, callback} = payload;
     try {
-        const res = yield call(services.publish, title, images, userId , userName);
+        const res = yield call(services.publish, title, images, userId, userName);
         if (callback) callback(res);
     } catch (e) {
         console.log('publish fail');
         $toast(`publish fail: ${e.message}`);
-        if (callback) callback(e)
+
     }
 }
 
@@ -41,7 +40,6 @@ export function* getList({payload}) {
         if (callback) callback(res);
     } catch (e) {
         $toast(`getList fail: ${e.message}`);
-        if (callback) callback(e)
     }
 }
 
@@ -53,7 +51,7 @@ export function* getListByUserId({payload}) {
         if (callback) callback(res);
     } catch (e) {
         $toast(`getList fail: ${e.message}`);
-        if (callback) callback(e)
+
     }
 }
 
@@ -66,7 +64,7 @@ export function* like({payload}) {
         if (callback) callback(res);
     } catch (e) {
         $toast(`like fail: ${e.message}`);
-        if (callback) callback(e)
+
     }
 }
 
@@ -79,7 +77,7 @@ export function* deleteDisclose({payload}) {
         if (callback) callback(res);
     } catch (e) {
         $toast(`deleteDisclose fail: ${e.message}`);
-        if (callback) callback(e)
+
     }
 }
 
@@ -87,12 +85,12 @@ export function* deleteDisclose({payload}) {
 export function* getDiscloseDetail({payload}) {
     const {id, userId, callback} = payload;
     try {
-        const res = yield call(services.getDiscloseDetail, id,userId);
+        const res = yield call(services.getDiscloseDetail, id, userId);
         console.log('res', res);
         if (callback) callback(res);
     } catch (e) {
         $toast(`getDiscloseDetail fail: ${e.message}`);
-        if (callback) callback(e)
+
     }
 }
 
@@ -106,10 +104,9 @@ export function* getDiscloseComments({payload}) {
         if (callback) callback(res);
     } catch (e) {
         $toast(`getDiscloseComments fail: ${e.message}`);
-        if (callback) callback(e)
+
     }
 }
-
 
 
 // 评论爆料，或者回复评论
@@ -121,7 +118,7 @@ export function* commentDisclose({payload}) {
         if (callback) callback(res);
     } catch (e) {
         $toast(`commentDisclose fail: ${e.message}`);
-        if (callback) callback(e);
+        ;
     }
 }
 
@@ -134,7 +131,6 @@ export function* likeComment({payload}) {
         if (callback) callback(res);
     } catch (e) {
         $toast(`likeComment fail: ${e.message}`);
-        if (callback) callback(e);
     }
 }
 
@@ -148,6 +144,6 @@ export function* deleteComment({payload}) {
         if (callback) callback(res);
     } catch (e) {
         $toast(`deleteComment fail: ${e.message}`);
-        if (callback) callback(e)
+
     }
 }
