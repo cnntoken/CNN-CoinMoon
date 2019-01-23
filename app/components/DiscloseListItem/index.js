@@ -15,6 +15,9 @@ import {
 
 import {Col, Row, Grid} from "react-native-easy-grid";
 
+
+import FastImage from 'react-native-fast-image'
+
 const moment = require('moment');
 
 export default class DiscloseListItem extends Component {
@@ -119,8 +122,12 @@ export default class DiscloseListItem extends Component {
                                         // 容错处理
                                         let uri = typeof i === 'string' ? i : i.uri;
                                         return <Col style={styles.col_img} key={idx}>
-                                            <Image style={styles.image}
-                                                   source={{uri: uri}}/>
+                                            <FastImage style={styles.image}
+                                                       key={idx}
+                                                       source={{
+                                                           uri: uri,
+                                                           priority: FastImage.priority.normal,
+                                                       }}/>
                                         </Col>
                                     }) : null
                                 }
@@ -131,8 +138,12 @@ export default class DiscloseListItem extends Component {
                                         item.images.slice(3, 6).map((i, idx) => {
                                             let uri = typeof i === 'string' ? i : i.uri;
                                             return <Col style={styles.col_img} key={idx}>
-                                                <Image style={styles.image}
-                                                       source={{uri: uri}}/>
+                                                <FastImage style={styles.image}
+                                                           key={idx}
+                                                           source={{
+                                                               uri: uri,
+                                                               priority: FastImage.priority.normal,
+                                                           }}/>
                                             </Col>
                                         }) : null
                                 }
@@ -143,8 +154,12 @@ export default class DiscloseListItem extends Component {
                                         item.images.slice(6, 9).map((i, idx) => {
                                             let uri = typeof i === 'string' ? i : i.uri;
                                             return <Col style={styles.col_img} key={idx}>
-                                                <Image style={styles.image}
-                                                       source={{uri: uri}}/>
+                                                <FastImage style={styles.image}
+                                                           key={idx}
+                                                           source={{
+                                                               uri: uri,
+                                                               priority: FastImage.priority.normal,
+                                                           }}/>
                                             </Col>
                                         }) : null
                                 }

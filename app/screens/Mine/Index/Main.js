@@ -8,7 +8,7 @@ import {
     StatusBar,
     Image,
     PixelRatio,
-    DeviceEventEmitter, ScrollView
+    DeviceEventEmitter, ScrollView, Dimensions
 } from 'react-native';
 
 import {
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
         color: '#007AFF'
     },
 });
+
 
 class ViewControl extends Component {
 
@@ -384,7 +385,7 @@ class ViewControl extends Component {
 
                     </View>
                 )}
-                renderOthers={()=>{
+                renderOthers={() => {
                     return <View>
                         <Modal isVisible={this.state.isModalVisible}>
                             <View>

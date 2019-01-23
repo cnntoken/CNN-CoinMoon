@@ -13,18 +13,18 @@ import {
     ListItem
 } from "native-base";
 import {Col, Row, Grid} from "react-native-easy-grid";
-import {API} from 'aws-amplify';
-import {Image, Text, View, DeviceEventEmitter} from "react-native";
+import {Image, Text, View, DeviceEventEmitter, TouchableWithoutFeedback} from "react-native";
 import Carousel from "react-native-snap-carousel";
 import FooterInput from 'app/components/FooterInput';
 import CommentList from 'app/components/CommentList';
 import {sliderWidth} from "../Publish/styles";
 import Modal from "react-native-modal";
 import {$toast} from "../../../utils";
-import * as navigationActions from 'app/actions/navigationActions';
 import NavigationService from 'app/navigation/NavigationService';
 import avatars from "../../../services/constants";
 import i18n from "../../../i18n";
+
+import FastImage from 'react-native-fast-image'
 
 const moment = require('moment');
 
@@ -59,14 +59,21 @@ class Page extends Component {
         });
     };
 
-    renderImagePreview({item}) {
-        return null;
+    renderImagePreview = ({item}) => {
         return (
             <View style={styles.carousel_slide}>
-                <Image
-                    source={{uri: item}}
-                    style={styles.carousel_image}
-                />
+                <TouchableWithoutFeedback
+                    onPress={this.goBack}>
+                    <FastImage
+                        style={styles.carousel_image}
+                        source={{
+                            uri: item,
+                            priority: FastImage.priority.normal,
+
+                        }}
+                        resizeMode={FastImage.resizeMode.contain}
+                    />
+                </TouchableWithoutFeedback>
             </View>
         );
     };
@@ -362,24 +369,21 @@ class Page extends Component {
         let {data, comments, isPreview, activeComment, loadMoreing, LastEvaluatedKey} = this.state;
         // 预览图片
         if (isPreview && data) {
-            let list = [data];
             return <Container style={styles.carousel_container}>
-
-                <Header style={styles.carousel_header}>
-                    <Left>
-                        <Button transparent onPress={this.goBack}>
-                            <Image style={styles.carousel_back_icon}
-                                   source={require('app/images/icon_back_white.png')}/>
-                        </Button>
-                    </Left>
-                </Header>
-
+                {/*<Header style={styles.carousel_header}>*/}
+                {/*<Left>*/}
+                {/*<Button transparent onPress={this.goBack}>*/}
+                {/*<Image style={styles.carousel_back_icon}*/}
+                {/*source={require('app/images/icon_back_white.png')}/>*/}
+                {/*</Button>*/}
+                {/*</Left>*/}
+                {/*</Header>*/}
                 <Content style={styles.carousel_content}>
                     <Carousel
                         ref={(c) => {
                             this._carousel = c;
                         }}
-                        data={list[0].images.slice(0, 9)}
+                        data={data.images.slice(0, 9)}
                         renderItem={this.renderImagePreview}
                         sliderWidth={sliderWidth}
                         // slideStyle={{width: sliderWidth}}
@@ -387,11 +391,11 @@ class Page extends Component {
                         itemWidth={sliderWidth}
                         firstItem={this.state.activeSlide}
                         onBeforeSnapToItem={(index) => {
-                            console.log('onBeforeSnapToItem', index);
+                            // console.log('onBeforeSnapToItem', index);
                             // this.setState({activeSlide: index})
                         }}
                         onSnapToItem={(index) => {
-                            console.log('onSnapToItem', index);
+                            // console.log('onSnapToItem', index);
                             this.setState({activeSlide: index})
                         }}
                     />
@@ -461,8 +465,12 @@ class Page extends Component {
                                                         (item.images || []).slice(0, 3).map((i, idx) => {
                                                             return <Col style={styles.col_img}>
                                                                 <Button onPress={this.previewImage.bind(this, idx)}>
-                                                                    <Image style={styles.image} key={idx}
-                                                                           source={{uri: i}}/>
+                                                                    <FastImage style={styles.image}
+                                                                               key={idx}
+                                                                               source={{
+                                                                                   uri: i,
+                                                                                   priority: FastImage.priority.normal,
+                                                                               }}/>
                                                                 </Button>
                                                             </Col>
                                                         })
@@ -475,8 +483,12 @@ class Page extends Component {
                                                                 return <Col style={styles.col_img}>
                                                                     <Button
                                                                         onPress={this.previewImage.bind(this, idx + 3)}>
-                                                                        <Image style={styles.image} key={idx}
-                                                                               source={{uri: i}}/>
+                                                                        <FastImage style={styles.image}
+                                                                                   key={idx}
+                                                                                   source={{
+                                                                                       uri: i,
+                                                                                       priority: FastImage.priority.normal,
+                                                                                   }}/>
                                                                     </Button>
 
                                                                 </Col>
@@ -490,8 +502,12 @@ class Page extends Component {
                                                                 return <Col style={styles.col_img}>
                                                                     <Button
                                                                         onPress={this.previewImage.bind(this, idx + 6)}>
-                                                                        <Image style={styles.image} key={idx}
-                                                                               source={{uri: i}}/>
+                                                                        <FastImage style={styles.image}
+                                                                                   key={idx}
+                                                                                   source={{
+                                                                                       uri: i,
+                                                                                       priority: FastImage.priority.normal,
+                                                                                   }}/>
                                                                     </Button>
                                                                 </Col>
                                                             }) : null

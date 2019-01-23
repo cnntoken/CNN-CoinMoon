@@ -103,7 +103,7 @@ class ViewControl extends Component {
         this.props.getCommentList({
             id,
             params: {
-                limit: 20,
+                limit: 2,
                 LastEvaluatedKey: this.state.LastEvaluatedKey
             },
             callback: (data) => {
