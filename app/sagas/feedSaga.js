@@ -91,8 +91,7 @@ export function* comment({payload}) {
         console.log('res', res);
         if (callback) callback(res);
     } catch (e) {
-        $toast(`comment fail: ${e.message}`);
-        if (callback) callback(e);
+        $toast(`comment fail:`,e);
     }
 }
 
