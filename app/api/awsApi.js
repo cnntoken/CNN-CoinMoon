@@ -16,13 +16,13 @@ const $API = (method, url, config) => {
             reject(err)
         });
     })
-}
+};
 
 export const $get = (url, params = {}) => {
-    const config = getBaseConfig()
+    const config = getBaseConfig();
     config.queryStringParameters = params;
     return $API('get', url, config)
-}
+};
 
 export const $post = (url, params = {}) => {
     const config = getBaseConfig()
