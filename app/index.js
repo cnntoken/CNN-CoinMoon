@@ -16,27 +16,38 @@ import i18n from './i18n';
 import getTheme from "./theme/components";
 import variables from "./theme/variables/commonColor";
 import appServices from './services/app';
-
+import { AsyncStorage } from "react-native"
 
 const {persistor, store} = configureStore();
 
 export default class Index extends Component {
-
+    test = async ()=>{
+        return new Promise((resolve,reject)=>{
+            AsyncStorage.clear(()=>{
+                AsyncStorage.getAllKeys((err, keys) => {
+                    console.log('============   AsyncStorage.getAllKeys =        =========')
+                    console.log(err,keys)
+                    resolve()
+                  });
+            });
+        })
+        
+        
+    }
     _onLanguagesChange = ({ language }) => {
         i18n.locale = language;
     };
-
-    componentWillMount() {
-        RNLanguages.addEventListener('change', this._onLanguagesChange);
-    }
 
     componentWillUnmount() {
         RNLanguages.removeEventListener('change', this._onLanguagesChange);
     }
 
-    componentDidMount(){
+    async componentDidMount(){
+        // await this.test();
+        RNLanguages.addEventListener('change', this._onLanguagesChange);
         SplashScreen.hide();
         appServices.prepare(store);
+        
     }
     render() {
         return (

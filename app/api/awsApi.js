@@ -1,18 +1,25 @@
 import {API} from 'aws-amplify';
 
-const getBaseConfig = () => {
-    return {}
+const getBaseConfig = ()=>{
+    return {
+        response: true // OPTIONAL (return the entire Axios response object instead of only response.data)
+    }
 }
 
-const $API = (method, url, config) => {
-    return new Promise((resolve, reject) => {
-        API[method]('cnn-stark', url, config).then((response) => {
-            if (response.code === 200) {
-                resolve(response.result)
-            } else {
-                reject(response.result)
+const $API = (method, url, config)=>{
+    return new Promise((resolve,reject)=>{
+        API[method]('starkApi', url, config).then((response)=>{
+            console.log('================== api response ==================',url)
+            console.log(response)
+            const data = response.data;
+            if(data.code === 200){
+                resolve(data.result)
+            }else{
+                reject(data.result)
             }
-        }).catch((err) => {
+        }).catch((err)=>{
+            console.log('================== api err ==================',url)
+            console.log(err)
             reject(err)
         });
     })
