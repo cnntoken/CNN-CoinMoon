@@ -214,6 +214,8 @@ export default class Header extends React.PureComponent {
                     {this.props.title && this.props.title()}
                 </Animated.View>
 
+                {this.props.renderOthers && this.props.renderOthers()}
+
             </Animated.View>
 
 

@@ -34,9 +34,9 @@ class Screen extends Component {
     }
 
     // 双击导航标题,回到顶部
-    titleDoubleClick = () => {
-        this._flatList.scrollToIndex({index: 0, viewPosition: 0})
-    };
+    // titleDoubleClick = () => {
+    //     this._flatList.scrollToIndex({index: 0, viewPosition: 0})
+    // };
 
     // 写爆料
     writeDisclose = () => {
@@ -266,9 +266,10 @@ class Screen extends Component {
                 <Header>
                     <Left/>
                     <Body>
-                    <DoubleClicker onClick={this.titleDoubleClick}>
-                        <Title style={styles.title}>{i18n.t('disclose.title')}</Title>
-                    </DoubleClicker>
+                    {/*    <DoubleClicker onClick={this.titleDoubleClick}>
+
+                    </DoubleClicker>*/}
+                    <Title style={styles.title}>{i18n.t('disclose.title')}</Title>
                     </Body>
                     <Right>
                         <Button transparent light onPress={this.writeDisclose}>

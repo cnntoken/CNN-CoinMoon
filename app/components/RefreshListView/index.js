@@ -102,6 +102,9 @@ class Index extends PureComponent<Props, State> {
 
         return (
             <FlatList
+                style={{
+                    flex: 1
+                }}
                 ListHeaderComponent={ListHeaderComponent || null}
                 ref={this.props.listRef}
                 onEndReached={this.onEndReached}

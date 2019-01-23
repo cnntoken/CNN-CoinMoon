@@ -21,6 +21,7 @@ export default class DiscloseListItem extends Component {
 
     // 删除爆料
     showDeleteDialog = (item) => {
+        // debugger;
         if (this.props.showDeleteDialog) {
             this.props.showDeleteDialog(item);
         }
@@ -50,6 +51,8 @@ export default class DiscloseListItem extends Component {
 
     render() {
         const {item, userId} = this.props.opt;
+
+        // console.log(item);
 
         if (!item) {
             return null;
