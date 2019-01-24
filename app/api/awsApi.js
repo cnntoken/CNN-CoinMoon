@@ -19,7 +19,7 @@ const $API = (method, url, config)=>{
             }
         }).catch((err)=>{
             console.log('================== api err ==================',url)
-            console.log(err)
+            console.log(err);
             reject(err)
         });
     })
@@ -27,7 +27,7 @@ const $API = (method, url, config)=>{
 
 export const $get = (url, params = {}) => {
     const config = getBaseConfig();
-    
+
     config.queryStringParameters = {params: JSON.stringify(params)};
     console.log('=========== aws api get config ==============')
     console.log(config)
