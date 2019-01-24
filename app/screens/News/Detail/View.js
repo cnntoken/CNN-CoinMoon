@@ -17,6 +17,8 @@ import IconText from 'app/components/IconText';
 import FooterInput from 'app/components/FooterInput';
 import CommentList from 'app/components/CommentList';
 import {$toast} from 'app/utils';
+import i18n from 'app/i18n';
+
 class ViewControl extends Component {
 
     constructor(props) {
@@ -103,7 +105,7 @@ class ViewControl extends Component {
         this.props.getCommentList({
             id,
             params: {
-                limit: 2,
+                limit: 20,
                 LastEvaluatedKey: this.state.LastEvaluatedKey
             },
             callback: (data) => {

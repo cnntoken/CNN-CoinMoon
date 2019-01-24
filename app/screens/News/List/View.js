@@ -1,23 +1,9 @@
 import React, {Component} from 'react';
-import styles from './styles';
-import {
-    Container,
-    Header,
-    Content,
-    Text,
-    Button,
-    Left,
-    Right,
-    Body,
-    Title,
-    FooterTab,
-    Footer
-} from "native-base";
-import {View} from 'react-native'
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ListTabBar from './components/ListTabBar'
 import List from './components/List'
 import Item from './components/Item'
+import i18n from 'app/i18n';
 class ViewControl extends Component {
 
     constructor(props) {
@@ -62,7 +48,7 @@ class ViewControl extends Component {
                 // onChangeTab={this.onChangeTab}
                 >
                 <List
-                    tabLabel='新闻'
+                    tabLabel={i18n.t('page_main.category_news')}
                     data={this.props.news}
                     renderItem={this.renderItem}
                     hasMore={this.props.news_hasMore}
@@ -70,7 +56,7 @@ class ViewControl extends Component {
                     onLoadMore={(...args)=>{this.onLoadMore('news',...args)}}
                 />
                 <List
-                    tabLabel='信息'
+                    tabLabel={i18n.t('page_main.category_info')}
                     data={this.props.info}
                     renderItem={this.renderItem}
                     hasMore={this.props.info_hasMore}

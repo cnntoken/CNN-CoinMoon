@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Image} from 'react-native';
 import { Header,Left,Right, Body, Text,Button} from 'native-base';
 import PropTypes from 'prop-types'
-
+import i18n from 'app/i18n';
 
 class CustomHeader extends Component {
     static propTypes = {
@@ -12,7 +12,7 @@ class CustomHeader extends Component {
         return (
             <Header transparent>
                 <Left>
-                    <Button transparent onPress={this.props.onCancel}><Text style={{color:'#333333',fontSize: 16}}>取消</Text></Button>
+                    <Button transparent onPress={this.props.onCancel}><Text style={{color:'#333333',fontSize: 16}}>{i18n.t('label_cancel')}</Text></Button>
                 </Left>
                 <Body>
                     <Image source={require('./img/logo_small.png')} style={{width: 83, height: 45}}/>

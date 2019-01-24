@@ -3,7 +3,7 @@ import styles from './styles';
 import { View, Text,Button} from 'native-base';
 import PropTypes from 'prop-types'
 import FocusInput from '../Components/InputFocus'
-
+import i18n from 'app/i18n';
   
 class ViewControl extends Component {
     static propTypes = {
@@ -28,17 +28,17 @@ class ViewControl extends Component {
         const { code } = this.state;
         return (
             <View>
-                <Text style={styles.label}>请输入验证码</Text>
+                <Text style={styles.label}>{i18n.t('page_verify.code_input')}</Text>
                 <FocusInput
                     style={{marginTop:33}}
                     value={code}
                     onChangeText={this.onChange}
-                    placeholder='请输入验证码' 
+                    placeholder={i18n.t('page_verify.code_input_placeholder')} 
                     keyboardType='email-address' 
                     textContentType='emailAddress'
                  />
                 <Button block full rounded style={[styles.btn,styles.codebtn, disabled && styles.btnDisabled]} disabled={disabled} onPress={this.onSubmit}>
-                    <Text>提交</Text>
+                    <Text>{i18n.t('label_submit')}</Text>
                 </Button>
             </View>
         );

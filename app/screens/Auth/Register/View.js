@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import CustomHeader from '../Components/Header'
 import FocusInput from '../Components/InputFocus'
 import {$toast} from 'app/utils'
-
+import i18n from 'app/i18n';
   
 class ViewControl extends Component {
     static propTypes = {
@@ -89,13 +89,13 @@ class ViewControl extends Component {
             <Container>
                 <CustomHeader onCancel={this.goBack}/>
                 <View style={styles.container}>
-                    <Text style={styles.label}>注册账户</Text>
+                    <Text style={styles.label}>{i18n.t('page_register.register_account')}</Text>
                     <KeyboardAvoidingView style={styles.main}>
                         <FocusInput
                             style={styles.item}
                             value={info.email}
                             onChangeText={this.onChangeEmail}
-                            placeholder='请输入邮箱地址' 
+                            placeholder={i18n.t('page_register.email')} 
                             keyboardType='email-address' 
                             textContentType='emailAddress'
                         />
@@ -104,7 +104,7 @@ class ViewControl extends Component {
                             value={info.password}
                             secureTextEntry={true}
                             onChangeText={this.onChangePassword}
-                            placeholder='请输入密码'
+                            placeholder={i18n.t('page_register.password')}
                             kclearButtonMode='while-editing'
                             textContentType='password'
                         />
@@ -113,24 +113,24 @@ class ViewControl extends Component {
                             value={info.password2}
                             secureTextEntry={true}
                             onChangeText={this.onChangePassword2}
-                            placeholder='请再次输入密码'
+                            placeholder={i18n.t('page_register.re_password')}
                             kclearButtonMode='while-editing'
                             textContentType='password'
                         />
                         <View style={{alignItems:'center'}}>
                             <TouchableOpacity style={[styles.licenseBox,styles.text1]} onPress={this.toggleLincense}>
                                 <Image style={styles.agree} source={isAgree ? require('./img/checkbox_checked.png') : require('./img/checkbox_normal.png')} />
-                                <Text>点击注册自动同意各项</Text>
-                                <TouchableOpacity onPress={this.showLincense}><Text style={[styles.highlight]}>隐私政策</Text></TouchableOpacity>
+                                <Text>{i18n.t('page_register.license')}</Text>
+                                {/* <TouchableOpacity onPress={this.showLincense}><Text style={[styles.highlight]}>隐私政策</Text></TouchableOpacity> */}
                             </TouchableOpacity>
                         </View>
                         
                         <Button block full rounded style={[styles.btn, isBtnDisabled && styles.btnDisabled]} disabled={isBtnDisabled} onPress={this.onRegister}>
-                            <Text>注 册</Text>
+                            <Text>{i18n.t('page_register.register')}</Text>
                         </Button>
                     </KeyboardAvoidingView>
                     <View style={[styles.textBox,styles.text2]}>
-                        <Text>已有账号，去</Text><TouchableOpacity onPress={this.goLogin}><Text style={styles.highlight}>登录</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={this.goLogin}><Text style={styles.highlight}>{i18n.t('page_register.go_login')}</Text></TouchableOpacity>
                     </View>
                 </View>
             </Container>

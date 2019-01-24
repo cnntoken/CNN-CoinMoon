@@ -1,37 +1,12 @@
 // 所有导航信息都会加到这里来
 import {
     createStackNavigator,
-    createSwitchNavigator,
     createAppContainer,
     createBottomTabNavigator
 } from 'react-navigation';
 import React from 'react';
 import {Image,Text} from 'react-native';
-import userService from 'app/services/user'
-
-// import {CustomTabComponent} from './CustomTabComponent'
-
-// import { BottomTabBar } from 'react-navigation-tabs';
-
-// const TabBarComponent = (props) => (<BottomTabBar {...props} />);
-
-
-// import {
-//     Container,
-//     Header,
-//     Content,
-//     Text,
-//     Button,
-//     Left,
-//     Right,
-//     Body,
-//     Title,
-//     FooterTab,
-//     Icon,
-//     Footer
-// } from "native-base";
-
-// import Publish from 'app/screens/Publish/index';
+import i18n from 'app/i18n';
 
 // 资讯 News
 import NewsList from 'app/screens/News/List';
@@ -102,12 +77,12 @@ const TabNavigator = createBottomTabNavigator({
                 const { routeName } = navigation.state;
                 let text = '';
                 if(routeName === 'News'){
-                    text = '资讯'
+                    text = i18n.t('component_tabbar.feed')
                 }else if(routeName === 'DiscloseList'){
                     style.top = -3;
-                    text = '先知'
+                    text = i18n.t('component_tabbar.disclose')
                 }else if(routeName === 'Mine'){
-                    text = '我';
+                    text = i18n.t('component_tabbar.mine');
                 }
                 return <Text style={style}>{text}</Text>
             },
