@@ -17,24 +17,24 @@ class ViewControl extends Component {
             (LastEvaluatedKey)=>{
             this.LastEvaluatedKey[category] = LastEvaluatedKey;
         })
-    }
+    };
     onLoadMore = (category,params)=>{
         console.log('onloadmore',params)
         this.props.getList({category,params:{LastEvaluatedKey:this.LastEvaluatedKey[category]}},
             (LastEvaluatedKey)=>{ this.LastEvaluatedKey[category] = LastEvaluatedKey;})
-    }
+    };
     // renderInfomationItem = ({item, separators})=>{
     //     return <Item info={item} key={item._id} onItemClick={this.goDetail}/>
     // }
     renderItem = ({item, separators})=>{
         return <Item info={item} key={item._id} onItemClick={this.goDetail}/>
-    }
+    };
 
     goDetail = (info)=>{
         const {_id, category} = info;
         this.props.navigation.navigate('NewsDetail',{_id,category})
         // console.log('goDetail', info)
-    }
+    };
 
     componentDidMount() {
         // StatusBar.setBarStyle('light-content', true);

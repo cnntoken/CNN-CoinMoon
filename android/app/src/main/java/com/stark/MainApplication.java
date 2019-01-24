@@ -3,10 +3,10 @@ package com.stark;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.dylanvann.fastimage.FastImageViewPackage;
 import com.reactcommunity.rnlanguages.RNLanguagesPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
-import com.imagepicker.ImagePickerPackage;
 
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -31,10 +31,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new PickerPackage(),
             new FastImageViewPackage(),
             new RNLanguagesPackage(),
             new RNCWebViewPackage(),
-            new ImagePickerPackage(),
             new SplashScreenReactPackage(),
             new RNGestureHandlerPackage(),
             new RNAWSCognitoPackage()

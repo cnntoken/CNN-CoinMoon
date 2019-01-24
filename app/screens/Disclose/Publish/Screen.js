@@ -13,16 +13,21 @@ import {
 } from "native-base";
 
 import Spinner from 'react-native-loading-spinner-overlay';
-import {View, Image, DeviceEventEmitter} from 'react-native';
+import {View, Image, DeviceEventEmitter, TouchableWithoutFeedback} from 'react-native';
 
-import ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
+
 import Carousel from 'react-native-snap-carousel';
 import {$toast} from '../../../utils';
 import * as navigationActions from 'app/actions/navigationActions';
 
 import i18n from 'app/i18n';
+import FastImage from 'react-native-fast-image'
 
-// const btn_add_source = require("app/images/btn_add.png");
+const btn_img_soruce = {
+    dataurl: require("app/images/btn_add.png"),
+    fileName: "btn_add.png"
+};
 
 class Screen extends Component {
 
@@ -32,11 +37,7 @@ class Screen extends Component {
             isPreview: false,
             title: '',
             images: [
-                // 默认展示添加图片按钮
-                {
-                    dataurl: require("app/images/btn_add.png"),
-                    fileName: "btn_add.png"
-                },
+                btn_img_soruce
             ],
             activeSlide: 0,
             publishing: false
@@ -44,36 +45,26 @@ class Screen extends Component {
     }
 
     selectPhotoTapped = () => {
-        const options = {
-            title: '请选择',
-            quality: 0.2,
-            mediaType: 'photo',
-            cancelButtonTitle: '取消',
-            takePhotoButtonTitle: '拍照',
-            chooseFromLibraryButtonTitle: '选择相册',
-            allowsEditing: false,
-            noData: false,
-            storageOptions: {
-                skipBackup: true,
-                path: 'images'
-            }
-        };
-
         // 直接调用相册
         try {
-            ImagePicker.launchImageLibrary(options, (response) => {
-                console.log('Response = ', response);
-                if (response.didCancel) {
-                    console.log('User cancelled photo picker');
-                } else if (response.error) {
-                    console.log('ImagePicker Error: ', response.error);
-                } else if (response.customButton) {
-                    console.log('User tapped custom button: ', response.customButton);
-                } else {
-                    let source = Object.assign(response, {dataurl: 'data:image/png;base64,' + response.data});
-                    this.state.images.splice(this.state.images.length - 1, 0, source);
-                    this.setState({});
-                }
+            ImagePicker.openPicker({
+                multiple: true,
+                // width: 400,
+                compressImageMaxWidth: 800,
+                compressImageMaxHeight: 1800,
+                // includeExif: true,
+                includeBase64: true,
+                compressImageQuality: 0.5,
+                mediaType: 'photo',
+                maxFiles: 9,
+            }).then(images => {
+                images.forEach((item) => {
+                    item.dataurl = `data:${item.mime};base64,${item.data}`
+                });
+                this.setState({
+                    images: [...images, btn_img_soruce]
+                });
+                this.setState({});
             });
         } catch (e) {
             console.log(e);
@@ -81,13 +72,13 @@ class Screen extends Component {
     };
 
     delImage = (item, index) => {
-        console.log(item, index);
+        // console.log(item, index);
         this.state.images.splice(index, 1);
         this.setState({});
     };
 
     previewImage = (item, index) => {
-        console.log(item, index);
+        // console.log(item, index);
         this.setState({
             isPreview: true,
             activeSlide: index
@@ -137,21 +128,14 @@ class Screen extends Component {
         }
         // 发布图片和文字
         let images = this.state.images.slice(0, this.state.images.length - 1);
-
         let datas = [];
         images.forEach((item) => {
             datas.push({
                 data: item.data,
-                uri: item.uri
+                mime: item.mime
             })
         });
-        // const formData = new FormData();
-        // images.forEach((file) => {
-        //     formData.append('images', {
-        //         uri: file.uri,
-        //         name: file.fileName
-        //     });
-        // });
+
         this.props.upload({
             images: datas,
             callback: (data) => {
@@ -279,7 +263,15 @@ class Screen extends Component {
                     <Body>
                     {/* 人物头像 */}
                     <Button transparent onPress={this.goUserHome}>
-                        <Image style={styles.user_icon} source={{uri: user.icon}}/>
+                        <FastImage
+                            style={styles.user_icon}
+                            source={{
+                                uri: user.icon,
+                                priority: FastImage.priority.normal,
+
+                            }}
+                            resizeMode={FastImage.resizeMode.contain}
+                        />
                         <Text style={styles.btnText}>{user.name}</Text>
                     </Button>
                     </Body>

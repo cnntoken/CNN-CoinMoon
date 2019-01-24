@@ -69,9 +69,9 @@ export default class DiscloseListItem extends Component {
         const isMine = userId === item.userId;
 
         return (
-            <ListItem style={{
-                marginBottom: -15
-            }} avatar>
+            <ListItem style={[{
+                marginBottom: -15,
+            },this.props.separators]} avatar>
                 {/* 左侧图标 */}
                 <Left>
                     <Button transparent light onPress={this.clickAvatar.bind(this, item)}>

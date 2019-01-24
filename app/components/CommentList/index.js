@@ -14,6 +14,7 @@ import {Col, Row, Grid} from "react-native-easy-grid";
 import {Image, Text, View, Keyboard} from "react-native";
 
 import {$toast} from "app/utils";
+import FastImage from 'react-native-fast-image'
 
 const moment = require('moment');
 
@@ -127,12 +128,16 @@ class CommentList extends Component {
                             <ListItem style={styles.listitem} avatar>
                                 {/* 左侧图标 */}
                                 <Left>
-                                    <Image style={{
-                                        width: 40,
-                                        height: 40,
-                                        borderRadius: 20
-                                    }}
-                                           source={item.user && item.user['picture'] ? {uri: item.user && item.user['picture']} : source}/>
+                                    <FastImage
+                                        style={{
+                                            width: 40,
+                                            height: 40,
+                                            borderRadius: 20
+                                        }}
+                                        source={item.user && item.user['picture'] ? {uri: item.user && item.user['picture']} : source}
+                                        resizeMode={FastImage.resizeMode.contain}
+                                    />
+
                                 </Left>
                                 <Body style={styles.comments_listitem_body}>
                                 {/* 评论人，评论时间、评论内容*/}
@@ -141,7 +146,8 @@ class CommentList extends Component {
                                         <Text
                                             style={styles.comments_username}>{item.user ? item.user['custom:disclose_name'] : ''}</Text>
                                         <Text style={styles.comments_content}>{item.content}</Text>
-                                        <Text style={styles.comments_time}>{moment(item.time).format('HH:MM')}</Text>
+                                        <Text
+                                            style={styles.comments_time}>{moment(item.createdAt).format('HH:MM')}</Text>
                                         {
                                             item.at ? <View style={styles.comments_at}>
                                                 <Text

@@ -102,15 +102,18 @@ export default StyleSheet.create({
         zIndex: 19,
     },
     btnText: {
-        color: '#333333'
+        color: '#333333',
+        fontSize:16,
+        lineHeight:23,
     },
     btn_pubish_text: {
         color: '#408EF5'
     },
     // 发布页面样式 header
     user_icon: {
-        width: 30,
-        height: 30,
+        width: 24,
+        height: 24,
+        borderRadius: 12
     },
     publish_header: {
         backgroundColor: '#fff'
@@ -122,9 +125,12 @@ export default StyleSheet.create({
     },
     carousel_header: {
         backgroundColor: '#000',
-        // borderColor: '#000'
+        borderBottomColor: '#000',
+        borderBottomWidth: 3,
     },
-    carousel_content: {},
+    carousel_content: {
+        backgroundColor:'#000'
+    },
     carousel_slide: {
         //todo 根据ios和Android区分
         height: IS_IOS ? viewportHeight - 120 : viewportHeight - 120,

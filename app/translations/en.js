@@ -44,6 +44,7 @@ export default {
     toast: {
 
     },
+
     disclose: {
         title: '爆料',
         no_data_tip: 'no data !',
@@ -53,5 +54,10 @@ export default {
         publish_valid_textarea: '请输入爆料内容！',
         list_nomore_tip: '没有更多数据了',
         needlogin_tip: '需要登录才能点赞',
+
+
+
+
+
     }
 }

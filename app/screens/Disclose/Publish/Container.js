@@ -14,7 +14,6 @@ class Container extends Component {
     }
 }
 
-
 function mapStateToProps({userReducer: {info}}) {
     let attributes = info.attributes || {};
     return {
@@ -25,7 +24,6 @@ function mapStateToProps({userReducer: {info}}) {
         }
     };
 }
-
 
 function mapDispatchToProps(dispatch) {
     return {
