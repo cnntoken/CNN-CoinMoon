@@ -60,7 +60,7 @@ class CommentList extends Component {
         this.setState({
             isModalVisible: false
         })
-    }
+    };
     confirmDelete = () => {
         this.setState({
             isModalVisible: false
@@ -68,7 +68,7 @@ class CommentList extends Component {
         if (this.props.deleteComment) {
             this.props.deleteComment(this.cacheDeleteItem);
         }
-    }
+    };
     // loadmore 加载更多评论
     loadMore = (item) => {
         if (this.props.loadMore) {
@@ -127,13 +127,18 @@ class CommentList extends Component {
                             <ListItem style={styles.listitem} avatar>
                                 {/* 左侧图标 */}
                                 <Left>
-                                    <Image source={{uri: item.avatar}}/>
+                                    <Image style={{
+                                        width: 40,
+                                        height: 40,
+                                        borderRadius: 20
+                                    }} source={{uri: item.user['picture']}}/>
                                 </Left>
                                 <Body style={styles.comments_listitem_body}>
                                 {/* 评论人，评论时间、评论内容*/}
                                 <View style={styles.comments_container}>
                                     <View style={styles.comments}>
-                                        <Text style={styles.comments_username}>{item.username}</Text>
+                                        <Text
+                                            style={styles.comments_username}>{item.user['custom:disclose_name']}</Text>
                                         <Text style={styles.comments_content}>{item.content}</Text>
                                         <Text style={styles.comments_time}>{moment(item.time).format('HH:MM')}</Text>
                                         {

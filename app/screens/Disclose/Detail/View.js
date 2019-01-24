@@ -110,7 +110,7 @@ class Page extends Component {
             this.props.commentDisclose({
                 params: {
                     content: text,
-                    at: item.userId,
+                    at: item.user['custom:disclose_name'],
                     atUserId: item.userId,
                     atContent: item.content,
                     atTime: item.createdAt,
@@ -183,6 +183,7 @@ class Page extends Component {
                 DeviceEventEmitter.emit('updateDiscloseListData', 'update', item);
             }
         });
+
         // 更新用户对该资源的行为数据
         this.props.updateAction({
             _id: item.userAction._id,
@@ -234,6 +235,7 @@ class Page extends Component {
             callback: (res) => {
             }
         });
+
     };
 
 
@@ -317,6 +319,7 @@ class Page extends Component {
                 let {Items, LastEvaluatedKey} = data;
                 Items.forEach((item) => {
                     item.userAction = item.userAction || {};
+                    item.user = item.user || {};
                     item.time = item.createdAt || new Date();
                 });
                 this.setState({
