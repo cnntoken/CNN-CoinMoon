@@ -43,17 +43,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#408EF5',
     },
     userInfo: {
-        height: 104,
+        // height: 120,
         // backgroundColor: '#408EF5',
         // borderTopColor:'#408EF5',
         // borderTopWidth:20,
         flexDirection: 'row',
         alignItems: 'flex-start',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        // paddingBottom: 20
     },
     userAvatar: {
         top: -40,
-        marginLeft: 30
+        marginLeft: 30,
+        // marginBottom: 10
     },
     editBtn: {
         marginRight: 16,
@@ -372,6 +374,7 @@ class ViewControl extends Component {
                         )
                     }
                 }}
+
                 title={() => (
                     <View style={styles.userInfo}>
                         <UserAvatar style={styles.userAvatar} info={{
@@ -382,9 +385,9 @@ class ViewControl extends Component {
                         {isMine ? <Button transparent onPress={this.goEdit}>
                             <Text>编辑信息</Text>
                         </Button> : null}
-
                     </View>
                 )}
+
                 renderOthers={() => {
                     return <View>
                         <Modal isVisible={this.state.isModalVisible}>

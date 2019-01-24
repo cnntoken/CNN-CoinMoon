@@ -46,7 +46,6 @@ class Page extends Component {
         }
     }
 
-
     goListScreen = () => {
         NavigationService.goBack();
     };

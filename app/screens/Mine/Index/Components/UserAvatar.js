@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import {StyleSheet} from 'react-native';
 import {Button} from "native-base";
 
+// import FastImage from 'react-native-fast-image'
 
 const styles = StyleSheet.create({
     wrap: {
@@ -25,7 +26,8 @@ const styles = StyleSheet.create({
 const stylesBig = StyleSheet.create({
     wrap: {
         width: 80,
-        alignItems: 'center'
+        alignItems: 'center',
+        // marginBottom: 20
     },
     avatar: {
         width: 80,

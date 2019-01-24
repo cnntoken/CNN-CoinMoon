@@ -86,7 +86,7 @@ class FooterInput extends Component {
         console.log(event.endCoordinates.height);
         this.setState({
             KeyboardShown: true,
-            footerHeight: event.endCoordinates.height + 20
+            footerHeight: event.endCoordinates.height + 52
         });
     }
 
