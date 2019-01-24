@@ -1,22 +1,40 @@
 export default {
-  login: {
-    cancel: '取消',
-    please_login: '请登录',
-    email: '邮箱',
-    password: '密码',
-    login: '登录',
-    email_register: '邮箱注册'
+  label_cancel: '취소',
+  label_login: '로그인',
+  label_submit: '확인',
+  label_please_login: '로그인',
+  component_tabbar: {
+    feed: '홈',
+    disclose: '미투',
+    mine: '내 정보'
   },
-  register: {
-    cancel: '取消',
-    register_account: '注册账户',
-    email: '请输入邮箱地址',
-    password: '请输入密码',
-    re_password: '请再次输入密码',
-    license: '点击注册自动同意各项隐私政策',
-    register: '注 册',
-    pre_login: '已有账号，去登录',
-    login: '登录'
+  page_main: {
+    category_info: '정보',
+    category_news: '뉴스'
+  },
+  page_register: {
+      register_account: '회원가입',
+      email: '이메일',
+      password: '비밀번호',
+      re_password: '비밀번호 재확인',
+      license: '회원가입을 클릭하면 서비스 약관, 개인정보 처리방침에 동의하게 됩니다',
+      license_link: '이용 약관',
+      register: '회원가입',
+      go_login: '로그인'
+  },
+  page_login: {
+      email: '이메일',
+      password: '비밀번호',
+      email_register: '회원가입'
+  },
+  page_verify:{
+    email_verify: '이메일 인증',
+    email_verify_text: '{{email}}로 인증코드가 전송됩니다',
+    email_verify_send: '인증코드 전송',
+    code_input: '메일 인증',
+    code_input_placeholder: '인증코드를 입력',
+    register_success: '회원가입 성공!',
+    go_login: '로그인하기'
   },
   disclose: {}
 }

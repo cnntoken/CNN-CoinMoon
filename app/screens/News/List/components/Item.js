@@ -47,7 +47,7 @@ export default class Item extends PureComponent{
                         }
                         <View style={[styles.itemRow,styles.interact]}>
                             <IconText type='view' text={info.viewNum || 0}/>
-                            <IconText type='comment_small' text={info.commentNum || 0}/>
+                            <IconText type='comment_small' text={info.commentsNum || 0}/>
                             <IconText type='like_small' text={info.likeNum || 0} onPress={this.like}/>
                         </View>
                     </TouchableOpacity>

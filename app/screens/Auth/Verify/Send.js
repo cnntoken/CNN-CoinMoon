@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import styles from './styles';
 import { View, Text,Button} from 'native-base';
 import PropTypes from 'prop-types'
-
+import i18n from 'app/i18n';
   
 class ViewControl extends Component {
     static propTypes = {
@@ -14,12 +14,12 @@ class ViewControl extends Component {
         const { disabled, onSubmit, email } = this.props;
         return (
             <View>
-                <Text style={styles.label}>验证邮箱</Text>
+                <Text style={styles.label}>{i18n.t('page_verify.email_verify')}</Text>
                 <View>
-                    <Text style={{fontSize:16,color:'#333'}}>点击发送验证码按钮，我们将向您的邮箱 {email} 发送验证邮件</Text>
+                    <Text style={{fontSize:16,color:'#333'}}>{i18n.t('page_verify.email_verify_text',{email})}</Text>
                 </View>
                 <Button block full rounded style={[styles.btn, disabled && styles.btnDisabled]} disabled={disabled} onPress={onSubmit}>
-                    <Text>发送验证码</Text>
+                    <Text>{i18n.t('page_verify.email_verify_send')}</Text>
                 </Button>
             </View>
         );

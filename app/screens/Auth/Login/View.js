@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import CustomHeader from '../Components/Header'
 import FocusInput from '../Components/InputFocus'
 import {$toast} from 'app/utils'
+import i18n from 'app/i18n';
 // import {login} from '../service'
   
 class ViewControl extends Component {
@@ -87,13 +88,13 @@ class ViewControl extends Component {
             <Container>
                 <CustomHeader onCancel={this.goBack}/>
                 <Content style={styles.container}>
-                    <Text style={styles.label}>请登录</Text>
+                    <Text style={styles.label}>{i18n.t('label_please_login')}</Text>
                     <Form>
                         <FocusInput
                             style={styles.item}
                             value={info.email}
                             onChangeText={this.onChangeEmail}
-                            placeholder='邮箱' 
+                            placeholder={i18n.t('page_login.email')} 
                             keyboardType='email-address' 
                             textContentType='emailAddress'
                         />
@@ -102,16 +103,15 @@ class ViewControl extends Component {
                             value={info.password}
                             secureTextEntry={true}
                             onChangeText={this.onChangePassword}
-                            placeholder='密码' 
+                            placeholder={i18n.t('page_login.password')} 
                             kclearButtonMode='while-editing'
                             textContentType='password'
                         />
                     </Form>
-                    <Button block full rounded style={[styles.loginBth, isBtnDisabled && styles.loginBthDisabled]} disabled={isBtnDisabled} onPress={this.onLogin}><Text>登录</Text></Button>
+                    <Button block full rounded style={[styles.loginBth, isBtnDisabled && styles.loginBthDisabled]} disabled={isBtnDisabled} onPress={this.onLogin}><Text>{i18n.t('label_login')}</Text></Button>
                     <View style={styles.registerBtn}>
-                        <Button transparent onPress={this.goRegister}><Text style={styles.register}>邮箱注册</Text></Button>
+                        <Button transparent onPress={this.goRegister}><Text style={styles.register}>{i18n.t('page_login.email_register')}</Text></Button>
                     </View>
-                    
                 </Content>
             </Container>
         );
