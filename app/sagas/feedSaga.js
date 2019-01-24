@@ -79,7 +79,6 @@ export function* like({payload}) {
         if (callback) callback(res);
     } catch (e) {
         $toast(`like fail: ${e.message}`);
-        if (callback) callback(e)
     }
 }
 
@@ -104,7 +103,6 @@ export function* likeComment({payload}) {
         if (callback) callback(res);
     } catch (e) {
         $toast(`likeComment fail: ${e.message}`);
-        if (callback) callback(e);
     }
 }
 
@@ -117,7 +115,7 @@ export function* deleteComment({payload}) {
         console.log('res', res);
         if (callback) callback(res);
     } catch (e) {
-        $toast(`deleteComment fail: ${e.message}`);
-        if (callback) callback(e)
+        console.log(e)
+        $toast(`deleteComment fail`);
     }
 }
