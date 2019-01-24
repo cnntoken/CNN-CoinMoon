@@ -1,21 +1,24 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
+
+const {width} = Dimensions.get('window');
+
+const img_width = (width - 90) / 3;
 
 const styles = StyleSheet.create({
 
 
     col_img: {
-        width: 100,
-        height: 100,
-        borderRadius: 8,
-        marginLeft: 8,
+        width: img_width,
+        height: img_width,
+        marginRight: 8,
         marginTop: 8
     },
 
     image: {
-        width: 100,
-        height: 100,
+        width: img_width,
+        height: img_width,
         borderRadius: 8,
-        // resizeMode: 'cover'
+        resizeMode: 'cover'
     },
 
     avatar: {

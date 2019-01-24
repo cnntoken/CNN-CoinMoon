@@ -8,7 +8,7 @@ import {
     StatusBar,
     Image,
     PixelRatio,
-    DeviceEventEmitter, ScrollView
+    DeviceEventEmitter, ScrollView, Dimensions
 } from 'react-native';
 
 import {
@@ -43,24 +43,39 @@ const styles = StyleSheet.create({
         backgroundColor: '#408EF5',
     },
     userInfo: {
-        height: 104,
+        // height: 120,
         // backgroundColor: '#408EF5',
         // borderTopColor:'#408EF5',
         // borderTopWidth:20,
         flexDirection: 'row',
         alignItems: 'flex-start',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        // paddingBottom: 20
     },
     userAvatar: {
         top: -40,
-        marginLeft: 30
+        marginLeft: 30,
+        // marginBottom: 10
     },
     editBtn: {
         marginRight: 16,
         marginTop: 10,
         fontSize: 14
-    }
+    },
+    // 删除弹框
+    modal_btn: {
+        borderRadius: 8,
+        backgroundColor: '#FFFFFF',
+        marginBottom: 15
+    },
+    modal_btn_del_text: {
+        color: '#FF3B30'
+    },
+    modal_btn_calcel_text: {
+        color: '#007AFF'
+    },
 });
+
 
 class ViewControl extends Component {
 
@@ -359,6 +374,7 @@ class ViewControl extends Component {
                         )
                     }
                 }}
+
                 title={() => (
                     <View style={styles.userInfo}>
                         <UserAvatar style={styles.userAvatar} info={{
@@ -369,9 +385,25 @@ class ViewControl extends Component {
                         {isMine ? <Button transparent onPress={this.goEdit}>
                             <Text>编辑信息</Text>
                         </Button> : null}
-
                     </View>
                 )}
+
+                renderOthers={() => {
+                    return <View>
+                        <Modal isVisible={this.state.isModalVisible}>
+                            <View>
+                                <Button style={styles.modal_btn} block transparent light
+                                        onPress={this.confirmDelete.bind(this, this.state.activeItem)}>
+                                    <Text style={styles.modal_btn_del_text}>删除</Text>
+                                </Button>
+                                <Button style={styles.modal_btn} block transparent light
+                                        onPress={this.cancelDelete}>
+                                    <Text style={styles.modal_btn_calcel_text}>取消</Text>
+                                </Button>
+                            </View>
+                        </Modal>
+                    </View>
+                }}
                 renderRight={() => (<Button style={{
                     marginRight: 16,
                     marginTop: 26,
@@ -404,76 +436,6 @@ class ViewControl extends Component {
                     footerEmptyDataText='-好像什么东西都没有-'
                 /> : <ScrollView><Spinner size={'small'} color={'#408EF5'}/></ScrollView>}
             </AnimatedHeader>
-        );
-
-
-        return (
-            <Container>
-                <Header noShadow>
-                    <Left>
-                        <UserAvatar
-                            info={{avatar: userInfo.attributes.picture, nickname: userInfo.attributes.nickname}}/>
-                    </Left>
-                    <Right>
-                        <Button transparent onPress={this.goSettings}>
-                            <Image source={require('app/images/icon_settings.png')}/>
-                        </Button>
-                    </Right>
-
-                </Header>
-
-                <Content style={styles.content}>
-
-                    <View style={styles.userBox}>
-                        <View style={styles.bg}></View>
-                        <View style={styles.userInfo}>
-                            <UserAvatar style={styles.userAvatar} info={{
-                                avatar: userInfo.attributes.picture,
-                                nickname: userInfo.attributes.nickname
-                            }} big/>
-                            <Button transparent onPress={this.goEdit}>
-                                <Text>编辑信息</Text>
-                            </Button>
-                        </View>
-                    </View>
-
-                    <View>
-                        {/******************* 我的爆料列表 ********************/}
-                        {Items ? <RefreshListView
-                            data={Items}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem={this.renderListItem}
-                            refreshState={this.state.refreshState}
-                            onHeaderRefresh={this.handleRefresh}
-                            onFooterRefresh={this.handleLoadMore}
-                            // 可选
-                            footerRefreshingText='玩命加载中....'
-                            footerFailureText='我擦嘞，居然失败了 =.=!'
-                            footerNoMoreDataText='-我是有底线的-'
-                            footerEmptyDataText='-好像什么东西都没有-'
-                        /> : <View><Spinner size={'small'} color={'#408EF5'}/></View>}
-                        {/*需要删除爆料时，弹框提示确定modal*/}
-                        <View>
-                            <Modal isVisible={this.state.isModalVisible}>
-                                <View>
-                                    <Button style={styles.modal_btn} block transparent light
-                                            onPress={this.confirmDelete.bind(this, this.state.activeItem)}>
-                                        <Text style={styles.modal_btn_del_text}>删除</Text>
-                                    </Button>
-                                    <Button style={styles.modal_btn} block transparent light
-                                            onPress={this.cancelDelete}>
-                                        <Text style={styles.modal_btn_calcel_text}>取消</Text>
-                                    </Button>
-                                </View>
-                            </Modal>
-                        </View>
-
-                    </View>
-
-                </Content>
-
-
-            </Container>
         );
     }
 }

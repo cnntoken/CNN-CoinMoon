@@ -74,7 +74,7 @@ export default class Header extends React.PureComponent {
         const {scrollOffset} = this.state;
         return scrollOffset.interpolate({
             inputRange: [0, this.headerHeight - toolbarHeight],
-            outputRange: [20, 0],
+            outputRange: [15, 0],
             extrapolate: 'clamp',
         })
     };
@@ -92,12 +92,6 @@ export default class Header extends React.PureComponent {
 
     _getOpacity = () => {
         const {scrollOffset} = this.state;
-        // return this.props.backText ? scrollOffset.interpolate({
-        //     inputRange: [0, this.headerHeight - toolbarHeight],
-        //     outputRange: [1, 0],
-        //     extrapolate: 'clamp',
-        // }) : 0
-
         return scrollOffset.interpolate({
             inputRange: [0, this.headerHeight - toolbarHeight],
             outputRange: [1, 0],
@@ -209,10 +203,14 @@ export default class Header extends React.PureComponent {
                     // fontSize,
                     // backgroundColor: '#fff',
                     width: width,
+                    // paddingBottom:20,
                     // marginTop: 100
                 }}>
                     {this.props.title && this.props.title()}
+
                 </Animated.View>
+
+                {this.props.renderOthers && this.props.renderOthers()}
 
             </Animated.View>
 
@@ -239,7 +237,8 @@ const styles = StyleSheet.create({
     toolbar: {
         flex: 1,
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        // backgroundColor:'#333'
     },
     header: {
         position: 'absolute',

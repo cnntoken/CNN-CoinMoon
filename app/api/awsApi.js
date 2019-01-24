@@ -10,12 +10,12 @@ const $API = (method, url, config)=>{
     return new Promise((resolve,reject)=>{
         API[method]('starkApi', url, config).then((response)=>{
             console.log('================== api response ==================',url)
-            console.log(response)
+            console.log(response);
             const data = response.data;
             if(data.code === 200){
-                resolve(data.result)
+                resolve(data.result);
             }else{
-                reject(data.result)
+                reject(data.result);
             }
         }).catch((err)=>{
             console.log('================== api err ==================',url)

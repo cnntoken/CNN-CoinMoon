@@ -20,9 +20,11 @@ import {
 const computeStyles = (height) => {
     return StyleSheet.create({
         footer_focus: {
+            alignItems: 'flex-start',
+            paddingTop: 12
             // borderWidth: 1,
             // borderColor: '#408EF5',
-            // backgroundColor: '#fff',
+            // backgroundColor: '#eee',
             // marginBottom: height,
         },
         footer: {
@@ -81,11 +83,10 @@ class FooterInput extends Component {
 
     // 键盘弹出事件响应
     keyboardDidShowHandler(event) {
-        console.log(event);
         console.log(event.endCoordinates.height);
         this.setState({
             KeyboardShown: true,
-            footerHeight: event.endCoordinates.height + 20
+            footerHeight: event.endCoordinates.height + 52
         });
     }
 
@@ -93,7 +94,7 @@ class FooterInput extends Component {
     keyboardDidHideHandler(event) {
         this.setState({
             KeyboardShown: false,
-            footerHeight: 40
+            footerHeight: 50
         });
     }
 

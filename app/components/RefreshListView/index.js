@@ -1,5 +1,14 @@
 import React, {PureComponent} from 'react'
-import {View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, ViewPropTypes} from 'react-native'
+import {
+    View,
+    Text,
+    StyleSheet,
+    FlatList,
+    ActivityIndicator,
+    TouchableOpacity,
+    ViewPropTypes,
+    Platform
+} from 'react-native'
 
 export const RefreshState = {
     Idle: 0,
@@ -102,6 +111,9 @@ class Index extends PureComponent<Props, State> {
 
         return (
             <FlatList
+                style={{
+                    flex: 1
+                }}
                 ListHeaderComponent={ListHeaderComponent || null}
                 ref={this.props.listRef}
                 onEndReached={this.onEndReached}
@@ -109,7 +121,15 @@ class Index extends PureComponent<Props, State> {
                 refreshing={this.props.refreshState == RefreshState.HeaderRefreshing}
                 ListFooterComponent={this.renderFooter}
                 onEndReachedThreshold={0.1}
+                ItemSeparatorComponent={({highlighted}) => {
+                    if (Platform.OS !== 'android') {
+                        return (
+                            <View style={[highlighted && {marginLeft: 0}]}/>
+                        )
+                    }
+                    return null;
 
+                }}
                 renderItem={renderItem}
 
                 {...rest}

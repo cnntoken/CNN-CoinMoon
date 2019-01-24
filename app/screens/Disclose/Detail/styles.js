@@ -1,7 +1,9 @@
 import {Dimensions, Platform, StyleSheet} from 'react-native';
 
 const IS_IOS = Platform.OS === 'ios';
-const {width: viewportWidth, height: viewportHeight} = Dimensions.get('window');
+const {width: viewportWidth, height: viewportHeight, width} = Dimensions.get('window');
+
+const img_width = (width - 90) / 3;
 
 const styles = StyleSheet.create({
 
@@ -68,17 +70,19 @@ const styles = StyleSheet.create({
         color: '#666666',
         fontSize: 12,
     },
+
     col_img: {
-        width: 100,
-        height: 100,
-        borderRadius: 8,
-        marginLeft: 8,
+        width: img_width,
+        height: img_width,
+        marginRight: 8,
         marginTop: 8
     },
+
     image: {
-        width: 100,
-        height: 100,
+        width: img_width,
+        height: img_width,
         borderRadius: 8,
+        resizeMode: 'cover'
     },
 //     预览图片
     carousel_container: {
@@ -86,12 +90,16 @@ const styles = StyleSheet.create({
     },
     carousel_header: {
         backgroundColor: '#000',
+        borderColor: '#000',
+        borderBottomWidth: 2,
+        borderBottomColor: '#000'
         // borderColor: '#000'
     },
     carousel_content: {},
     carousel_slide: {
         //todo 根据ios和Android区分
-        height: IS_IOS ? viewportHeight - 120 : viewportHeight - 120,
+        // height: IS_IOS ? viewportHeight - 120 : viewportHeight - 120,
+        height: viewportHeight,
         width: viewportWidth,
         // paddingHorizontal: 20
         // flex: 1,
