@@ -131,14 +131,15 @@ class CommentList extends Component {
                                         width: 40,
                                         height: 40,
                                         borderRadius: 20
-                                    }} source={{uri: item.user['picture']}}/>
+                                    }}
+                                           source={item.user && item.user['picture'] ? {uri: item.user && item.user['picture']} : source}/>
                                 </Left>
                                 <Body style={styles.comments_listitem_body}>
                                 {/* 评论人，评论时间、评论内容*/}
                                 <View style={styles.comments_container}>
                                     <View style={styles.comments}>
                                         <Text
-                                            style={styles.comments_username}>{item.user['custom:disclose_name']}</Text>
+                                            style={styles.comments_username}>{item.user ? item.user['custom:disclose_name'] : ''}</Text>
                                         <Text style={styles.comments_content}>{item.content}</Text>
                                         <Text style={styles.comments_time}>{moment(item.time).format('HH:MM')}</Text>
                                         {
