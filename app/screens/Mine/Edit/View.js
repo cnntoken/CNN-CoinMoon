@@ -16,8 +16,8 @@ import InputFocus from 'app/components/InputFocus';
 import userService from 'app/services/user';
 import styles from './styles';
 import {$toast} from 'app/utils';
-import * as Types from 'app/actions/types'
-import ImagePicker from 'react-native-image-picker';
+// import * as Types from 'app/actions/types'
+import ImagePicker from 'react-native-image-crop-picker';
 
 class ViewControl extends PureComponent {
     constructor(props) {
@@ -33,17 +33,10 @@ class ViewControl extends PureComponent {
 
     uploadPicture = async (fn) => {
         const {image} = this.state;
-        // const formData = new FormData();
-        // formData.append('images', {
-        //     uri: image.uri,
-        //     name: image.fileName
-        // });
-
         let datas = [{
             data: image.data,
-            uri: image.uri
+            mime: image.mime
         }];
-
         this.props.upload({
             images: datas,
             callback: (res) => {
@@ -96,18 +89,19 @@ class ViewControl extends PureComponent {
         };
         // 直接调用相册
         try {
-            ImagePicker.launchImageLibrary(options, (response) => {
-                console.log('Response = ', response);
-                if (response.didCancel) {
-                    console.log('User cancelled photo picker');
-                } else if (response.error) {
-                    console.log('ImagePicker Error: ', response.error);
-                } else if (response.customButton) {
-                    console.log('User tapped custom button: ', response.customButton);
-                } else {
-                    let image = Object.assign(response, {dataUrl: 'data:image/png;base64,' + response.data});
-                    this.setState({image: image, needupload: true});
-                }
+            ImagePicker.openPicker({
+                // multiple: true,
+                // width: 400,
+                compressImageMaxWidth: 800,
+                compressImageMaxHeight: 1800,
+                // includeExif: true,
+                includeBase64: true,
+                compressImageQuality: 0.5,
+                mediaType: 'photo',
+                maxFiles: 1,
+            }).then(response => {
+                let image = Object.assign(response, {dataUrl: `data:${response.mime};base64,${response.data}`});
+                this.setState({image: image, needupload: true});
             });
         } catch (e) {
             console.log(e);

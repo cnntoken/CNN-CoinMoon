@@ -76,6 +76,7 @@ export function* deleteDisclose({payload}) {
         console.log('res', res);
         if (callback) callback(res);
     } catch (e) {
+        // debugger;
         $toast(`deleteDisclose fail: ${e.message}`);
 
     }

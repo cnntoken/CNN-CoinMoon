@@ -45,10 +45,6 @@ class Screen extends Component {
 
     // 进入具体详情页面
     pressItem = (item) => {
-        // navigationActions.navigateToDiscloseDetail({
-        //     id: item._id,
-        //     updateData: this.updateData
-        // });
         this.props.navigation.navigate('DiscloseDetail', {
             id: item._id,
             updateData: this.updateData
@@ -82,13 +78,14 @@ class Screen extends Component {
             Items: [...this.state.Items]
         });
         // 更新爆料条目中的数据
-        this.props.like({
-            id: item._id,
-            field: 'likeNum',
-            cancel: actionValue,
-            callback: () => {
-            }
-        });
+        // this.props.like({
+        //     id: item._id,
+        //     field: 'likeNum',
+        //     cancel: actionValue,
+        //     callback: () => {
+        //         debugger;
+        //     }
+        // });
         // 更新用户对该资源的行为数据
         this.props.updateAction({
             _id: item.userAction._id,
@@ -117,8 +114,7 @@ class Screen extends Component {
         this.props.deleteDisclose({
             id: item._id,
             callback: (data) => {
-                // todo 国际化
-                $toast('删除爆料成功');
+                $toast(i18n.t('disclose.deleteOk'));
                 let index = this.state.Items.indexOf(item);
                 this.state.Items.splice(index, 1);
                 this.setState({
@@ -138,9 +134,10 @@ class Screen extends Component {
     };
 
     // 渲染列表
-    renderListItem = ({item, index}) => {
+    renderListItem = ({item, index, separators}) => {
         const {hasData, Items} = this.state;
         return <DiscloseListItem showDeleteDialog={this.showDeleteDialog}
+                                 separators={separators}
             // clickAvatar={this.clickAvatar}
                                  like={this.like}
                                  opt={{item, index, hasData, Items, userId: this.props.user.id}}
@@ -156,7 +153,7 @@ class Screen extends Component {
             // refreshing: true,
             refreshState: RefreshState.HeaderRefreshing
         });
-        this.getList(this.state.Items.length, null, true, false);
+        this.getList(10, null, true, false);
     };
 
     // 上拉加载更多
@@ -266,9 +263,6 @@ class Screen extends Component {
                 <Header>
                     <Left/>
                     <Body>
-                    {/*    <DoubleClicker onClick={this.titleDoubleClick}>
-
-                    </DoubleClicker>*/}
                     <Title style={styles.title}>{i18n.t('disclose.title')}</Title>
                     </Body>
                     <Right>
@@ -279,8 +273,6 @@ class Screen extends Component {
                     </Right>
                 </Header>
 
-                {/* todo bug fix 如果内容比较少的时候，会导致一直loadmore */}
-
                 {Items ? <RefreshListView
                     data={Items}
                     keyExtractor={(item, index) => index.toString()}
@@ -290,10 +282,11 @@ class Screen extends Component {
                     onFooterRefresh={this.handleLoadMore}
 
                     // 可选
-                    footerRefreshingText='玩命加载中....'
-                    footerFailureText='我擦嘞，居然失败了 =.=!'
-                    footerNoMoreDataText='-我是有底线的-'
-                    footerEmptyDataText='-好像什么东西都没有-'
+                    footerRefreshingText={i18n.t('disclose.footerRefreshingText')}
+                    footerFailureText={i18n.t('disclose.footerFailureText')}
+                    footerNoMoreDataText={i18n.t('disclose.footerNoMoreDataText')}
+                    footerEmptyDataText={i18n.t('disclose.footerEmptyDataText')}
+
                 /> : <Content><Spinner size={'small'} color={'#408EF5'}/></Content>
 
                 }
@@ -303,15 +296,14 @@ class Screen extends Component {
                         <View>
                             <Button style={styles.modal_btn} block transparent light
                                     onPress={this.confirmDelete.bind(this, this.state.activeItem)}>
-                                <Text style={styles.modal_btn_del_text}>删除</Text>
+                                <Text style={styles.modal_btn_del_text}>{i18n.t('disclose.delete')}</Text>
                             </Button>
                             <Button style={styles.modal_btn} block transparent light onPress={this.cancelDelete}>
-                                <Text style={styles.modal_btn_calcel_text}>取消</Text>
+                                <Text style={styles.modal_btn_calcel_text}>{i18n.t('disclose.cancel')}</Text>
                             </Button>
                         </View>
                     </Modal>
                 </View>
-
             </Container>
         );
     }

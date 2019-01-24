@@ -110,7 +110,7 @@ class Page extends Component {
             this.props.commentDisclose({
                 params: {
                     content: text,
-                    at: item.user['custom:disclose_name'],
+                    at: item.user['custom:disclose_name'] || i18n.t('disclose.anonymous'),
                     atUserId: item.userId,
                     atContent: item.content,
                     atTime: item.createdAt,
@@ -175,14 +175,14 @@ class Page extends Component {
         this.setState({});
 
         // 更新爆料条目中的数据
-        this.props.like({
-            id: item._id,
-            field: 'likeNum',
-            cancel: actionValue,
-            callback: () => {
-                DeviceEventEmitter.emit('updateDiscloseListData', 'update', item);
-            }
-        });
+        // this.props.like({
+        //     id: item._id,
+        //     field: 'likeNum',
+        //     cancel: actionValue,
+        //     callback: () => {
+        //         DeviceEventEmitter.emit('updateDiscloseListData', 'update', item);
+        //     }
+        // });
 
         // 更新用户对该资源的行为数据
         this.props.updateAction({
@@ -195,8 +195,10 @@ class Page extends Component {
                 actionValue: !actionValue
             },
             callback: (res) => {
+                DeviceEventEmitter.emit('updateDiscloseListData', 'update', item);
             }
         });
+
     };
     // 给评论点赞
     likeComment = (item) => {
@@ -209,18 +211,19 @@ class Page extends Component {
         let postActionValue = !item.userAction.actionValue;
         item.userAction.actionValue = postActionValue;
         item.likeNum = postActionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
+
         this.setState({
             comments: JSON.parse(JSON.stringify(this.state.comments)),
             activeComment: null
         });
 
-        this.props.likeComment({
-            id: item._id,
-            field: 'likeNum',
-            cancel: !postActionValue,
-            callback: (data) => {
-            }
-        });
+        // this.props.likeComment({
+        //     id: item._id,
+        //     field: 'likeNum',
+        //     cancel: !postActionValue,
+        //     callback: (data) => {
+        //     }
+        // });
 
         // 更新用户对该资源的行为数据
         this.props.updateAction({
@@ -233,6 +236,7 @@ class Page extends Component {
                 actionValue: postActionValue
             },
             callback: (res) => {
+
             }
         });
 
@@ -320,7 +324,7 @@ class Page extends Component {
                 Items.forEach((item) => {
                     item.userAction = item.userAction || {};
                     item.user = item.user || {};
-                    item.time = item.createdAt || new Date();
+                    // item.time = item.createdAt;
                 });
                 this.setState({
                     comments: refresh ? [...Items] : [...(this.state.comments || []), ...Items],
@@ -568,7 +572,7 @@ class Page extends Component {
                             {/***********************内容详情区域 end********************** /}
 
                              {/****************************评论列表 start****************************/}
-                            {this.state.comments ?
+                            {this.state.comments && this.state.comments.length > 0 ?
                                 <CommentList data={data}
                                              comments={comments}
                                              loadedAllData={!LastEvaluatedKey}
@@ -577,7 +581,7 @@ class Page extends Component {
                                              loadMore={this.loadMore.bind(this)}
                                              likeComment={this.likeComment.bind(this)}
                                              reply={this.reply.bind(this)}/>
-                                : <Spinner size={'small'} color={'#408EF5'}/>}
+                                : null}
                             {/******************************评论列表 end*****************************/}
                         </View>
 
@@ -587,11 +591,11 @@ class Page extends Component {
                                 <View>
                                     <Button style={styles.modal_btn} block transparent light
                                             onPress={this.confirmDelete}>
-                                        <Text style={styles.modal_btn_del_text}>删除</Text>
+                                        <Text style={styles.modal_btn_del_text}>{i18n.t('disclose.delete')}</Text>
                                     </Button>
                                     <Button style={styles.modal_btn} block transparent light
                                             onPress={this.cancelDelete}>
-                                        <Text style={styles.modal_btn_calcel_text}>取消</Text>
+                                        <Text style={styles.modal_btn_calcel_text}>{i18n.t('disclose.delete')}</Text>
                                     </Button>
                                 </View>
                             </Modal>

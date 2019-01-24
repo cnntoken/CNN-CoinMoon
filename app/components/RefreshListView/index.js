@@ -7,7 +7,8 @@ import {
     ActivityIndicator,
     TouchableOpacity,
     ViewPropTypes,
-    Platform
+    Platform,
+    PixelRatio
 } from 'react-native'
 
 export const RefreshState = {
@@ -104,10 +105,11 @@ class Index extends PureComponent<Props, State> {
         return (refreshState == RefreshState.Idle)
     }
 
+
     render() {
         log('[RefreshListView]  render  refreshState:' + this.props.refreshState)
 
-        let {renderItem, ListHeaderComponent, ...rest} = this.props;
+        let {renderItem, ListHeaderComponent, renderSeparator, ...rest} = this.props;
 
         return (
             <FlatList
@@ -121,17 +123,9 @@ class Index extends PureComponent<Props, State> {
                 refreshing={this.props.refreshState == RefreshState.HeaderRefreshing}
                 ListFooterComponent={this.renderFooter}
                 onEndReachedThreshold={0.1}
-                ItemSeparatorComponent={({highlighted}) => {
-                    if (Platform.OS !== 'android') {
-                        return (
-                            <View style={[highlighted && {marginLeft: 0}]}/>
-                        )
-                    }
-                    return null;
-
-                }}
+                ItemSeparatorComponent={() => <View
+                    style={{height: 1 / PixelRatio.getPixelSizeForLayoutSize(1), backgroundColor: '#E6E6E6'}}/>}
                 renderItem={renderItem}
-
                 {...rest}
             />
         )

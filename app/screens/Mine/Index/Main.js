@@ -150,13 +150,13 @@ class ViewControl extends Component {
             Items: [...this.state.Items]
         });
         // 更新爆料条目中的数据
-        this.props.like({
-            id: item._id,
-            field: 'likeNum',
-            cancel: actionValue,
-            callback: () => {
-            }
-        });
+        // this.props.like({
+        //     id: item._id,
+        //     field: 'likeNum',
+        //     cancel: actionValue,
+        //     callback: () => {
+        //     }
+        // });
         // 更新用户对该资源的行为数据
         this.props.updateAction({
             _id: item.userAction._id,
