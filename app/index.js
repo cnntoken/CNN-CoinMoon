@@ -3,7 +3,7 @@
  * Everthing starts from the entrypoint
  */
 import React, {Component} from 'react';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator,StatusBar} from 'react-native';
 import {StyleProvider, Root} from "native-base";
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
@@ -29,6 +29,7 @@ export default class Index extends Component {
     }
 
     async componentDidMount(){
+        
         RNLanguages.addEventListener('change', this._onLanguagesChange);
         SplashScreen.hide();
         appServices.prepare(store);

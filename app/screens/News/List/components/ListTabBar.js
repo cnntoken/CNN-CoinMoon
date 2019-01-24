@@ -84,7 +84,7 @@ class ListTabBar extends PureComponent {
     render() {
         console.log(this.props)
         return (
-            <Header style={{paddingLeft: 0, paddingRight:0}}>
+            <Header style={{paddingLeft: 0, paddingRight:0}} iosBarStyle='light-content'>
                     <ScrollView
                         style={styles.wrap}
                         horizontal={true}
