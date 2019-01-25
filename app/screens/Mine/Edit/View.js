@@ -92,11 +92,11 @@ class ViewControl extends PureComponent {
             ImagePicker.openPicker({
                 // multiple: true,
                 // width: 400,
-                compressImageMaxWidth: 800,
-                compressImageMaxHeight: 1800,
+                compressImageMaxWidth: 400,
+                compressImageMaxHeight: 800,
                 // includeExif: true,
                 includeBase64: true,
-                compressImageQuality: 0.5,
+                compressImageQuality: 0.2,
                 mediaType: 'photo',
                 maxFiles: 1,
             }).then(response => {

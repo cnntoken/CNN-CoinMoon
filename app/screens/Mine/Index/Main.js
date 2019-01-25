@@ -17,7 +17,7 @@ import {
 
 import Modal from "react-native-modal";
 import {$toast, uniqueById} from 'app/utils';
-import * as navigationActions from 'app/actions/navigationActions';
+// import * as navigationActions from 'app/actions/navigationActions';
 import DiscloseListItem from 'app/components/DiscloseListItem';
 
 import PropTypes from 'prop-types';
