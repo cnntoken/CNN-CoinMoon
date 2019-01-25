@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ListTabBar from './components/ListTabBar'
 import List from './components/List'
@@ -36,7 +37,7 @@ class ViewControl extends Component {
     };
 
     componentDidMount() {
-
+        // StatusBar.setBarStyle('light-content', true);
     }
 
     render() {

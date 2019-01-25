@@ -11,7 +11,6 @@ import i18n from 'app/i18n';
 // 资讯 News
 import NewsList from 'app/screens/News/List';
 import NewsDetail from 'app/screens/News/Detail';
-import NewsPublish from 'app/screens/News/Publish';
 
 // 爆料 Disclose
 import DiscloseList from 'app/screens/Disclose/List';
@@ -126,17 +125,8 @@ const HomeStack = createStackNavigator({
     NewsDetail: {
         screen: NewsDetail,
         navigationOptions: {
-            title: 'HOME',
             header: null,
             tabBarVisible: false,
-        }
-    },
-    NewsPublish: {
-        screen: NewsPublish,
-        navigationOptions: {
-            title: 'HOME',
-            header: null,
-            gesturesEnabled: true
         }
     },
     // 我的页面
