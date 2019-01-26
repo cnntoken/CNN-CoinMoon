@@ -7,10 +7,10 @@ import { Auth } from 'aws-amplify';
 export const login = (email, password) => {
     // check the current user when the App component is loaded
     return Auth.signIn(email, password);
-}
+};
 
 export const register = (email, password) =>{
-    return Auth.signUp({ 
+    return Auth.signUp({
             username: email,
             password,
             attributes: {
@@ -18,14 +18,14 @@ export const register = (email, password) =>{
             },
             validationData: []  //optional
         })
-}
+};
 
 export const verify = (email, code)=> {
     return Auth.confirmSignUp(email, code, {
         // Optional. Force user confirmation irrespective of existing alias. By default set to True.
-        forceAliasCreation: true    
+        forceAliasCreation: true
     })
-}
+};
 
 export const resend = (email) =>{
     return Auth.resendSignUp(email)

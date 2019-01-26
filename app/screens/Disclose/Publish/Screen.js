@@ -54,7 +54,7 @@ class Screen extends Component {
                 compressImageMaxHeight: 1200,
                 // includeExif: true,
                 includeBase64: true,
-                compressImageQuality: 0.2,
+                compressImageQuality: 0.1,
                 mediaType: 'photo',
                 maxFiles: 9,
             }).then(images => {
@@ -135,11 +135,10 @@ class Screen extends Component {
                 mime: item.mime
             })
         });
-
         this.props.upload({
             images: datas,
             callback: (data) => {
-                console.log(data);
+                // console.log(data);
                 let uris = [];
                 data.forEach((item) => {
                     uris.push(item.uri);

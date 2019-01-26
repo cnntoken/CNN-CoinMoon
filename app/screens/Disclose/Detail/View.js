@@ -105,6 +105,12 @@ class Page extends Component {
 
     // 评论
     onComment = (item, text, completeCallback) => {
+
+        if (!this.props.user.id) {
+            $toast(i18n.t('disclose.needloginTocomment'));
+            return;
+        }
+
         // 如果传入的对象不含有images字段，则是回复某条评论
         if (item && !item.images) {
             this.props.commentDisclose({

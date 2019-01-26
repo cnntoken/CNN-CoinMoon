@@ -34,9 +34,11 @@ const enhancers = [applyMiddleware(...middleware)];
 // const initialState = {};
 const persistConfig = {enhancers};
 const store = createStore(reducers, undefined, compose(...enhancers));
+
 const persistor = persistStore(store, persistConfig, () => {
     //   console.log('Test', store.getState());
 });
+
 const configureStore = () => {
     return {persistor, store};
 };

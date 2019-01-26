@@ -14,6 +14,20 @@ import i18n from 'app/i18n';
 import avatars from 'app/services/constants'
 import RefreshListView, {RefreshState} from 'app/components/RefreshListView';
 
+import Storage from 'react-native-storage';
+import { AsyncStorage } from 'react-native';
+
+const storage = new Storage({
+    // maximum capacity, default 1000
+    size: 100,
+    storageBackend: AsyncStorage, // for web: window.localStorage
+    // expire time, default: 1 day (1000 * 3600 * 24 milliseconds).
+    // can be null, which means never expire.
+    defaultExpires: null,
+    // cache data in the memory. default is true.
+    enableCache: true,
+
+});
 
 class Screen extends Component {
 
@@ -40,6 +54,10 @@ class Screen extends Component {
 
     // 写爆料
     writeDisclose = () => {
+        if (!this.props.user.id) {
+            $toast(i18n.t('disclose.needLoginForPublish'));
+            return;
+        }
         navigationActions.navigateToDisclosePublish();
     };
 
@@ -248,6 +266,11 @@ class Screen extends Component {
     };
 
     componentDidMount() {
+        storage.save({
+            key: 'firstEntryDisclose',
+            data: true,
+            expires: null
+        });
         this.getList(10, null, false, false);
         this.subscription = DeviceEventEmitter.addListener('updateDiscloseListData', this.updateState);
     }
@@ -301,6 +324,12 @@ class Screen extends Component {
                             <Button style={styles.modal_btn} block transparent light onPress={this.cancelDelete}>
                                 <Text style={styles.modal_btn_calcel_text}>{i18n.t('disclose.cancel')}</Text>
                             </Button>
+                        </View>
+                    </Modal>
+                    {/* 首次进入匿名爆料区时，进行评论和发帖弹框 */}
+                    <Modal isVisible={this.state.firstEntry}>
+                        <View>
+                            <Text style={styles.modal_btn_del_text}>{i18n.t('disclose.delete')}</Text>
                         </View>
                     </Modal>
                 </View>

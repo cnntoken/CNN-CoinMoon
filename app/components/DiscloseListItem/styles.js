@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     col_img: {
         width: img_width,
         height: img_width,
-        marginRight: 8,
+        marginRight: 5,
         marginTop: 8
     },
 

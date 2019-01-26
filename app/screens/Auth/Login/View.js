@@ -8,7 +8,7 @@ import FocusInput from '../Components/InputFocus'
 import {$toast} from 'app/utils'
 import i18n from 'app/i18n';
 // import {login} from '../service'
-  
+
 class ViewControl extends Component {
     static propTypes = {
         navigation: PropTypes.object.isRequired,
@@ -31,19 +31,19 @@ class ViewControl extends Component {
         this.setState({
             info: {...info}
         })
-    }
+    };
     check = ()=>{
         const {info} = this.state;
         if(!/\w+@\w+\.\w+/.test(info.email)){
-            $toast('邮箱格式不对')
+            $toast('邮箱格式不对');
             return false
         }
         if(!info.password || info.password.length < 8){
-            $toast('密码不能少于8位')
+            $toast('密码不能少于8位');
             return false
         }
         return true;
-    }
+    };
     onLogin = async ()=>{
         if(!this.check()){
             return false
@@ -94,8 +94,8 @@ class ViewControl extends Component {
                             style={styles.item}
                             value={info.email}
                             onChangeText={this.onChangeEmail}
-                            placeholder={i18n.t('page_login.email')} 
-                            keyboardType='email-address' 
+                            placeholder={i18n.t('page_login.email')}
+                            keyboardType='email-address'
                             textContentType='emailAddress'
                         />
                         <FocusInput
@@ -103,7 +103,7 @@ class ViewControl extends Component {
                             value={info.password}
                             secureTextEntry={true}
                             onChangeText={this.onChangePassword}
-                            placeholder={i18n.t('page_login.password')} 
+                            placeholder={i18n.t('page_login.password')}
                             kclearButtonMode='while-editing'
                             textContentType='password'
                         />

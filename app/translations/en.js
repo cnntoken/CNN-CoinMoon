@@ -11,7 +11,7 @@ export default {
     page_main: {
         category_info: '信息',
         category_news: '新闻',
-       
+
     },
     page_mine:{
         please_login: '请登录'
@@ -39,7 +39,8 @@ export default {
         code_input: '请输入验证码',
         code_input_placeholder: '请输入验证码',
         register_success: '注册成功',
-        go_login: '去登录'
+        go_login: '去登录',
+        modal_tip:'已经向邮箱发送验证码，请输入',
     },
     toast: {
 

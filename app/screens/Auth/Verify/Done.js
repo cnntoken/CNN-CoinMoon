@@ -4,7 +4,7 @@ import {View,Text,Button} from 'native-base';
 // import {TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types'
 import i18n from 'app/i18n';
-  
+
 class ViewControl extends Component {
     static propTypes = {
         onSubmit: PropTypes.func.isRequired
@@ -26,5 +26,4 @@ class ViewControl extends Component {
         );
     }
 }
-
 export default ViewControl;

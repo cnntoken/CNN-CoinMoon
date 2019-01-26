@@ -5,7 +5,7 @@ import {
     createBottomTabNavigator
 } from 'react-navigation';
 import React from 'react';
-import {Image,Text} from 'react-native';
+import {Image, Text} from 'react-native';
 import i18n from 'app/i18n';
 
 // 资讯 News
@@ -42,45 +42,45 @@ const TabNavigator = createBottomTabNavigator({
     // 初始路由
     {
         initialRouteName: 'News',
-        defaultNavigationOptions: ({ navigation }) => ({
+        defaultNavigationOptions: ({navigation}) => ({
             header: null,
             gesturesEnabled: true,
-            tabBarIcon: ({ focused, horizontal, tintColor }) => {
-                const { routeName } = navigation.state;
-                if(routeName === 'News'){
-                    if(focused){
+            tabBarIcon: ({focused, horizontal, tintColor}) => {
+                const {routeName} = navigation.state;
+                if (routeName === 'News') {
+                    if (focused) {
                         return <Image source={require('../images/icon_tabbar_news_selected.png')}/>
                     }
                     return <Image source={require('../images/icon_tabbar_news_normal.png')}/>
-                }else if(routeName === 'DiscloseList'){
+                } else if (routeName === 'DiscloseList') {
                     const style = {
                         top: -15
                     }
-                    if(focused){
+                    if (focused) {
                         return <Image source={require('../images/icon_tabbar_prophet_selected.png')} style={style}/>
                     }
                     return <Image source={require('../images/icon_tabbar_prophet_normal.png')} style={style}/>
-                }else if(routeName === 'Mine'){
-                    if(focused){
+                } else if (routeName === 'Mine') {
+                    if (focused) {
                         return <Image source={require('../images/icon_tabbar_me_selected.png')}/>
                     }
                     return <Image source={require('../images/icon_tabbar_me_normal.png')}/>
                 }
             },
-            tabBarLabel: ({ focused, horizontal, tintColor }) => {
+            tabBarLabel: ({focused, horizontal, tintColor}) => {
                 console.log('defaultNavigationOptions tabBarLabel');
                 const style = {
                     color: tintColor,
                     fontSize: 10
                 };
-                const { routeName } = navigation.state;
+                const {routeName} = navigation.state;
                 let text = '';
-                if(routeName === 'News'){
+                if (routeName === 'News') {
                     text = i18n.t('component_tabbar.feed')
-                }else if(routeName === 'DiscloseList'){
+                } else if (routeName === 'DiscloseList') {
                     style.top = -3;
                     text = i18n.t('component_tabbar.disclose')
-                }else if(routeName === 'Mine'){
+                } else if (routeName === 'Mine') {
                     text = i18n.t('component_tabbar.mine');
                 }
                 return <Text style={style}>{text}</Text>
@@ -184,7 +184,7 @@ const RNApp = createAppContainer(
                 header: null
             }
         }
-    },{
+    }, {
         initialRouteName: 'Home',
         mode: 'modal',
         headerMode: 'none',
