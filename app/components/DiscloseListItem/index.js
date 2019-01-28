@@ -44,7 +44,6 @@ export default class DiscloseListItem extends Component {
         // }
     };
 
-
     // 跳到详情页面
     pressItem = (item) => {
         if (this.props.pressItem) {

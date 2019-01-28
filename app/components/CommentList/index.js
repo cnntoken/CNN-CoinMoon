@@ -76,6 +76,13 @@ class CommentList extends Component {
         }
     };
 
+    // 点击用户头像
+    clickAvatar = (item) => {
+        if (this.props.clickAvatar) {
+            this.props.clickAvatar(item);
+        }
+    };
+
 
     returnLikeBtnStatus = (isLike) => {
         if (!isLike) {
@@ -133,15 +140,17 @@ class CommentList extends Component {
                             return <ListItem style={styles.listitem} avatar>
                                 {/* 左侧图标 */}
                                 <Left>
-                                    <Image
-                                        style={{
-                                            width: 40,
-                                            height: 40,
-                                            borderRadius: 20
-                                        }}
-                                        source={item.source}
-                                        resizeMode={FastImage.resizeMode.contain}
-                                    />
+                                    <Button transparent light onPress={this.clickAvatar.bind(this, item)}>
+                                        <Image
+                                            style={{
+                                                width: 40,
+                                                height: 40,
+                                                borderRadius: 20
+                                            }}
+                                            source={item.source}
+                                            resizeMode={FastImage.resizeMode.contain}
+                                        />
+                                    </Button>
                                 </Left>
                                 <Body style={styles.comments_listitem_body}>
                                 {/* 评论人，评论时间、评论内容*/}

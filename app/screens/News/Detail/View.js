@@ -197,6 +197,12 @@ class ViewControl extends Component {
         })
     };
 
+    clickAvatar = (item) => {
+        this.props.navigation.navigate('Mine', {
+            id: item.user.id
+        })
+    };
+
     deleteComment = (item) => {
         this.props.deleteComment({
             id: item._id,
@@ -351,6 +357,7 @@ class ViewControl extends Component {
                                 {this.state.comments && this.state.comments.length > 0 ?
                                     <CommentList data={info}
                                                  showNickName={true}
+                                                 clickAvatar={this.clickAvatar}
                                                  comments={comments}
                                                  user={user}
                                                  loadedAllData={!LastEvaluatedKey}
