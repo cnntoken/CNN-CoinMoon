@@ -19,7 +19,7 @@ import FooterInput from 'app/components/FooterInput';
 import CommentList from 'app/components/CommentList';
 import {sliderWidth} from "../Publish/styles";
 import Modal from "react-native-modal";
-import {$toast} from "../../../utils";
+import {$toast, getNumByUserId, formatDate} from "app/utils";
 import NavigationService from 'app/navigation/NavigationService';
 import avatars from "../../../services/constants";
 import i18n from "../../../i18n";
@@ -42,7 +42,9 @@ class Page extends Component {
             // 用于标识是否还有更多数据
             LastEvaluatedKey: null,
             loadMoreing: false,
-            initLoading: true
+            initLoading: true,
+            placeholder: '',
+
         }
     }
 
@@ -90,13 +92,14 @@ class Page extends Component {
         // 调取键盘
         this.setState({
             activeComment: item,
+            placeholder: `@${item.user['custom:disclose_name']}`
         })
 
     };
 
     // 评论
     comment = (item) => {
-        console.log('评论', item);
+        // console.log('评论', item);
         // 调取键盘
         this.setState({
             activeComment: item,
@@ -105,12 +108,18 @@ class Page extends Component {
 
     // 评论
     onComment = (item, text, completeCallback) => {
-
         if (!this.props.user.id) {
             $toast(i18n.t('disclose.needloginTocomment'));
             return;
         }
-
+        if (!text) {
+            $toast(i18n.t('comment.isNull'));
+            return;
+        }
+        if (text && text.length > 1000) {
+            $toast(i18n.t('disclose.tooLong'));
+            return;
+        }
         // 如果传入的对象不含有images字段，则是回复某条评论
         if (item && !item.images) {
             this.props.commentDisclose({
@@ -158,14 +167,26 @@ class Page extends Component {
         }
     };
 
-    onBlur = (item) => {
+    // onBlur = (item) => {
+    //
+    // };
 
+
+    onFocus = () => {
+        // console.log('onFocus');
+        // this.setState({
+        //     active: true,
+        // })
+    };
+
+    onBlur = () => {
+        console.log('onBlur')
+        // this.setState({
+        //     active: false,
+        // })
     };
 
 
-    onFocus = (item) => {
-
-    };
 
     // 点赞
     like = (item) => {
@@ -278,7 +299,9 @@ class Page extends Component {
     };
 
     commentOk = (data) => {
+        let avatarType = getNumByUserId(data.userId || 0);
         this.state.comments.unshift(Object.assign(data, {
+            source: avatars[avatarType % 5],
             userAction: {
                 objectId: data._id,
                 userId: this.props.user.id,
@@ -302,10 +325,11 @@ class Page extends Component {
             id: id,
             userId: this.props.user.id,
             callback: (data) => {
+                let avatarType = getNumByUserId(data.userId);
                 this.setState({
                     data: Object.assign(data, {
-                        source: avatars[(data.avatarType || 0) % 5],
-                        userName: data.userName || 'Anonymity',
+                        source: avatars[avatarType % 5],
+                        userName: i18n.t('disclose.anonymous')
                     })
                 });
             }
@@ -330,7 +354,8 @@ class Page extends Component {
                 Items.forEach((item) => {
                     item.userAction = item.userAction || {};
                     item.user = item.user || {};
-                    // item.time = item.createdAt;
+                    let avatarType = getNumByUserId(item.userId || 0);
+                    item.source = avatars[avatarType % 5];
                 });
                 this.setState({
                     comments: refresh ? [...Items] : [...(this.state.comments || []), ...Items],
@@ -339,6 +364,7 @@ class Page extends Component {
                     activeComment: null,
                 });
                 if (!LastEvaluatedKey && !initLoading) {
+                    // todo 国际化
                     $toast('没有更多数据了!');
                 }
             }
@@ -377,19 +403,15 @@ class Page extends Component {
     };
 
     render() {
-
         let {data, comments, isPreview, activeComment, loadMoreing, LastEvaluatedKey} = this.state;
+        let {user} = this.props;
+        let isMyDisclose = false;
+        if (data && user.id === data.userId) {
+            isMyDisclose = true;
+        }
         // 预览图片
         if (isPreview && data) {
             return <Container style={styles.carousel_container}>
-                {/*<Header style={styles.carousel_header}>*/}
-                {/*<Left>*/}
-                {/*<Button transparent onPress={this.goBack}>*/}
-                {/*<Image style={styles.carousel_back_icon}*/}
-                {/*source={require('app/images/icon_back_white.png')}/>*/}
-                {/*</Button>*/}
-                {/*</Left>*/}
-                {/*</Header>*/}
                 <Content style={styles.carousel_content}>
                     <Carousel
                         ref={(c) => {
@@ -428,10 +450,12 @@ class Page extends Component {
                     </Left>
                     <Body/>
                     <Right>
-                        <Button transparent light onPress={this.showDeleteDialog}>
-                            <Image style={styles.writeDiscloseBtn}
-                                   source={require('app/images/icon_more_white.png')}/>
-                        </Button>
+                        {
+                            isMyDisclose ? <Button transparent light onPress={this.showDeleteDialog}>
+                                <Image style={styles.writeDiscloseBtn}
+                                       source={require('app/images/icon_more_white.png')}/>
+                            </Button> : null
+                        }
                     </Right>
                 </Header>
 
@@ -460,7 +484,7 @@ class Page extends Component {
                                                         <View style={styles.name}>
                                                             <Text style={styles.userName}>{item.userName}</Text>
                                                             <Text
-                                                                style={styles.time}>{moment(item.createdAt).format('HH:MM')}</Text>
+                                                                style={styles.time}>{formatDate(item.createdAt)}</Text>
                                                         </View>
                                                     </Col>
                                                 </Row>
@@ -580,6 +604,7 @@ class Page extends Component {
                              {/****************************评论列表 start****************************/}
                             {this.state.comments && this.state.comments.length > 0 ?
                                 <CommentList data={data}
+                                             user={user}
                                              comments={comments}
                                              loadedAllData={!LastEvaluatedKey}
                                              loadMoreing={loadMoreing}
@@ -601,7 +626,7 @@ class Page extends Component {
                                     </Button>
                                     <Button style={styles.modal_btn} block transparent light
                                             onPress={this.cancelDelete}>
-                                        <Text style={styles.modal_btn_calcel_text}>{i18n.t('disclose.delete')}</Text>
+                                        <Text style={styles.modal_btn_calcel_text}>{i18n.t('disclose.cancel')}</Text>
                                     </Button>
                                 </View>
                             </Modal>
@@ -612,9 +637,13 @@ class Page extends Component {
 
                 {/* 底部评论框 */}
                 <FooterInput
+                    user={user}
+                    isAnonymity={true}
                     activeComment={activeComment}
+                    placeholder={this.state.placeholder}
                     onBlur={this.onBlur}
                     onFocus={this.onFocus}
+                    onFocusout={this.onFocusout}
                     onComment={this.onComment}
                 />
 

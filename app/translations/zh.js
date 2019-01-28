@@ -39,7 +39,7 @@ export default {
 
         verifing: '验证中！',
 
-        resend_tip:'已经重新发送验证码, 请查看邮箱'
+        resend_tip: '已经重新发送验证码, 请查看邮箱'
 
 
     },
@@ -48,8 +48,8 @@ export default {
         password: '密码',
         login: '登录',
         email_register: '邮箱注册',
-        loginout_ok:'logout ok',
-        loginout_fail:'logout fail'
+        loginout_ok: 'logout ok',
+        loginout_fail: 'logout fail'
     },
     page_verify: {
         email_verify: '验证邮箱',
@@ -64,9 +64,7 @@ export default {
 
         verify_modal_tip: '已经向你的邮箱发送验证码，请输入',
 
-        verify_fail:'验证失败',
-
-
+        verify_fail: '验证失败',
 
 
     },
@@ -97,5 +95,11 @@ export default {
         needLoginForPublish: '需要登录才能发布'
 
 
+    },
+
+    comment: {
+        tooLong: '最多只能输入1000个字符',
+        isNull: '输入内容不能为空',
+        publish: '发布'
     }
 }

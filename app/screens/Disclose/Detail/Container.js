@@ -3,6 +3,8 @@ import Page from './View';
 import {connect} from 'react-redux';
 import * as disCloseActions from "app/actions/disCloseActions";
 import * as userAction from "app/actions/userAction";
+import avatars from "app/services/constants";
+import {getNumByUserId} from "app/utils";
 
 const moment = require('moment');
 
@@ -24,7 +26,9 @@ function mapStateToProps({userReducer: {info}}) {
         user: {
             "id": attributes.sub,
             "name": attributes['custom:disclose_name'],
-            "icon": attributes.picture
+            "nickname": attributes['nickname'],
+            "picture": attributes.picture,
+            "avatar": avatars[getNumByUserId(attributes.sub || '0') % 5]
         }
     };
 }

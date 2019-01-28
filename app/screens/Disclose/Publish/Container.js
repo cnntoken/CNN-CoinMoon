@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import Screen from './Screen';
 import {connect} from 'react-redux';
 import * as disCloseActions from "../../../actions/disCloseActions";
+import avatars from "../../../services/constants";
+import {getNumByUserId} from "../../../utils";
 
 const moment = require('moment');
 
@@ -20,7 +22,9 @@ function mapStateToProps({userReducer: {info}}) {
         user: {
             "id": attributes.sub,
             "name": attributes['custom:disclose_name'],
-            "icon": attributes.picture
+            "nickname": attributes['nickname'],
+            "picture": attributes.picture,
+            "avatar": avatars[getNumByUserId(attributes.sub || '0')]
         }
     };
 }

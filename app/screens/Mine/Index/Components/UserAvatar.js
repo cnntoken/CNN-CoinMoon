@@ -67,7 +67,7 @@ class UserAvatar extends PureComponent {
 
                     </Button> : null
                 }
-                <Image source={{uri: info.avatar} || require('app/images/avatar_default.png')}
+                <Image source={info.avatar ? {uri: info.avatar} : require('app/images/avatar_default.png')}
                        style={customStyle.avatar}/>
                 <Text style={customStyle.text}>{info.nickname || '一只蚂蚁'}</Text>
             </View>

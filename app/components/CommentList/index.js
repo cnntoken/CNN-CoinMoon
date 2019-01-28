@@ -13,12 +13,11 @@ import {Col, Row, Grid} from "react-native-easy-grid";
 
 import {Image, Text, View, Keyboard} from "react-native";
 
-import {$toast} from "app/utils";
+import {formatDate} from "app/utils";
 import FastImage from 'react-native-fast-image'
 
-const moment = require('moment');
 
-const source = require("app/images/avatar_1.png");
+// import avatars from "../../../services/constants";
 
 class CommentList extends Component {
 
@@ -95,7 +94,7 @@ class CommentList extends Component {
 
     render() {
 
-        let {data, comments, loadMoreing, loadedAllData} = this.props;
+        let {data, comments, loadMoreing, loadedAllData, user} = this.props;
 
 
         // 加载更多按钮
@@ -124,20 +123,20 @@ class CommentList extends Component {
                     }}>暂无评论~</Text></View> :
                     <List
                         dataArray={comments}
-                        renderRow={item =>
-                            <ListItem style={styles.listitem} avatar>
+                        renderRow={(item) => {
+                            const isMyComment = user.id === item.userId;
+                            return <ListItem style={styles.listitem} avatar>
                                 {/* 左侧图标 */}
                                 <Left>
-                                    <FastImage
+                                    <Image
                                         style={{
                                             width: 40,
                                             height: 40,
                                             borderRadius: 20
                                         }}
-                                        source={item.user && item.user['picture'] ? {uri: item.user && item.user['picture']} : source}
+                                        source={item.source}
                                         resizeMode={FastImage.resizeMode.contain}
                                     />
-
                                 </Left>
                                 <Body style={styles.comments_listitem_body}>
                                 {/* 评论人，评论时间、评论内容*/}
@@ -147,13 +146,13 @@ class CommentList extends Component {
                                             style={styles.comments_username}>{item.user ? item.user['custom:disclose_name'] : ''}</Text>
                                         <Text style={styles.comments_content}>{item.content}</Text>
                                         <Text
-                                            style={styles.comments_time}>{moment(item.createdAt).format('HH:MM')}</Text>
+                                            style={styles.comments_time}>{formatDate(item.createdAt)}</Text>
                                         {
                                             item.at ? <View style={styles.comments_at}>
                                                 <Text
                                                     style={styles.comments_at_content}>@{item.at}: {item.atContent}</Text>
                                                 <Text
-                                                    style={styles.comments_at_time}>{moment(item.atTime).format('HH:MM')}</Text>
+                                                    style={styles.comments_at_time}>{formatDate(item.atTime)}</Text>
                                             </View> : null
                                         }
                                     </View>
@@ -188,7 +187,7 @@ class CommentList extends Component {
                                             </Grid>
                                         </Button>
                                     </Col>
-                                    <Col style={{width: 70}}>
+                                    {isMyComment ? <Col style={{width: 70}}>
                                         <Button transparent light
                                                 onPress={this.deleteComment.bind(this, item)}>
                                             <Grid style={styles.comments_btn_comment}>
@@ -197,14 +196,16 @@ class CommentList extends Component {
                                                 </Col>
                                             </Grid>
                                         </Button>
-                                    </Col>
+                                    </Col> : null}
+
                                 </Grid>
                                 </Body>
-                            </ListItem>}/>
+                            </ListItem>
+                        }}/>
             }
             {/*加载更多评论按钮*/}
             <Grid style={styles.loadmore}>
-                {loadMoreing ? <Spinner color={'#408EF5'}/> : loadMoreBtn}
+                {loadMoreing ? <Spinner size={'small'} color={'#408EF5'}/> : loadMoreBtn}
             </Grid>
             {/*************删除确认弹框modal***************/}
             <Modal isVisible={this.state.isModalVisible}>

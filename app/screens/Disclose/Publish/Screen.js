@@ -18,7 +18,7 @@ import {View, Image, DeviceEventEmitter, TouchableWithoutFeedback} from 'react-n
 import ImagePicker from 'react-native-image-crop-picker';
 
 import Carousel from 'react-native-snap-carousel';
-import {$toast} from '../../../utils';
+import {$toast} from 'app/utils';
 import * as navigationActions from 'app/actions/navigationActions';
 
 import i18n from 'app/i18n';

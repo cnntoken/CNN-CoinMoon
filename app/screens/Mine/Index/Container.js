@@ -4,6 +4,8 @@ import Main from './Main';
 import {connect} from 'react-redux';
 import * as disCloseActions from "../../../actions/disCloseActions";
 import * as userAction from "../../../actions/userAction";
+import avatars from "../../../services/constants";
+import {getNumByUserId} from "../../../utils";
 
 
 function mapStateToProps({userReducer: {info}}) {
@@ -12,7 +14,9 @@ function mapStateToProps({userReducer: {info}}) {
         user: {
             "id": attributes.sub,
             "name": attributes['custom:disclose_name'],
-            "icon": attributes.picture
+            "nickname": attributes['nickname'],
+            "picture": attributes.picture,
+            "avatar": avatars[getNumByUserId(attributes.sub || '0')]
         },
         userInfo: info
     };

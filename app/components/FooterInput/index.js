@@ -7,43 +7,53 @@ import {
     Footer
 } from "native-base";
 import {$toast} from "app/utils";
+import i18n from "app/i18n";
 
-
-import {Col, Grid} from "react-native-easy-grid";
+import {Col, Row, Grid} from "react-native-easy-grid";
 import {
-    Text, Keyboard,
+    Text,
+    Keyboard,
     Dimensions,
     Platform,
+    Image,
     StyleSheet
 } from "react-native";
 
 const computeStyles = (height) => {
     return StyleSheet.create({
-        footer_focus: {
-            alignItems: 'flex-start',
-            paddingTop: 12
-            // borderWidth: 1,
-            // borderColor: '#408EF5',
-            // backgroundColor: '#eee',
-            // marginBottom: height,
-        },
+
+        // footer_focus: {
+        //     alignItems: 'flex-start',
+        //     // paddingTop: 12,
+        //     height: height + 25,
+        //     // borderWidth: 1,
+        //     // borderColor: '#408EF5',
+        //     // backgroundColor: '#eee',
+        //     // marginBottom: height,
+        // },
+
         footer: {
             height: height,
+            // marginTop:8,
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: '#fff',
         },
+
+        footer_focus: {
+            display: 'flex',
+            alignItems: 'flex-start',
+            height: height,
+            backgroundColor: '#fff',
+        },
+
         footer_grid: {
             display: 'flex',
-            alignItems: 'center',
-            height: 33,
-            // paddingTop: 15,
+            height: 49,
             backgroundColor: '#fff',
         },
         footer_form: {
-            // width:viewportWidth - 80
             marginLeft: 16,
-            // height: 33
         },
         footer_label: {
             color: '#666666',
@@ -59,10 +69,13 @@ const computeStyles = (height) => {
         },
         footer_col_label: {
             width: 36,
+            height: 33,
             marginLeft: 16,
             marginRight: 16,
-            // display: 'flex',
-            // alignItems: 'center'
+            lineHeight: 23,
+            fontSize: 16,
+            display: 'flex',
+            alignItems: 'center'
         },
     });
 };
@@ -76,17 +89,16 @@ class FooterInput extends Component {
         this.state = {
             activeComment: null,
             KeyboardShown: false,
-            footerHeight: 50,
+            footerHeight: 49,
             text: ''
         }
     }
 
     // 键盘弹出事件响应
     keyboardDidShowHandler(event) {
-        console.log(event.endCoordinates.height);
         this.setState({
             KeyboardShown: true,
-            footerHeight: event.endCoordinates.height + 52
+            footerHeight: event.endCoordinates.height + 49
         });
     }
 
@@ -94,7 +106,7 @@ class FooterInput extends Component {
     keyboardDidHideHandler(event) {
         this.setState({
             KeyboardShown: false,
-            footerHeight: 50
+            footerHeight: 49
         });
     }
 
@@ -109,6 +121,12 @@ class FooterInput extends Component {
             this.props.onFocus(item);
         }
     };
+
+    // onFocusout = () => {
+    //     if (this.props.onFocusout) {
+    //         this.props.onFocusout();
+    //     }
+    // };
 
     onBlur = (item) => {
         if (this.props.onBlur) {
@@ -129,7 +147,7 @@ class FooterInput extends Component {
         }
         if (this.props.onComment) {
             this.props.onComment(item, text, () => {
-                $toast('评论成功');
+                // $toast('评论成功');
                 this.setState({
                     text: ''
                 })
@@ -142,7 +160,6 @@ class FooterInput extends Component {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShowHandler.bind(this));
         //监听键盘隐藏事件
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHideHandler.bind(this));
-
     }
 
     componentWillUnmount() {
@@ -179,31 +196,53 @@ class FooterInput extends Component {
 
     render() {
         let {KeyboardShown, footerHeight, text} = this.state;
-        let {activeComment} = this.props;
+        let {activeComment, placeholder, user, isAnonymity} = this.props;
         let styles = computeStyles(footerHeight);
         return <Footer style={[styles.footer, KeyboardShown && styles.footer_focus]}>
             <Grid style={styles.footer_grid}>
-                <Col>
-                    <Form style={styles.footer_form}>
-                        <Item rounded style={styles.footer_item}>
-                            <Input
-                                ref={(c) => this._input = c}
-                                value={text}
-                                onFocus={this.onFocus.bind(this, activeComment)}
-                                onBlur={this.onBlur.bind(this, activeComment)}
-                                onChangeText={this.onChangeText.bind(this)}
-                                style={styles.footer_input}
-                                placeholder=''/>
-                        </Item>
-                    </Form>
-                </Col>
-                <Col style={styles.footer_col_label}>
-                    <Button block transparent light
-                            onPress={this.onComment.bind(this, activeComment)}
-                    >
-                        <Text style={styles.footer_label}>评论</Text>
-                    </Button>
-                </Col>
+                {
+                    KeyboardShown ? <Row style={{
+                        marginTop: 8,
+                        marginBottom: 8,
+                    }}>
+                        <Col style={{width: 36}}><Image style={{
+                            width: 16,
+                            height: 16,
+                            marginLeft: 16,
+                        }} source={user.avatar}/></Col>
+                        <Col>
+                            <Text style={{
+                                fontSize: 12,
+                                color: '#999999',
+                                lineHeight: 16,
+                            }}>{isAnonymity ? user.nickname : user.name}</Text>
+                        </Col>
+                    </Row> : null
+                }
+                <Row>
+                    <Col>
+                        <Form style={styles.footer_form}>
+                            <Item rounded style={styles.footer_item}>
+                                <Input
+                                    ref={(c) => this._input = c}
+                                    value={text}
+                                    onFocus={this.onFocus.bind(this)}
+                                    onBlur={this.onBlur.bind(this)}
+                                    onChangeText={this.onChangeText.bind(this)}
+                                    style={styles.footer_input}
+                                    placeholder={placeholder}/>
+                            </Item>
+                        </Form>
+                    </Col>
+                    <Col style={styles.footer_col_label}>
+                        <Button block transparent light
+                                style={{height: 33}}
+                                onPress={this.onComment.bind(this, activeComment)}
+                        >
+                            <Text style={styles.footer_label}>{i18n.t('comment.publish')}</Text>
+                        </Button>
+                    </Col>
+                </Row>
             </Grid>
         </Footer>;
     }

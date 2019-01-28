@@ -1,5 +1,6 @@
 import Toast from '../components/Toast'
 
+const moment = require('moment');
 
 export const $toast = (msg) => {
     Toast.show(msg, {
@@ -22,4 +23,26 @@ export function uniqueById(items) {
         }
     });
     return [...map.values()];
+}
+
+
+// 根据创建日期获取秒数
+export function getSeconds(createdAt) {
+    return moment(createdAt).seconds();
+}
+
+
+// 根据创建日期获取秒数
+export function getNumByUserId(userId) {
+    return userId.charCodeAt();
+}
+
+export function formatDate(date) {
+    let time = '';
+    if (moment(new Date()).isSame(date, 'day')) {
+        time = moment(date).format('HH:MM')
+    } else {
+        time = moment(date).format('YYYY-MM-DD')
+    }
+    return time;
 }

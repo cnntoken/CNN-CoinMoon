@@ -359,7 +359,7 @@ class ViewControl extends Component {
                     // 自己的主页
                     if (isMine) {
                         return (<UserAvatar
-                            info={{avatar: userInfo.attributes.picture, nickname: userInfo.attributes.nickname}}
+                            info={{avatar: user.picture, nickname: user.nickname}}
                         />)
                     }
                     // 他人主页

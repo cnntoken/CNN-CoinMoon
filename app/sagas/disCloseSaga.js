@@ -119,7 +119,6 @@ export function* commentDisclose({payload}) {
         if (callback) callback(res);
     } catch (e) {
         $toast(`commentDisclose fail: ${e.message}`);
-        ;
     }
 }
 

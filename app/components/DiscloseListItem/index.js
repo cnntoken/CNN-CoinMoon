@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 import {Col, Row, Grid} from "react-native-easy-grid";
-
+import {formatDate} from "../../utils";
 
 import FastImage from 'react-native-fast-image'
 
@@ -68,10 +68,12 @@ export default class DiscloseListItem extends Component {
         // 是否是我发布的，如果是，则可以删除
         const isMine = userId === item.userId;
 
+        let time = formatDate(item.createdAt);
+
         return (
             <ListItem style={[{
                 marginBottom: -15,
-            },this.props.separators]} avatar>
+            }, this.props.separators]} avatar>
                 {/* 左侧图标 */}
                 <Left>
                     <Button transparent light onPress={this.clickAvatar.bind(this, item)}>
@@ -86,7 +88,7 @@ export default class DiscloseListItem extends Component {
                         <Col size={5}>
                             <View style={styles.name}>
                                 <Text style={styles.userName}>{item.userName}</Text>
-                                <Text style={styles.time}>{moment(item.createdAt).format('HH:MM')}</Text>
+                                <Text style={styles.time}>{time}</Text>
                             </View>
                         </Col>
                         {/* 仅仅只有自己发布的匿名信息可以删除 */}
@@ -110,7 +112,7 @@ export default class DiscloseListItem extends Component {
                         <Grid>
                             <Row>
                                 <Col>
-                                    <Text style={styles.title}>{item.title}</Text>
+                                    <Text numberOfLines={3} style={styles.title}>{item.title}</Text>
                                 </Col>
                             </Row>
                         </Grid>

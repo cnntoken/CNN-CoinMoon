@@ -12,7 +12,7 @@ class ViewControl extends Component {
         this.LastEvaluatedKey = {}
     }
     onRefresh = (category,params)=>{
-        console.log('onRefresh',params)
+        // console.log('onRefresh',params)
         this.props.getList({isRefresh: true,category},
             (LastEvaluatedKey)=>{
             this.LastEvaluatedKey[category] = LastEvaluatedKey;

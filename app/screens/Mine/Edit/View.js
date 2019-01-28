@@ -54,13 +54,14 @@ class ViewControl extends PureComponent {
                     'nickname': this.state.nick_name,
                     'picture': url
                 });
+                $toast('修改成功!');
                 this.setState({
                     image: null
                 });
                 this.props.refreshInfo();
                 this.props.navigation.pop();
                 console.log(res);
-                $toast('修改成功!');
+
             } catch (e) {
                 console.log(e)
             }

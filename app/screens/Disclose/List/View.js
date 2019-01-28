@@ -5,7 +5,7 @@ import {Container, Header, Content, Text, Button, Left, Right, Body, Title, Spin
 import {View, Image, DeviceEventEmitter} from 'react-native';
 
 import Modal from "react-native-modal";
-import {$toast, uniqueById} from 'app/utils';
+import {$toast, uniqueById, getSeconds,getNumByUserId} from 'app/utils';
 
 import * as navigationActions from 'app/actions/navigationActions';
 import DiscloseListItem from 'app/components/DiscloseListItem';
@@ -15,7 +15,7 @@ import avatars from 'app/services/constants'
 import RefreshListView, {RefreshState} from 'app/components/RefreshListView';
 
 import Storage from 'react-native-storage';
-import { AsyncStorage } from 'react-native';
+import {AsyncStorage} from 'react-native';
 
 const storage = new Storage({
     // maximum capacity, default 1000
@@ -203,10 +203,10 @@ class Screen extends Component {
             callback: (data) => {
                 let {Items, LastEvaluatedKey} = data;
                 Items.forEach((item) => {
-                    item.source = avatars[(item.avatarType || 0) % 5];
-                    item.userName = item.userName || 'Anonymity';
+                    let avatarType = getNumByUserId(item.userId);
+                    item.source = avatars[avatarType % 5];
+                    item.userName = i18n.t('disclose.anonymous');
                 });
-                let scrollIndex = (this.state.Items || []).length;
                 let list = [];
                 // 向下拉时，更新最新前面的数据
                 if (refresh) {
@@ -241,11 +241,12 @@ class Screen extends Component {
         if (!data._id) {
             return;
         }
+        let avatarType = getNumByUserId(data.userId);
+        data.source = avatars[avatarType % 5];
         let Items = this.state.Items;
         let index = Items.findIndex((item) => {
             return item._id === data._id
         });
-
         switch (type) {
             case 'update':
                 Items[index] = data;
@@ -259,7 +260,6 @@ class Screen extends Component {
             default:
                 break;
         }
-
         this.setState({
             Items: [...Items]
         });

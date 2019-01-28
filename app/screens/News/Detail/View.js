@@ -9,7 +9,7 @@ import {
     Left,
     Spinner
 } from 'native-base';
-import {Image,View,SafeAreaView} from 'react-native';
+import {Image, View, SafeAreaView} from 'react-native';
 import styles from './styles';
 import moment from 'moment';
 import WebContent from './components/WebContent';
@@ -30,20 +30,20 @@ class ViewControl extends Component {
         }
     }
 
-    transformHtmlContent = (html,images=[])=>{
-        if(!images.length){
+    transformHtmlContent = (html, images = []) => {
+        if (!images.length) {
             return html
         }
-        html = html.replace(/<cnn-image\/>/ig,()=>{
+        html = html.replace(/<cnn-image\/>/ig, () => {
             const src = images.shift();
             return `<img src='${src}'/>`
-        }).replace(/<a.*?href=.*?>/ig,()=>{
+        }).replace(/<a.*?href=.*?>/ig, () => {
             return `<a href="javascript:void 0">`
         })
         return html
     }
     // webview 加载完成, 显示操作按钮
-    showOperate = ()=>{
+    showOperate = () => {
         this.setState({
             showOperateBox: true
         })
@@ -55,8 +55,8 @@ class ViewControl extends Component {
             activeComment: true,
         })
     }
-    commentOk = ()=>{
-        
+    commentOk = () => {
+
     }
     // 评论
     onComment = (item, text, completeCallback) => {
@@ -100,7 +100,7 @@ class ViewControl extends Component {
      * @desc 获取具体feed id的评论列表
      * */
     getCommentList = () => {
-        const { navigation } = this.props;
+        const {navigation} = this.props;
         const id = navigation.getParam('_id');
         this.props.getCommentList({
             id,
@@ -112,7 +112,7 @@ class ViewControl extends Component {
                 const {comments = []} = this.state;
                 let {Items, LastEvaluatedKey} = data;
                 this.setState({
-                    comments: [...comments,...Items],
+                    comments: [...comments, ...Items],
                     LastEvaluatedKey: LastEvaluatedKey,
                     loadMoreing: false,
                     activeComment: null
@@ -121,18 +121,18 @@ class ViewControl extends Component {
         });
     }
 
-    getNews = (id,category)=>{
-        this.props.getInfo({id,category},(info)=>{
+    getNews = (id, category) => {
+        this.props.getInfo({id, category}, (info) => {
             // console.log(info)
-            info.content = this.transformHtmlContent(info.content,info.images);
+            info.content = this.transformHtmlContent(info.content, info.images);
             info.updatedAt = moment(info.updatedAt).format('YYYY.MM.DD HH:mm');
             this.setState({
                 contentLoading: false,
                 info
-            },()=>{
+            }, () => {
                 this.viewArticle(id)
             });
-            
+
         })
     }
 
@@ -145,14 +145,15 @@ class ViewControl extends Component {
         })
     }
 
-    deleteComment = (item)=>{
+    deleteComment = (item) => {
         this.props.deleteComment({
             id: item._id,
             callback: () => {
-                $toast('删除评论成功');
+                // todo 国际化
+                // $toast('删除评论成功');
             }
         });
-    }
+    };
 
     loadMoreComment = () => {
         const {loadMoreing} = this.state;
@@ -165,11 +166,11 @@ class ViewControl extends Component {
         this.getCommentList();
     };
 
-    likeComment = (item)=>{
+    likeComment = (item) => {
         let actionValue = item.userAction.actionValue;
         item.userAction.actionValue = !actionValue;
         item.likeNum = !actionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
-       
+
         // 更新用户对该资源的行为数据
         this.props.updateAction({
             _id: item.userAction._id,
@@ -191,8 +192,8 @@ class ViewControl extends Component {
             }
         });
     }
-    
-    likeArticle = ()=>{
+
+    likeArticle = () => {
         const {info} = this.state;
         let actionValue = info.userAction.actionValue;
         info.userAction.actionValue = !actionValue;
@@ -217,7 +218,7 @@ class ViewControl extends Component {
             }
         });
     }
-    viewArticle = (id)=>{
+    viewArticle = (id) => {
         this.props.updateAction({
             obj: {
                 objectId: id,
@@ -228,64 +229,67 @@ class ViewControl extends Component {
             }
         });
     }
+
     componentDidMount() {
-        const { navigation } = this.props;
+        const {navigation} = this.props;
         const id = navigation.getParam('_id');
         const category = navigation.getParam('category');
-        this.getNews(id,category);
+        this.getNews(id, category);
         this.getCommentList(id);
-       
+
     }
 
     render() {
-        const {contentLoading,info,activeComment,comments,loadMoreing,LastEvaluatedKey} = this.state;
+        const {contentLoading, info, activeComment, comments, loadMoreing, LastEvaluatedKey} = this.state;
         return (
             <Container>
                 <Header>
                     <Left>
                         <Button transparent onPress={this.goBack}>
-                            <Image source={require('app/images/icon_back_white.png')} style={{width:10,height:18}}/>
+                            <Image source={require('app/images/icon_back_white.png')} style={{width: 10, height: 18}}/>
                         </Button>
                     </Left>
                 </Header>
                 <Content style={styles.wrap}>
                     {
                         contentLoading ? <Spinner color={'#408EF5'}/> :
-                        <View style={styles.content}>
-                            <Text style={styles.title}>{info.title}</Text>
-                            <View style={styles.userBox}>
-                                <Image source={{uri: info.user.picture}} style={styles.cavatar}/>
-                                <Text style={styles.uname}>{info.user.nickname}</Text>
-                                <Text style={styles.ctime}>{info.updatedAt}</Text>
-                            </View>
-                            <WebContent html={info.content} style={styles.webview} onReady={this.showOperate}/>
-                            {this.state.showOperateBox &&  <View style={styles.viewBox}>
-                                <IconText type='view' text={info.viewNum || 0}/>
-                            </View>}
-                           {
-                               this.state.showOperateBox && <View style={styles.operateBox}>
-                               <IconText type='comment_big' text={info.commentsNum || 0} vertical={true} onPress={this.comment}/>
-                               <View style={{width: 74}}></View>
-                               <IconText type={info.userAction.actionValue ? 'liked_big' : 'like_big'} text={info.likeNum || 0} vertical={true} onPress={this.likeArticle}/>
-                           </View>
-                           }
-                            
-                            {this.state.comments ?
-                                        <CommentList data={info}
-                                             comments={comments}
-                                             loadedAllData={!LastEvaluatedKey}
-                                             loadMoreing={loadMoreing}
-                                             deleteComment={this.deleteComment}
-                                             loadMore={this.loadMoreComment}
-                                             likeComment={this.likeComment}
-                                             reply={this.replyComment}
-                                             />
-                                : <Spinner color={'#408EF5'}/>
+                            <View style={styles.content}>
+                                <Text style={styles.title}>{info.title}</Text>
+                                <View style={styles.userBox}>
+                                    <Image source={{uri: info.user.picture}} style={styles.cavatar}/>
+                                    <Text style={styles.uname}>{info.user.nickname}</Text>
+                                    <Text style={styles.ctime}>{info.updatedAt}</Text>
+                                </View>
+                                <WebContent html={info.content} style={styles.webview} onReady={this.showOperate}/>
+                                {this.state.showOperateBox && <View style={styles.viewBox}>
+                                    <IconText type='view' text={info.viewNum || 0}/>
+                                </View>}
+                                {
+                                    this.state.showOperateBox && <View style={styles.operateBox}>
+                                        <IconText type='comment_big' text={info.commentsNum || 0} vertical={true}
+                                                  onPress={this.comment}/>
+                                        <View style={{width: 74}}></View>
+                                        <IconText type={info.userAction.actionValue ? 'liked_big' : 'like_big'}
+                                                  text={info.likeNum || 0} vertical={true} onPress={this.likeArticle}/>
+                                    </View>
                                 }
-                        </View>
+
+                                {this.state.comments ?
+                                    <CommentList data={info}
+                                                 comments={comments}
+                                                 loadedAllData={!LastEvaluatedKey}
+                                                 loadMoreing={loadMoreing}
+                                                 deleteComment={this.deleteComment}
+                                                 loadMore={this.loadMoreComment}
+                                                 likeComment={this.likeComment}
+                                                 reply={this.replyComment}
+                                    />
+                                    : <Spinner color={'#408EF5'}/>
+                                }
+                            </View>
                     }
                 </Content>
-                 
+
                 {/* 底部评论框 */}
                 <FooterInput
                     activeComment={activeComment}
@@ -294,7 +298,8 @@ class ViewControl extends Component {
             </Container>
         );
     }
-    goBack = ()=>{
+
+    goBack = () => {
         this.props.navigation.pop()
     }
 }
