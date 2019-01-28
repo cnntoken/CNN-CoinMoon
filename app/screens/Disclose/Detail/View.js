@@ -36,7 +36,7 @@ class Page extends Component {
             isPreview: false,
             activeSlide: 0,
             data: null,
-            comments: null,
+            comments: [],
             isModalVisible: false,
             activeComment: null,
             // 用于标识是否还有更多数据
@@ -108,6 +108,7 @@ class Page extends Component {
 
     // 评论
     onComment = (item, text, completeCallback) => {
+        // todo 跳往登录页面
         if (!this.props.user.id) {
             $toast(i18n.t('disclose.needloginTocomment'));
             return;
@@ -631,7 +632,6 @@ class Page extends Component {
                                 </View>
                             </Modal>
                         </View>
-
                     </Content>) : <Content><Spinner size={'small'} color={'#408EF5'}/></Content>
                 }
 
@@ -643,7 +643,6 @@ class Page extends Component {
                     placeholder={this.state.placeholder}
                     onBlur={this.onBlur}
                     onFocus={this.onFocus}
-                    onFocusout={this.onFocusout}
                     onComment={this.onComment}
                 />
 

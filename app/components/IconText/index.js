@@ -18,7 +18,7 @@ const iconType = {
 export default class IconText extends PureComponent{
     onPress = ()=>{
         this.props.onPress && this.props.onPress()
-    }
+    };
     renderView = ()=>{
         const {type,text,style, vertical} = this.props;
         const baseStyle = vertical ? styles.verticalBox : styles.horizontalBox;
@@ -27,7 +27,7 @@ export default class IconText extends PureComponent{
                     <Image source={iconType[type]}/>
                     <Text style={textStyle}>{text}</Text>
                 </View>
-    }
+    };
     render (){
         const {normal,style} = this.props;
         if(normal){

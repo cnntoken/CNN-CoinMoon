@@ -198,6 +198,16 @@ class FooterInput extends Component {
         let {KeyboardShown, footerHeight, text} = this.state;
         let {activeComment, placeholder, user, isAnonymity} = this.props;
         let styles = computeStyles(footerHeight);
+
+        let source = require('app/images/avatar_default.png');
+
+        if (isAnonymity) {
+            source = user.avatar;
+        }
+        if (!isAnonymity && user && user.picture) {
+            source = {uri: user.picture}
+        }
+
         return <Footer style={[styles.footer, KeyboardShown && styles.footer_focus]}>
             <Grid style={styles.footer_grid}>
                 {
@@ -205,11 +215,13 @@ class FooterInput extends Component {
                         marginTop: 8,
                         marginBottom: 8,
                     }}>
-                        <Col style={{width: 36}}><Image style={{
-                            width: 16,
-                            height: 16,
-                            marginLeft: 16,
-                        }} source={user.avatar}/></Col>
+                        <Col style={{width: 36}}>
+                            <Image style={{
+                                width: 16,
+                                height: 16,
+                                marginLeft: 16,
+                            }} source={source}/>
+                        </Col>
                         <Col>
                             <Text style={{
                                 fontSize: 12,

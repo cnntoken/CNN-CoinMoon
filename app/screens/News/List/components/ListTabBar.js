@@ -66,7 +66,7 @@ class ListTabBar extends PureComponent {
         if(isTabActive){
             styleArr.push(styles.active)
         }
-    
+
         return <TouchableOpacity
           key={`${name}_${page}`}
           onPress={() => onPressHandler(page)}
@@ -77,7 +77,7 @@ class ListTabBar extends PureComponent {
             </Text>
           </View>
         </TouchableOpacity>;
-    }
+    };
     renderTab = (name, page, isActive)=>{
         return <TabBar key={`${name}_${page}`} name={name} page={page} isActive={isActive} onPress={this.props.goToPage}/>
     }

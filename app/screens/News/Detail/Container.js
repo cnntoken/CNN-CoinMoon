@@ -1,22 +1,39 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import View from './View';
-import { connect } from 'react-redux';
-import {getDetail, getCommentList, comment, like, likeComment,deleteComment} from 'app/actions/feedActions';
+import {connect} from 'react-redux';
+import {getDetail, getCommentList, comment, like, likeComment, deleteComment} from 'app/actions/feedActions';
 import * as userAction from "app/actions/userAction";
+import * as feedActions from "../../../actions/feedActions";
+import avatars from "../../../services/constants";
+import {getNumByUserId} from "../../../utils";
+
 
 class Container extends Component {
     constructor(props) {
         super(props);
     }
+
     render() {
         return <View {...this.props} />;
     }
 }
 
-function mapStateToProps({userReducer:{info}}) {
-    return {userInfo:info};
+function mapStateToProps({userReducer: {info}}) {
+    let attributes = info.attributes || {};
+    return {
+        userInfo: info,
+        user: {
+            "id": attributes.sub,
+            "icon": attributes.picture ? {uri: attributes.picture} : require('app/images/avatar_default.png'),
+            "name": attributes['custom:disclose_name'],
+            "nickname": attributes['nickname'],
+            "picture": attributes.picture,
+        }
+    };
 }
+
 function mapDispatchToProps(dispatch) {
+
     return {
 
         getInfo: (...args) => dispatch(getDetail(...args)),
@@ -35,14 +52,14 @@ function mapDispatchToProps(dispatch) {
         },
 
         like: (...args) => {
-
             dispatch(like(...args))
-
         },
-        likeComment: (...args) => {
 
+        feedLike: (...args) => dispatch(feedActions.feedLike(...args)),
+
+
+        likeComment: (...args) => {
             dispatch(likeComment(...args))
-            
         }
     };
 }

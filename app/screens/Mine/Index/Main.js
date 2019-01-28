@@ -52,6 +52,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         // paddingBottom: 20
     },
+    userInfo_other: {
+        justifyContent: 'center',
+    },
     userAvatar: {
         top: -40,
         marginLeft: 30,
@@ -92,8 +95,8 @@ class ViewControl extends Component {
             activeItem: null,
             // 用于标识是否还有更多数据
             LastEvaluatedKey: null,
-            userId: props.user.id
-        }
+            userId: props.navigation.getParam('id') || props.user.id,
+        };
     }
 
     static propTypes = {
@@ -123,16 +126,6 @@ class ViewControl extends Component {
     // 跳往详情页面时，再返回来时更新list页面的state
     updateData = (data) => {
         console.log(data);
-    };
-
-    // 点击用户头像跳到该用户的个人中心
-    clickAvatar = (item) => {
-        this.setState({
-            userId: item.userId,
-            Items: null
-        });
-        this.getList(this.state.userId, 10, null, false, false);
-        this.subscription = DeviceEventEmitter.addListener('updateDiscloseListData', this.updateState);
     };
 
     // 点赞
@@ -208,7 +201,7 @@ class ViewControl extends Component {
     renderListItem = ({item, index}) => {
         const {hasData, Items} = this.state;
         return <DiscloseListItem showDeleteDialog={this.showDeleteDialog}
-                                 clickAvatar={this.clickAvatar}
+            // clickAvatar={this.clickAvatar}
                                  like={this.like}
                                  opt={{item, index, hasData, Items, userId: this.props.user.id}}
                                  pressItem={this.pressItem}/>
@@ -320,8 +313,9 @@ class ViewControl extends Component {
         });
     };
 
-    ////////////////////////////////////////////////////////////////////////////// 列表部分逻辑 end
 
+
+    ////////////////////////////////////////////////////////////////////////////// 列表部分逻辑 end
     componentDidMount() {
         this.getList(this.state.userId, 10, null, false, false);
         this.subscription = DeviceEventEmitter.addListener('updateDiscloseListData', this.updateState);
@@ -376,7 +370,7 @@ class ViewControl extends Component {
                 }}
 
                 title={() => (
-                    <View style={styles.userInfo}>
+                    <View style={[styles.userInfo, !isMine && styles.userInfo_other]}>
                         <UserAvatar style={styles.userAvatar} info={{
                             avatar: userInfo.attributes.picture,
                             nickname: userInfo.attributes.nickname

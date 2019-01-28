@@ -18,7 +18,6 @@ import {formatDate} from "../../utils";
 
 import FastImage from 'react-native-fast-image'
 
-const moment = require('moment');
 
 export default class DiscloseListItem extends Component {
 
@@ -39,9 +38,10 @@ export default class DiscloseListItem extends Component {
 
     // 点击用户头像
     clickAvatar = (item) => {
-        if (this.props.clickAvatar) {
-            this.props.clickAvatar(item);
-        }
+        return;
+        // if (this.props.clickAvatar) {
+        //     this.props.clickAvatar(item);
+        // }
     };
 
 

@@ -64,7 +64,7 @@ class CommentList extends Component {
     confirmDelete = () => {
         this.setState({
             isModalVisible: false
-        })
+        });
         if (this.props.deleteComment) {
             this.props.deleteComment(this.cacheDeleteItem);
         }
@@ -94,7 +94,7 @@ class CommentList extends Component {
 
     render() {
 
-        let {data, comments, loadMoreing, loadedAllData, user} = this.props;
+        let {data, comments, loadMoreing, loadedAllData, user, showNickName} = this.props;
 
 
         // 加载更多按钮
@@ -125,6 +125,11 @@ class CommentList extends Component {
                         dataArray={comments}
                         renderRow={(item) => {
                             const isMyComment = user.id === item.userId;
+                            let username = item.user ? item.user['custom:disclose_name'] : '';
+                            if (showNickName) {
+                                username = item.user ? item.user['nickname'] : ''
+                            }
+
                             return <ListItem style={styles.listitem} avatar>
                                 {/* 左侧图标 */}
                                 <Left>
@@ -143,7 +148,7 @@ class CommentList extends Component {
                                 <View style={styles.comments_container}>
                                     <View style={styles.comments}>
                                         <Text
-                                            style={styles.comments_username}>{item.user ? item.user['custom:disclose_name'] : ''}</Text>
+                                            style={styles.comments_username}>{username}</Text>
                                         <Text style={styles.comments_content}>{item.content}</Text>
                                         <Text
                                             style={styles.comments_time}>{formatDate(item.createdAt)}</Text>

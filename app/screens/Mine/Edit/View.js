@@ -72,22 +72,9 @@ class ViewControl extends PureComponent {
         this.setState({
             nick_name
         })
-    }
+    };
+
     selectPhotoTapped = () => {
-        const options = {
-            title: '请选择',
-            quality: 1,
-            mediaType: 'photo',
-            cancelButtonTitle: '取消',
-            takePhotoButtonTitle: '拍照',
-            chooseFromLibraryButtonTitle: '选择相册',
-            allowsEditing: true,
-            noData: false,
-            storageOptions: {
-                skipBackup: true,
-                path: 'images'
-            }
-        };
         // 直接调用相册
         try {
             ImagePicker.openPicker({
@@ -108,6 +95,7 @@ class ViewControl extends PureComponent {
             console.log(e);
         }
     };
+
     goBack = () => {
         this.props.navigation.pop();
     };

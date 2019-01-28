@@ -46,7 +46,7 @@ export default class List extends PureComponent{
             this.setState({
                 refreshing: false,
                 loadingMore: false
-            })
+            });
             setTimeout(()=>{
                 this.setState({
                     loadingText: '下拉刷新'
@@ -57,13 +57,13 @@ export default class List extends PureComponent{
     componentDidMount(){
         const {data} = this.props;
         if(!data || !data.length){
-           this.refreshData()
+           this.refreshData();
         }
     }
 
     render(){
         const {refreshing,loadingText} = this.state;
-        return <FlatList 
+        return <FlatList
                     data={this.props.data || []}
                     renderItem={this.props.renderItem}
                     onEndReachedThreshold={0.5}

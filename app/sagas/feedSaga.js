@@ -5,42 +5,41 @@ import * as services from '../services/feed';
 // import * as feedActions from '../actions/feedActions';
 
 // 获取列表
-export function* getList({payload,callback}) {
+export function* getList({payload, callback}) {
     const {isRefresh, category, params} = payload;
-    console.log('is refresh', isRefresh, category,params)
+    console.log('is refresh', isRefresh, category, params)
     try {
-        const res = yield call(services.getlist,category,params);
+        const res = yield call(services.getlist, category, params);
         const list = res.Items;
         const hasMore = res.LastEvaluatedKey ? true : false;
-        if(isRefresh){
-            yield put({type: Types.FEED_PREPEND_LIST,category,list, hasMore});
-        }else{
-            yield put({type: Types.FEED_APPEND_LIST,category,list, hasMore});
+        if (isRefresh) {
+            yield put({type: Types.FEED_PREPEND_LIST, category, list, hasMore});
+        } else {
+            yield put({type: Types.FEED_APPEND_LIST, category, list, hasMore});
         }
         callback && callback(res.LastEvaluatedKey)
     } catch (e) {
-        console.log(e)
+        console.log(e);
         $toast(`getList fail`);
     }
 }
 
 
-
-const getDetailFromStateByIdAndCategory = (id,category)=>{
-    return (state)=>{
+const getDetailFromStateByIdAndCategory = (id, category) => {
+    return (state) => {
         const {feedReducer} = state;
-        if(feedReducer[category]){
-            return feedReducer[category].find(item=>item._id === id)
+        if (feedReducer[category]) {
+            return feedReducer[category].find(item => item._id === id)
         }
         return false
     }
 }
 
 // 获取详情
-export function* getDetail({payload,callback}) {
+export function* getDetail({payload, callback}) {
     const {id, category} = payload;
     const info = yield select(getDetailFromStateByIdAndCategory(id, category));
-    if(info){
+    if (info) {
         callback && callback(info);
         return false;
     }
@@ -56,11 +55,11 @@ export function* getDetail({payload,callback}) {
 
 // 获取所有的评论列表，一次获取多条数据再在前端分页
 export function* getCommentList({payload}) {
-    console.log('getCommentList=============')
+    console.log('getCommentList=============');
     const {id, params, callback} = payload;
     try {
         const res = yield call(services.getFeedComments, id, params);
-        console.log('res', res);
+        console.log('res:======', res);
         if (callback) callback(res);
     } catch (e) {
         console.log(e)
@@ -68,7 +67,6 @@ export function* getCommentList({payload}) {
         // if (callback) callback(e)
     }
 }
-
 
 // 点赞
 export function* like({payload}) {
@@ -87,10 +85,10 @@ export function* comment({payload}) {
     const {params, callback} = payload;
     try {
         const res = yield call(services.comment, params);
-        console.log('res', res);
+        console.log('res:****', res);
         if (callback) callback(res);
     } catch (e) {
-        $toast(`comment fail:`,e);
+        $toast(`commentDisclose fail: ${e.message}`);
     }
 }
 
@@ -119,3 +117,15 @@ export function* deleteComment({payload}) {
         $toast(`deleteComment fail`);
     }
 }
+
+// 用于更改feed list state
+// export function* feedLike({payload, callback}) {
+//     const {category, params} = payload;
+//     try {
+//         yield put({type: Types.FEED_LIST_LIKE, category, params});
+//         callback && callback(params);
+//     } catch (e) {
+//         console.log(e);
+//         $toast(`feedLike fail`);
+//     }
+// }

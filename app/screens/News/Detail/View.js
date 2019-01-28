@@ -16,8 +16,9 @@ import WebContent from './components/WebContent';
 import IconText from 'app/components/IconText';
 import FooterInput from 'app/components/FooterInput';
 import CommentList from 'app/components/CommentList';
-import {$toast} from 'app/utils';
+import {$toast, getNumByUserId} from 'app/utils';
 import i18n from 'app/i18n';
+import avatars from "../../../services/constants";
 
 class ViewControl extends Component {
 
@@ -26,7 +27,9 @@ class ViewControl extends Component {
         this.state = {
             contentLoading: true,
             activeComment: null,
-            showOperateBox: false
+            showOperateBox: false,
+            comments: [],
+            placeholder: ''
         }
     }
 
@@ -49,33 +52,71 @@ class ViewControl extends Component {
         })
     }
     // 评论
-    comment = () => {
+    comment = (item) => {
         // 调取键盘
         this.setState({
-            activeComment: true,
+            activeComment: item,
         })
-    }
-    commentOk = () => {
+    };
 
-    }
+    commentOk = (data) => {
+        this.state.comments.unshift(Object.assign(data, {
+            userAction: {
+                objectId: data._id,
+                userId: this.props.user.id,
+                actionType: 1,  // 点赞
+                objectType: 2,
+                actionValue: false
+            },
+            user: this.props.user,
+            source: this.props.user && this.props.user.picture ? {uri: this.props.user.picture} : require('app/images/avatar_default.png')
+        }));
+        this.setState({
+            comments: JSON.parse(JSON.stringify(this.state.comments)),
+            placeholder: ''
+        });
+    };
+
     // 评论
     onComment = (item, text, completeCallback) => {
+        // todo 跳往登录页面
+        if (!this.props.user.id) {
+            $toast(i18n.t('disclose.needloginTocomment'));
+            return;
+        }
+
+        if (!text) {
+            $toast(i18n.t('comment.isNull'));
+            return;
+        }
+
+        if (text && text.length > 1000) {
+            $toast(i18n.t('disclose.tooLong'));
+            return;
+        }
+
         const {info} = this.state;
         // 如果传入的对象含有id则表明是回复评论
-        if (item && item._id) {
+        if (item && !item.images) {
             this.props.comment({
                 params: {
                     content: text,
+                    at: item.user['nickname'],
+                    atContent: item.content,
                     feedId: info._id,
                     atCommentId: item._id,
-                    atUserId: item.userId
+                    atUserId: item.userId,
+                    userId: this.props.user.id,
+                    "likeNum": 0,
+                    "replayNum": 0,
+                    "dislikeNum": 0
                 },
                 callback: (data) => {
                     completeCallback(data);
                     this.setState({
                         activeComment: null,
                     });
-                    this.commentOk();
+                    this.commentOk(data);
                 }
             });
         } else {
@@ -83,18 +124,22 @@ class ViewControl extends Component {
             this.props.comment({
                 params: {
                     content: text,
-                    feedId: info._id
+                    feedId: info._id,
+                    "userId": this.props.user.id,
+                    "likeNum": 0,
+                    "replayNum": 0,
+                    "dislikeNum": 0
                 },
                 callback: (data) => {
                     completeCallback(data);
                     this.setState({
                         activeComment: null,
                     });
-                    this.commentOk();
+                    this.commentOk(data);
                 }
             });
         }
-    }
+    };
 
     /**
      * @desc 获取具体feed id的评论列表
@@ -106,35 +151,41 @@ class ViewControl extends Component {
             id,
             params: {
                 limit: 20,
-                LastEvaluatedKey: this.state.LastEvaluatedKey
+                LastEvaluatedKey: this.state.LastEvaluatedKey,
+                userId: this.props.userInfo.id,
             },
             callback: (data) => {
                 const {comments = []} = this.state;
                 let {Items, LastEvaluatedKey} = data;
+                Items.forEach((item) => {
+                    item.userAction = item.userAction || {};
+                    item.user = item.user || {};
+                    item.source = item.user && item.user.picture ? {uri: item.user.picture} : require('app/images/avatar_default.png');
+                });
                 this.setState({
                     comments: [...comments, ...Items],
                     LastEvaluatedKey: LastEvaluatedKey,
                     loadMoreing: false,
                     activeComment: null
                 });
+
             }
         });
-    }
+    };
 
     getNews = (id, category) => {
         this.props.getInfo({id, category}, (info) => {
-            // console.log(info)
             info.content = this.transformHtmlContent(info.content, info.images);
             info.updatedAt = moment(info.updatedAt).format('YYYY.MM.DD HH:mm');
+            info.source = info.user && info.user.picture ? {uri: info.user.picture} : require('app/images/avatar_default.png');
             this.setState({
                 contentLoading: false,
                 info
             }, () => {
                 this.viewArticle(id)
             });
-
         })
-    }
+    };
 
     // 回复评论
     replyComment = (item) => {
@@ -142,15 +193,20 @@ class ViewControl extends Component {
         // 调取键盘
         this.setState({
             activeComment: item,
+            placeholder: `@${item.user['nickname']}`
         })
-    }
+    };
 
     deleteComment = (item) => {
         this.props.deleteComment({
             id: item._id,
             callback: () => {
-                // todo 国际化
-                // $toast('删除评论成功');
+                $toast('删除成功');
+                let index = this.state.comments.indexOf(item);
+                this.state.comments.splice(index, 1);
+                this.setState({
+                    activeComment: null
+                });
             }
         });
     };
@@ -170,7 +226,9 @@ class ViewControl extends Component {
         let actionValue = item.userAction.actionValue;
         item.userAction.actionValue = !actionValue;
         item.likeNum = !actionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
-
+        this.setState({
+            comments: JSON.parse(JSON.stringify(this.state.comments))
+        });
         // 更新用户对该资源的行为数据
         this.props.updateAction({
             _id: item.userAction._id,
@@ -182,7 +240,7 @@ class ViewControl extends Component {
                 actionValue: !actionValue
             },
             callback: (data) => {
-                $toast('点赞成功');
+                // $toast('点赞成功');
                 if (!item.userAction._id) {
                     item.userAction._id = data._id;
                 }
@@ -191,14 +249,21 @@ class ViewControl extends Component {
                 });
             }
         });
-    }
+    };
 
     likeArticle = () => {
+
+        const {navigation} = this.props;
+        const category = navigation.getParam('category');
+
         const {info} = this.state;
+
         let actionValue = info.userAction.actionValue;
         info.userAction.actionValue = !actionValue;
         info.likeNum = !actionValue ? info.likeNum + 1 : info.likeNum - 1;
-        console.log('info', info)
+
+        this.setState({});
+
         // 查询用户对该资源的行为数据
         this.props.updateAction({
             _id: info.userAction._id,
@@ -207,17 +272,24 @@ class ViewControl extends Component {
                 userId: this.props.userInfo.id,
                 actionType: 1,  // 点赞
                 objectType: 1,   // feed
-                actionValue: !actionValue ? 1 : 0
+                actionValue: !actionValue
             },
             callback: (data) => {
-                $toast('点赞成功');
                 if (!info.userAction._id) {
                     info.userAction._id = data._id;
+                    this.setState({});
                 }
-                this.setState({});
+                // 同步点赞数据到列表，防止返回时数据没有更新
+                this.props.feedLike({
+                    category: category,
+                    params: info,
+                    asyncList: true
+                });
+
             }
         });
-    }
+    };
+
     viewArticle = (id) => {
         this.props.updateAction({
             obj: {
@@ -228,7 +300,7 @@ class ViewControl extends Component {
                 actionValue: 1
             }
         });
-    }
+    };
 
     componentDidMount() {
         const {navigation} = this.props;
@@ -236,11 +308,11 @@ class ViewControl extends Component {
         const category = navigation.getParam('category');
         this.getNews(id, category);
         this.getCommentList(id);
-
     }
 
     render() {
         const {contentLoading, info, activeComment, comments, loadMoreing, LastEvaluatedKey} = this.state;
+        const {user} = this.props;
         return (
             <Container>
                 <Header>
@@ -256,27 +328,31 @@ class ViewControl extends Component {
                             <View style={styles.content}>
                                 <Text style={styles.title}>{info.title}</Text>
                                 <View style={styles.userBox}>
-                                    <Image source={{uri: info.user.picture}} style={styles.cavatar}/>
+                                    <Image source={info.source} style={styles.cavatar}/>
                                     <Text style={styles.uname}>{info.user.nickname}</Text>
                                     <Text style={styles.ctime}>{info.updatedAt}</Text>
                                 </View>
                                 <WebContent html={info.content} style={styles.webview} onReady={this.showOperate}/>
+
                                 {this.state.showOperateBox && <View style={styles.viewBox}>
                                     <IconText type='view' text={info.viewNum || 0}/>
                                 </View>}
+
                                 {
                                     this.state.showOperateBox && <View style={styles.operateBox}>
                                         <IconText type='comment_big' text={info.commentsNum || 0} vertical={true}
-                                                  onPress={this.comment}/>
+                                                  onPress={this.comment.bind(this, info)}/>
                                         <View style={{width: 74}}></View>
                                         <IconText type={info.userAction.actionValue ? 'liked_big' : 'like_big'}
                                                   text={info.likeNum || 0} vertical={true} onPress={this.likeArticle}/>
                                     </View>
                                 }
 
-                                {this.state.comments ?
+                                {this.state.comments && this.state.comments.length > 0 ?
                                     <CommentList data={info}
+                                                 showNickName={true}
                                                  comments={comments}
+                                                 user={user}
                                                  loadedAllData={!LastEvaluatedKey}
                                                  loadMoreing={loadMoreing}
                                                  deleteComment={this.deleteComment}
@@ -284,7 +360,7 @@ class ViewControl extends Component {
                                                  likeComment={this.likeComment}
                                                  reply={this.replyComment}
                                     />
-                                    : <Spinner color={'#408EF5'}/>
+                                    : null
                                 }
                             </View>
                     }
@@ -292,6 +368,9 @@ class ViewControl extends Component {
 
                 {/* 底部评论框 */}
                 <FooterInput
+                    user={user}
+                    isAnonymity={false}
+                    placeholder={this.state.placeholder}
                     activeComment={activeComment}
                     onComment={this.onComment}
                 />
