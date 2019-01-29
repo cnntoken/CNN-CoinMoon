@@ -54,8 +54,14 @@ class Screen extends Component {
 
     // 写爆料
     writeDisclose = () => {
+        // if (!this.props.user.id) {
+        //     $toast(i18n.t('disclose.needLoginForPublish'));
+        //     return;
+        // }
         if (!this.props.user.id) {
-            $toast(i18n.t('disclose.needLoginForPublish'));
+            this.props.navigation.navigate('Login', {
+                prevState: this.props.navigation.state
+            });
             return;
         }
         navigationActions.navigateToDisclosePublish();

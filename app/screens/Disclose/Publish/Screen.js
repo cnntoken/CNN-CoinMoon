@@ -112,6 +112,15 @@ class Screen extends Component {
 
     // 发布爆料
     publish = () => {
+
+        // 必须登录才能点赞
+        if (!this.props.user.id) {
+            this.props.navigation.navigate('Login', {
+                prevState: this.props.navigation.state
+            });
+            return;
+        }
+
         let title = this.state.title;
         if (!title) {
             $toast(i18n.t('disclose.publish_valid_textarea'));
