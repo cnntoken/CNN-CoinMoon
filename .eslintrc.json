@@ -39,6 +39,7 @@
         ]
     },
     "globals": {
-        "fetch": true
+        "fetch": true,
+        "__DEV__": true
     }
 }
