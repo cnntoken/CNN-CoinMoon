@@ -6,7 +6,7 @@ import * as userAction from "app/actions/userAction";
 import avatars from "app/services/constants";
 import {getNumByUserId} from "app/utils";
 
-const moment = require('moment');
+// const moment = require('moment');
 
 
 class Container extends Component {

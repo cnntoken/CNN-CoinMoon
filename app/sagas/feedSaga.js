@@ -25,6 +25,18 @@ export function* getList({payload, callback}) {
 }
 
 
+export function* getListByUserId({payload}) {
+    const {params, callback} = payload;
+    try {
+        const res = yield call(services.getListByUserId, params);
+        console.log('res', res);
+        if (callback) callback(res);
+    } catch (e) {
+        $toast(`getList fail: ${e.message}`);
+
+    }
+}
+
 const getDetailFromStateByIdAndCategory = (id, category) => {
     return (state) => {
         const {feedReducer} = state;
@@ -33,18 +45,18 @@ const getDetailFromStateByIdAndCategory = (id, category) => {
         }
         return false
     }
-}
+};
 
 // 获取详情
 export function* getDetail({payload, callback}) {
-    const {id, category} = payload;
-    const info = yield select(getDetailFromStateByIdAndCategory(id, category));
-    if (info) {
-        callback && callback(info);
-        return false;
-    }
+    const {id, category, userId} = payload;
+    // const info = yield select(getDetailFromStateByIdAndCategory(id, category));
+    // if (info) {
+    //     callback && callback(info);
+    //     return false;
+    // }
     try {
-        const res = yield call(services.getDetail, id);
+        const res = yield call(services.getFeedDetail, id, userId);
         callback && callback(res);
     } catch (e) {
         $toast(`getDiscloseDetail fail: ${e.message}`);
@@ -55,7 +67,6 @@ export function* getDetail({payload, callback}) {
 
 // 获取所有的评论列表，一次获取多条数据再在前端分页
 export function* getCommentList({payload}) {
-    console.log('getCommentList=============');
     const {id, params, callback} = payload;
     try {
         const res = yield call(services.getFeedComments, id, params);

@@ -17,8 +17,6 @@ import {
 
 import Modal from "react-native-modal";
 import {$toast, uniqueById} from 'app/utils';
-// import * as navigationActions from 'app/actions/navigationActions';
-import DiscloseListItem from 'app/components/DiscloseListItem';
 
 import PropTypes from 'prop-types';
 import UserAvatar from './Components/UserAvatar';
@@ -27,6 +25,8 @@ import avatars from 'app/services/constants'
 import RefreshListView, {RefreshState} from 'app/components/RefreshListView';
 // import AnimatedHeader from "./Main";
 import AnimatedHeader from 'app/components/Collapsible';
+
+import Item from "./Components/Item";
 
 const styles = StyleSheet.create({
     content: {
@@ -90,8 +90,6 @@ class ViewControl extends Component {
             loadMoreing: false,
             hasData: true,
             Items: null,
-            Count: 0,
-            isModalVisible: false,
             activeItem: null,
             // 用于标识是否还有更多数据
             LastEvaluatedKey: null,
@@ -101,14 +99,8 @@ class ViewControl extends Component {
 
     static propTypes = {
         navigation: PropTypes.object.isRequired
-        // setUserInfo: PropTypes.func.isRequired,
     };
-    goEdit = () => {
-        this.props.navigation.navigate('MineEidt')
-    };
-    goSettings = () => {
-        this.props.navigation.navigate('MineSettings')
-    };
+
 
     ////////////////////////////////////////////////////////////////////////////// 列表部分逻辑 start
     // 进入具体详情页面
@@ -117,7 +109,7 @@ class ViewControl extends Component {
         //     id: item._id,
         //     updateData: this.updateData
         // });
-        this.props.navigation.navigate('DiscloseDetail', {
+        this.props.navigation.navigate('NewsDetail', {
             id: item._id,
             updateData: this.updateData
         })
@@ -143,22 +135,14 @@ class ViewControl extends Component {
         this.setState({
             Items: [...this.state.Items]
         });
-        // 更新爆料条目中的数据
-        // this.props.like({
-        //     id: item._id,
-        //     field: 'likeNum',
-        //     cancel: actionValue,
-        //     callback: () => {
-        //     }
-        // });
         // 更新用户对该资源的行为数据
         this.props.updateAction({
             _id: item.userAction._id,
             obj: {
                 objectId: item._id,
                 userId: this.props.user.id,
-                actionType: 1,  // 点赞
-                objectType: 3,   // 爆料资源
+                actionType: 1,
+                objectType: 1,
                 actionValue: !actionValue
             },
             callback: (res) => {
@@ -166,46 +150,33 @@ class ViewControl extends Component {
         });
     };
 
-    // 显示删除弹框
-    showDeleteDialog = (item) => {
-        this.setState({
-            isModalVisible: true,
-            activeItem: item
-        });
+
+    // // 渲染列表
+    // renderListItem = ({item, index}) => {
+    //     const {hasData, Items} = this.state;
+    //     return <DiscloseListItem showDeleteDialog={this.showDeleteDialog}
+    //         // clickAvatar={this.clickAvatar}
+    //                              like={this.like}
+    //                              opt={{item, index, hasData, Items, userId: this.props.user.id}}
+    //                              pressItem={this.pressItem}/>
+    // };
+
+    goUserDetail = (info) => {
+        this.props.navigation.navigate('OthersHome', {userInfo: info.user})
     };
 
-    // 确定删除
-    confirmDelete = (item) => {
-        this.props.deleteDisclose({
-            id: item._id,
-            callback: (data) => {
-                $toast('删除爆料成功');
-                let index = this.state.Items.indexOf(item);
-                this.state.Items.splice(index, 1);
-                this.setState({
-                    isModalVisible: false,
-                    activeItem: null
-                });
-            }
-        });
+    goDetail = (info) => {
+        const {_id, category} = info;
+        this.props.navigation.navigate('NewsDetail', {_id, category})
     };
 
-    // 取消删除
-    cancelDelete = () => {
-        this.setState({
-            isModalVisible: false,
-            activeItem: null
-        })
-    };
 
-    // 渲染列表
-    renderListItem = ({item, index}) => {
-        const {hasData, Items} = this.state;
-        return <DiscloseListItem showDeleteDialog={this.showDeleteDialog}
-            // clickAvatar={this.clickAvatar}
-                                 like={this.like}
-                                 opt={{item, index, hasData, Items, userId: this.props.user.id}}
-                                 pressItem={this.pressItem}/>
+    renderItem = ({item, index, separators, cat}) => {
+        return <Item info={item}
+                     key={item._id}
+                     onLike={this.like.bind(item)}
+                     onAvatarClick={this.goUserDetail.bind(this,item)}
+                     onItemClick={this.goDetail}/>
     };
 
     //  下滑刷新
@@ -245,13 +216,13 @@ class ViewControl extends Component {
             params: {
                 limit: limit || 10,
                 LastEvaluatedKey: LastEvaluatedKey || null,
-                userId: this.props.navigation.getParam('id') || this.props.user.id
+                userId: this.props.navigation.getParam('userInfo').sub
             },
             callback: (data) => {
                 let {Items, LastEvaluatedKey} = data;
                 Items.forEach((item) => {
-                    item.source = avatars[(item.avatarType || 0) % 5];
-                    item.userName = item.userName || 'Anonymity';
+                    // item.source = avatars[(item.avatarType || 0) % 5];
+                    // item.userName = item.userName || 'Anonymity';
                 });
                 let list = [];
                 // 向下拉时，更新最新前面的数据
@@ -304,31 +275,17 @@ class ViewControl extends Component {
             default:
                 break;
         }
-
         this.setState({
             Items: [...Items]
         });
     };
 
-
     ////////////////////////////////////////////////////////////////////////////// 列表部分逻辑 end
     componentDidMount() {
-        console.log('componentDidMount');
         this.getList(10, null, false, false);
-        this.subscription = DeviceEventEmitter.addListener('updateDiscloseListData', this.updateState);
-        // StatusBar.setBarStyle('light-content', true);
+        this.subscription = DeviceEventEmitter.addListener('updateFeedListData', this.updateState);
     }
 
-    componentWillReceiveProps(nextProps) {
-        console.log('componentWillReceiveProps')
-        // let userId = nextProps.navigation.getParam('id') || nextProps.user.id;
-        // if (userId) {
-        //     this.setState({
-        //         userId: userId,
-        //         Items: null
-        //     })
-        // }
-    }
 
     componentWillUnmount() {
         // debugger;
@@ -347,18 +304,15 @@ class ViewControl extends Component {
 
 
     render() {
-        const {userInfo, navigation, user} = this.props;
+        const {navigation, user} = this.props;
         const {refreshing, loadMoreing, Items} = this.state;
-        const isMine = !this.props.navigation.getParam('id') || this.props.navigation.getParam('id') === user.id;
+        const userInfo = navigation.getParam('userInfo');
         return (
             <AnimatedHeader
                 style={{flex: 1}}
                 // backText='Back'
                 toolbarColor={'#408EF5'}
                 renderBack={() => {
-                    if (isMine) {
-                        return null;
-                    }
                     return <Button transparent onPress={this.goBack.bind(this)}>
                         <Image style={{
                             width: 18,
@@ -368,54 +322,15 @@ class ViewControl extends Component {
 
                     </Button>
                 }}
-                renderLeft={() => {
-                    return (<UserAvatar
-                        info={{avatar: user.picture, nickname: user.nickname}}
-                    />)
-                }}
                 title={() => (
-
-                    <View style={[styles.userInfo, !isMine && styles.userInfo_other]}>
+                    <View style={[styles.userInfo, styles.userInfo_other]}>
                         <UserAvatar style={styles.userAvatar} info={{
-                            avatar: userInfo.attributes.picture,
-                            nickname: userInfo.attributes.nickname
+                            avatar: userInfo.picture,
+                            nickname: userInfo.nickname
                         }} big/>
-
-                        {isMine ? <Button transparent onPress={this.goEdit}>
-                            <Text>编辑信息</Text>
-                        </Button> : null}
                     </View>
-
                 )}
-
-                renderOthers={() => {
-                    return <View>
-                        <Modal isVisible={this.state.isModalVisible}>
-                            <View>
-                                <Button style={styles.modal_btn} block transparent light
-                                        onPress={this.confirmDelete.bind(this, this.state.activeItem)}>
-                                    <Text style={styles.modal_btn_del_text}>删除</Text>
-                                </Button>
-                                <Button style={styles.modal_btn} block transparent light
-                                        onPress={this.cancelDelete}>
-                                    <Text style={styles.modal_btn_calcel_text}>取消</Text>
-                                </Button>
-                            </View>
-                        </Modal>
-                    </View>
-                }}
-                renderRight={() => (<Button style={{
-                    marginRight: 16,
-                    marginTop: 26,
-
-                }} transparent onPress={this.goSettings}>
-                    <Image source={require('app/images/icon_settings.png')}/>
-                </Button>)}
-                // backStyle={{marginLeft: 10}}
-                // backTextStyle={{fontSize: 14, color: '#fff'}}
-                // titleStyle={{fontSize: 22, left: 20, bottom: 20, color: '#fff'}}
                 noBorder={true}
-                // imageSource={Bg}
                 disabled={false}
             >
                 {Items ? <RefreshListView
@@ -425,7 +340,7 @@ class ViewControl extends Component {
                         height: 10
                     }}/>}
                     keyExtractor={(item, index) => index.toString()}
-                    renderItem={this.renderListItem}
+                    renderItem={this.renderItem}
                     refreshState={this.state.refreshState}
                     onHeaderRefresh={this.handleRefresh}
                     onFooterRefresh={this.handleLoadMore}

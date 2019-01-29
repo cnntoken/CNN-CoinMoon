@@ -23,6 +23,7 @@ function goBack(key) {
     );
 }
 
+
 // add other navigation functions that you need and export them
 
 export default {

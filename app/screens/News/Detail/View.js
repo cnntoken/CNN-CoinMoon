@@ -9,7 +9,7 @@ import {
     Left,
     Spinner
 } from 'native-base';
-import {Image, View, SafeAreaView} from 'react-native';
+import {Image, View, SafeAreaView, DeviceEventEmitter} from 'react-native';
 import styles from './styles';
 import moment from 'moment';
 import WebContent from './components/WebContent';
@@ -79,9 +79,11 @@ class ViewControl extends Component {
 
     // 评论
     onComment = (item, text, completeCallback) => {
-        // todo 跳往登录页面
+
         if (!this.props.user.id) {
-            $toast(i18n.t('disclose.needloginTocomment'));
+            this.props.navigation.navigate('Login', {
+                prevState: this.props.navigation.state
+            });
             return;
         }
 
@@ -174,7 +176,7 @@ class ViewControl extends Component {
     };
 
     getNews = (id, category) => {
-        this.props.getInfo({id, category}, (info) => {
+        this.props.getInfo({id, category, userId: this.props.user.id}, (info) => {
             info.content = this.transformHtmlContent(info.content, info.images);
             info.updatedAt = moment(info.updatedAt).format('YYYY.MM.DD HH:mm');
             info.source = info.user && info.user.picture ? {uri: info.user.picture} : require('app/images/avatar_default.png');
@@ -229,6 +231,13 @@ class ViewControl extends Component {
     };
 
     likeComment = (item) => {
+        if (!this.props.user.id) {
+            this.props.navigation.navigate('Login', {
+                prevState: this.props.navigation.state
+            });
+            return;
+        }
+
         let actionValue = item.userAction.actionValue;
         item.userAction.actionValue = !actionValue;
         item.likeNum = !actionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
@@ -258,6 +267,13 @@ class ViewControl extends Component {
     };
 
     likeArticle = () => {
+
+        if (!this.props.user.id) {
+            this.props.navigation.navigate('Login', {
+                prevState: this.props.navigation.state
+            });
+            return;
+        }
 
         const {navigation} = this.props;
         const category = navigation.getParam('category');
@@ -291,7 +307,7 @@ class ViewControl extends Component {
                     params: info,
                     asyncList: true
                 });
-
+                DeviceEventEmitter.emit('updateFeedListData', 'update', info);
             }
         });
     };
@@ -304,6 +320,9 @@ class ViewControl extends Component {
                 actionType: 3,  // 查看
                 objectType: 1,   // feed
                 actionValue: 1
+            },
+            callback:()=>{
+
             }
         });
     };

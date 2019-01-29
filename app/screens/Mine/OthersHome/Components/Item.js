@@ -16,12 +16,12 @@ export default class Item extends PureComponent{
     clickAvatar = ()=>{
         const {info, onAvatarClick} = this.props;
         onAvatarClick && onAvatarClick(info)
-    };
+    }
 
     clickItem = ()=>{
         const {info} = this.props;
         this.props.onItemClick(info);
-    };
+    }
 
     render(){
         const {info} = this.props;

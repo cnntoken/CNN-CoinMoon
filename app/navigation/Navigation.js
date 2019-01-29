@@ -21,6 +21,7 @@ import DisclosePublish from 'app/screens/Disclose/Publish';
 import MineIndex from '../screens/Mine/Index';
 import MineSettings from '../screens/Mine/Settings';
 import MineEidt from '../screens/Mine/Edit';
+import OthersHome from '../screens/Mine/OthersHome';
 
 // Auth
 import Login from '../screens/Auth/Login';
@@ -36,12 +37,21 @@ const TabNavigator = createBottomTabNavigator({
             screen: DiscloseList
         },
         Mine: {
-            screen: MineIndex
+            screen: MineIndex,
+            // navigationOptions: {
+            //     tabBarOnPress: (navigation, defaultHandler) => {
+            //         console.log(navigation, defaultHandler, '@@@@@@@@@@@@@@@@@@@@@@@@2');
+            //         navigation.navigation.navigate('Mine', {
+            //             id: ''
+            //         })
+            //     }
+            // }
         }
     },
     // 初始路由
     {
         initialRouteName: 'News',
+        // backBehavior:true,
         defaultNavigationOptions: ({navigation}) => ({
             header: null,
             gesturesEnabled: true,
@@ -55,7 +65,7 @@ const TabNavigator = createBottomTabNavigator({
                 } else if (routeName === 'DiscloseList') {
                     const style = {
                         top: -15
-                    }
+                    };
                     if (focused) {
                         return <Image source={require('../images/icon_tabbar_prophet_selected.png')} style={style}/>
                     }
@@ -95,7 +105,8 @@ const TabNavigator = createBottomTabNavigator({
             style: {
                 backgroundColor: '#fff',
             },
-        }
+        },
+
     });
 
 
@@ -143,7 +154,15 @@ const HomeStack = createStackNavigator({
             header: null,
             gesturesEnabled: true
         }
-    }
+    },
+//     他人主页
+    OthersHome: {
+        screen: OthersHome,
+        navigationOptions: {
+            header: null,
+            gesturesEnabled: true
+        }
+    },
 });
 
 const AuthStack = createStackNavigator({

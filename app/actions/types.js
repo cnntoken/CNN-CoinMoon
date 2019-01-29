@@ -47,6 +47,7 @@ export const FEED_LIKE = 'FEED/LIKE';
 export const FEED_COMMENT = 'FEED/COMMENT';
 export const FEED_DELETE_COMMENT = 'FEED/DELETECOMMENT';
 export const FEED_LIKE_COMMENT = 'FEED/LIKECOMMENT';
+export const FEED_LIST_BYUSERID = 'FEED/LISTBYUSERID';
 
 
 // userActions

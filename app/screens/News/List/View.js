@@ -46,10 +46,15 @@ class ViewControl extends Component {
     // }
 
     like = (item) => {
-        // todo 直接跳往登录 必须登录才能点赞
-        console.log(item.userAction);
-        let actionValue = item.userAction.actionValue;
 
+        if (!this.props.userId) {
+            this.props.navigation.navigate('Login', {
+                prevState: this.props.navigation.state
+            });
+            return;
+        }
+
+        let actionValue = item.userAction.actionValue;
         let categorys = ['news', 'info'];
         this.props.feedLike({
             category: categorys[this.state.pageIndex],
@@ -85,12 +90,12 @@ class ViewControl extends Component {
         return <Item info={item}
                      key={item._id}
                      onLike={this.like.bind(item)}
-                     onAvatarClick={this.goUserDetail}
+                     onAvatarClick={this.goUserDetail.bind(this, item)}
                      onItemClick={this.goDetail}/>
     };
 
     goUserDetail = (info) => {
-        this.props.navigation.navigate('Mine', {id: info.user.sub})
+        this.props.navigation.navigate('OthersHome', {userInfo: info.user})
     };
 
     goDetail = (info) => {

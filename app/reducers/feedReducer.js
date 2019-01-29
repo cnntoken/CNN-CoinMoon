@@ -33,22 +33,24 @@ export const feedReducer = createReducer(initialState, {
 
     [types.FEED_LIST_LIKE](state, payload) {
         const {category, params, updateUserActionId, asyncList} = payload.payload;
-        state[category].forEach((item) => {
-            if (item._id === params._id) {
-                // 先在界面上更改点赞行为
-                if (updateUserActionId) {
-                    item.userAction._id = params.userAction._id;
-                } else if (asyncList) {
-                    item.userAction = params.userAction;
-                    item.likeNum = params.likeNum
-                } else {
-                    let actionValue = item.userAction.actionValue;
-                    item.userAction.actionValue = !actionValue;
-                    item.likeNum = !actionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
+        if(Array.isArray(state[category])){
+            state[category].forEach((item) => {
+                if (item._id === params._id) {
+                    // 先在界面上更改点赞行为
+                    if (updateUserActionId) {
+                        item.userAction._id = params.userAction._id;
+                    } else if (asyncList) {
+                        item.userAction = params.userAction;
+                        item.likeNum = params.likeNum
+                    } else {
+                        let actionValue = item.userAction.actionValue;
+                        item.userAction.actionValue = !actionValue;
+                        item.likeNum = !actionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
+                    }
                 }
-            }
-        });
-        state[category] = [...state[category]];
+            });
+            state[category] = [...state[category]];
+        }
         return {...state};
     },
 

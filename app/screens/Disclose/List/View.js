@@ -83,9 +83,10 @@ class Screen extends Component {
 
     // 点赞
     like = (item) => {
-        // 必须登录才能点赞
         if (!this.props.user.id) {
-            $toast(i18n.t('disclose.needlogin_tip'));
+            this.props.navigation.navigate('Login', {
+                prevState: this.props.navigation.state
+            });
             return;
         }
         // 先在界面上更改点赞行为

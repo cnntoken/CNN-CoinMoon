@@ -61,3 +61,11 @@ export const feedLike = (payload,callback)=> {
     };
 };
 
+export const getListByUserId = (payload,callback)=> {
+    return {
+        type: types.FEED_LIST_BYUSERID,
+        payload,
+        callback
+    };
+};
+

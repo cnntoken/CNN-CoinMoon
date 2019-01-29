@@ -158,9 +158,17 @@ export default class Header extends React.PureComponent {
                 <View style={styles.toolbarContainer}>
                     <View style={styles.statusBar}/>
                     <View style={styles.toolbar}>
+
+                        <View style={{
+                            marginLeft: 16,
+                            marginTop: 16
+                        }}>
+                            {this.props.renderBack && this.props.renderBack()}
+                        </View>
+
                         <Animated.View style={{
                             opacity: display,
-                            marginLeft: 16,
+                            // marginLeft: 16,
                             marginTop: 16,
                             // position: 'absolute',
                             // top: 15,
