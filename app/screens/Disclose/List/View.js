@@ -5,7 +5,7 @@ import {Container, Header, Content, Text, Button, Left, Right, Body, Title, Spin
 import {View, Image, DeviceEventEmitter} from 'react-native';
 
 import Modal from "react-native-modal";
-import {$toast, uniqueById, getSeconds,getNumByUserId} from 'app/utils';
+import {$toast, uniqueById, getSeconds, getNumByUserId} from 'app/utils';
 
 import * as navigationActions from 'app/actions/navigationActions';
 import DiscloseListItem from 'app/components/DiscloseListItem';
@@ -262,6 +262,7 @@ class Screen extends Component {
                 Items.splice(index, 1);
                 break;
             case 'unshift':
+                data.userName = i18n.t('disclose.anonymous');
                 Items.unshift(data);
                 break;
             default:

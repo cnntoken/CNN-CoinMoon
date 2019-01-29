@@ -96,7 +96,6 @@ export function* comment({payload}) {
     const {params, callback} = payload;
     try {
         const res = yield call(services.comment, params);
-        console.log('res:****', res);
         if (callback) callback(res);
     } catch (e) {
         $toast(`commentDisclose fail: ${e.message}`);

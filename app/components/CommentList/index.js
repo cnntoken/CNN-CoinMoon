@@ -148,7 +148,7 @@ class CommentList extends Component {
                                                 borderRadius: 20
                                             }}
                                             source={item.source}
-                                            resizeMode={FastImage.resizeMode.contain}
+                                            // resizeMode={FastImage.resizeMode.contain}
                                         />
                                     </Button>
                                 </Left>

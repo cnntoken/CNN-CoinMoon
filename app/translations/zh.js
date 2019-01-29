@@ -13,7 +13,6 @@ export default {
     page_main: {
         category_info: '信息',
         category_news: '新闻',
-
     },
     page_mine: {
         please_login: '请登录'
@@ -92,7 +91,9 @@ export default {
         deleteOk: '删除成功！',
         anonymous: '匿名',
 
-        needLoginForPublish: '需要登录才能发布'
+        needLoginForPublish: '需要登录才能发布',
+
+        publishing:'发布中...'
 
 
     },

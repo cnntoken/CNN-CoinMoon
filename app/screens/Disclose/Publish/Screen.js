@@ -259,7 +259,7 @@ class Screen extends Component {
             <Container>
                 <Spinner
                     visible={publishing}
-                    textContent={'Loading...'}
+                    textContent={i18n.t('disclose.publishing')}
                     textStyle={{color: "white", fontSize: 17, lineHeight: 22}}
                 />
                 <Header style={styles.publish_header}>

@@ -42,7 +42,7 @@ export function formatDate(date) {
     if (moment(new Date()).isSame(date, 'day')) {
         time = moment(date).format('HH:MM')
     } else {
-        time = moment(date).format('YYYY-MM-DD')
+        time = moment(date).format('YYYY-MM-DD HH:MM')
     }
     return time;
 }

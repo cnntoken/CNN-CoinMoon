@@ -200,9 +200,7 @@ class ViewControl extends Component {
     };
 
     clickAvatar = (item) => {
-        this.props.navigation.navigate('Mine', {
-            id: item.user.id
-        })
+        this.props.navigation.navigate('OthersHome', {userInfo: item.user})
     };
 
     deleteComment = (item) => {
@@ -321,7 +319,7 @@ class ViewControl extends Component {
                 objectType: 1,   // feed
                 actionValue: 1
             },
-            callback:()=>{
+            callback: () => {
 
             }
         });

@@ -33,41 +33,54 @@ class ViewControl extends PureComponent {
 
     uploadPicture = async (fn) => {
         const {image} = this.state;
-        let datas = [{
-            data: image.data,
-            mime: image.mime
-        }];
+        let datas = [];
+        if (image) {
+            datas = [{
+                data: image.data,
+                mime: image.mime
+            }];
+        }
         this.props.upload({
             images: datas,
             callback: (res) => {
                 if (res) {
-                    fn(res[0].uri)
+                    let url = res[0] ? res[0].uri : '';
+                    fn(url)
                 }
             }
         })
     };
+
+
     onSubmit = () => {
+        // todo 国际化
         $toast('正在提交...');
         this.uploadPicture(async (url) => {
             try {
-                const res = await userService.updateAttributes({
+                let obj = {
                     'nickname': this.state.nick_name,
-                    'picture': url
-                });
+                };
+                if (url) {
+                    obj = {
+                        'nickname': this.state.nick_name,
+                        'picture': url
+                    }
+                }
+                const res = await userService.updateAttributes(obj);
+                // TODO 国际化
                 $toast('修改成功!');
                 this.setState({
                     image: null
                 });
                 this.props.refreshInfo();
                 this.props.navigation.pop();
-                console.log(res);
-
+                // console.log(res);
             } catch (e) {
                 console.log(e)
             }
         })
 
-    }
+    };
     onChangeNickName = (nick_name) => {
         this.setState({
             nick_name
@@ -84,7 +97,7 @@ class ViewControl extends PureComponent {
                 compressImageMaxHeight: 800,
                 // includeExif: true,
                 includeBase64: true,
-                compressImageQuality: 0.2,
+                compressImageQuality: 0.1,
                 mediaType: 'photo',
                 maxFiles: 1,
             }).then(response => {

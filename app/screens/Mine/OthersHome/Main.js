@@ -322,6 +322,11 @@ class ViewControl extends Component {
 
                     </Button>
                 }}
+                renderLeft={() => {
+                    return (<UserAvatar
+                        info={{avatar: userInfo.picture, nickname: userInfo.nickname}}
+                    />)
+                }}
                 title={() => (
                     <View style={[styles.userInfo, styles.userInfo_other]}>
                         <UserAvatar style={styles.userAvatar} info={{

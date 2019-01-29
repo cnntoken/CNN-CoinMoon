@@ -108,14 +108,12 @@ class Page extends Component {
 
     // 评论
     onComment = (item, text, completeCallback) => {
-
         if (!this.props.user.id) {
             this.props.navigation.navigate('Login', {
                 prevState: this.props.navigation.state
             });
             return;
         }
-
         if (!text) {
             $toast(i18n.t('comment.isNull'));
             return;
@@ -279,16 +277,18 @@ class Page extends Component {
 
     // 删除评论
     deleteComment = (item) => {
-        console.log('删除评论', item);
+
+        // 现在界面上删除数据
+        let index = this.state.comments.indexOf(item);
+        this.state.comments.splice(index, 1);
+        this.setState({
+            activeComment: null
+        });
+
         this.props.deleteComment({
             id: item._id,
             callback: (data) => {
-                $toast('删除成功');
-                let index = this.state.comments.indexOf(item);
-                this.state.comments.splice(index, 1);
-                this.setState({
-                    activeComment: null
-                });
+                // $toast('删除成功');
             }
         });
     };

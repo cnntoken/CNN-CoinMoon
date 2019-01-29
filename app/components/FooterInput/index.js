@@ -54,6 +54,7 @@ const computeStyles = (height) => {
         },
         footer_form: {
             marginLeft: 16,
+            // marginTop: 8
         },
         footer_label: {
             color: '#666666',
@@ -98,7 +99,7 @@ class FooterInput extends Component {
     keyboardDidShowHandler(event) {
         this.setState({
             KeyboardShown: true,
-            footerHeight: event.endCoordinates.height + 49
+            footerHeight: event.endCoordinates.height + 70
         });
     }
 
@@ -227,11 +228,14 @@ class FooterInput extends Component {
                                 fontSize: 12,
                                 color: '#999999',
                                 lineHeight: 16,
-                            }}>{isAnonymity ? user.nickname : user.name}</Text>
+                            }}>{!isAnonymity ? user.nickname : user.name}</Text>
                         </Col>
                     </Row> : null
                 }
-                <Row>
+                <Row style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}>
                     <Col>
                         <Form style={styles.footer_form}>
                             <Item rounded style={styles.footer_item}>

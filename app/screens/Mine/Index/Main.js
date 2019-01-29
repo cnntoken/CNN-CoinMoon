@@ -16,7 +16,7 @@ import {
 } from "native-base";
 
 import Modal from "react-native-modal";
-import {$toast, uniqueById} from 'app/utils';
+import {$toast, getNumByUserId, uniqueById} from 'app/utils';
 // import * as navigationActions from 'app/actions/navigationActions';
 import DiscloseListItem from 'app/components/DiscloseListItem';
 
@@ -250,7 +250,8 @@ class ViewControl extends Component {
             callback: (data) => {
                 let {Items, LastEvaluatedKey} = data;
                 Items.forEach((item) => {
-                    item.source = avatars[(item.avatarType || 0) % 5];
+                    let avatarType = getNumByUserId(item.userId || 0);
+                    item.source = avatars[avatarType % 5];
                     item.userName = item.userName || 'Anonymity';
                 });
                 let list = [];
@@ -365,7 +366,6 @@ class ViewControl extends Component {
                             height: 18,
                             marginRight: 5,
                         }} source={require('app/images/icon_back_white.png')}/>
-
                     </Button>
                 }}
                 renderLeft={() => {
@@ -374,18 +374,15 @@ class ViewControl extends Component {
                     />)
                 }}
                 title={() => (
-
                     <View style={[styles.userInfo, !isMine && styles.userInfo_other]}>
                         <UserAvatar style={styles.userAvatar} info={{
                             avatar: userInfo.attributes.picture,
                             nickname: userInfo.attributes.nickname
                         }} big/>
-
                         {isMine ? <Button transparent onPress={this.goEdit}>
                             <Text>编辑信息</Text>
                         </Button> : null}
                     </View>
-
                 )}
 
                 renderOthers={() => {
