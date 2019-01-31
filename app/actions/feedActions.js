@@ -69,3 +69,12 @@ export const getListByUserId = (payload,callback)=> {
     };
 };
 
+
+
+export const feedItemChange = (payload,callback)=> {
+    return {
+        type: types.FEED_ITEM_CHANGE,
+        payload,
+        callback
+    };
+};

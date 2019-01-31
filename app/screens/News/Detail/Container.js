@@ -56,7 +56,7 @@ function mapDispatchToProps(dispatch) {
         },
 
         feedLike: (...args) => dispatch(feedActions.feedLike(...args)),
-
+        feedItemChange: (...args) => dispatch(feedActions.feedItemChange(...args)),
 
         likeComment: (...args) => {
             dispatch(likeComment(...args))
