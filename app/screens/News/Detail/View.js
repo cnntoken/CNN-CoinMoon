@@ -60,6 +60,8 @@ class ViewControl extends Component {
     };
 
     commentOk = (data) => {
+        const {info} = this.state;
+        info.commentsNum++;
         this.state.comments.unshift(Object.assign(data, {
             userAction: {
                 objectId: data._id,
@@ -72,8 +74,11 @@ class ViewControl extends Component {
             source: this.props.user && this.props.user.picture ? {uri: this.props.user.picture} : require('app/images/avatar_default.png')
         }));
         this.setState({
-            comments: JSON.parse(JSON.stringify(this.state.comments)),
+            info:{...info},
+            comments: [...this.state.comments],
             placeholder: ''
+        },()=>{
+            this.changePropertiesInList();
         });
     };
 
@@ -221,19 +226,25 @@ class ViewControl extends Component {
         if (index === -1) {
             return;
         }
+        const {info} = this.state;
+        info.commentsNum--;
         this.state.comments.splice(index, 1);
 
         this.setState({
+            info: {...info},
             activeComment: null,
-            comments: JSON.parse(JSON.stringify(this.state.comments))
+            comments: [...this.state.comments]
+        },()=>{
+            this.props.deleteComment({
+                id: item._id,
+                callback: (data) => {
+                    if (fn) fn();
+
+                    this.changePropertiesInList();
+                }
+            });
         });
 
-        this.props.deleteComment({
-            id: item._id,
-            callback: (data) => {
-                if (fn) fn();
-            }
-        });
     };
 
     loadMoreComment = () => {
@@ -259,7 +270,7 @@ class ViewControl extends Component {
         item.userAction.actionValue = !actionValue;
         item.likeNum = !actionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
         this.setState({
-            comments: JSON.parse(JSON.stringify(this.state.comments))
+            comments: [...this.state.comments]
         });
         // 更新用户对该资源的行为数据
         this.props.updateAction({
@@ -272,13 +283,9 @@ class ViewControl extends Component {
                 actionValue: !actionValue
             },
             callback: (data) => {
-                // $toast('点赞成功');
                 if (!item.userAction._id) {
                     item.userAction._id = data._id;
                 }
-                this.setState({
-                    comments: [...this.state.comments]
-                });
             }
         });
     };
@@ -292,58 +299,72 @@ class ViewControl extends Component {
             return;
         }
 
-        const {navigation} = this.props;
-        const category = navigation.getParam('category');
-
         const {info} = this.state;
 
         let actionValue = info.userAction.actionValue;
         info.userAction.actionValue = !actionValue;
         info.likeNum = !actionValue ? info.likeNum + 1 : info.likeNum - 1;
 
-        this.setState({});
-
-        // 查询用户对该资源的行为数据
-        this.props.updateAction({
-            _id: info.userAction._id,
-            obj: {
-                objectId: info._id,
-                userId: this.props.userInfo.id,
-                actionType: 1,  // 点赞
-                objectType: 1,   // feed
-                actionValue: !actionValue
-            },
-            callback: (data) => {
-                if (!info.userAction._id) {
-                    info.userAction._id = data._id;
-                    this.setState({});
+        this.setState({},()=>{
+            // 查询用户对该资源的行为数据
+            this.props.updateAction({
+                _id: info.userAction._id,
+                obj: {
+                    objectId: info._id,
+                    userId: this.props.userInfo.id,
+                    actionType: 1,  // 点赞
+                    objectType: 1,   // feed
+                    actionValue: !actionValue
+                },
+                callback: (data) => {
+                    if (!info.userAction._id) {
+                        info.userAction._id = data._id;
+                        this.setState({});
+                    }
+                    // 同步点赞数据到列表，防止返回时数据没有更新
+                    this.changePropertiesInList()
+                    // this.props.feedLike({
+                    //     category: category,
+                    //     params: info
+                    // });
+                    DeviceEventEmitter.emit('updateFeedListData', 'update', info);
                 }
-                // 同步点赞数据到列表，防止返回时数据没有更新
-                this.props.feedLike({
-                    category: category,
-                    params: info,
-                    asyncList: true
-                });
-                DeviceEventEmitter.emit('updateFeedListData', 'update', info);
-            }
+            });
         });
     };
 
     viewArticle = (id) => {
+        const {info} = this.state;
+        info.viewNum++;
         this.props.updateAction({
+            info:{...info},
             obj: {
                 objectId: id,
                 userId: this.props.userInfo.id,
                 actionType: 3,  // 查看
                 objectType: 1,   // feed
-                actionValue: 1
+                actionValue: true
             },
             callback: () => {
-
+               this.changePropertiesInList()
             }
         });
     };
-
+    changePropertiesInList = ()=>{
+        const {navigation} = this.props;
+        const category = navigation.getParam('category');
+        const {info} = this.state;
+        this.props.feedItemChange({
+            category: category,
+            params: {
+                _id: info._id,
+                userAction: info.userAction,
+                commentsNum: info.commentsNum,
+                viewNum: info.viewNum,
+                likeNum: info.likeNum,
+            }
+        });
+    }
     componentDidMount() {
         const {navigation} = this.props;
         const id = navigation.getParam('_id');

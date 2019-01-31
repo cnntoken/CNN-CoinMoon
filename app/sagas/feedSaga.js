@@ -127,15 +127,3 @@ export function* deleteComment({payload}) {
         $toast(`deleteComment fail`);
     }
 }
-
-// 用于更改feed list state
-// export function* feedLike({payload, callback}) {
-//     const {category, params} = payload;
-//     try {
-//         yield put({type: Types.FEED_LIST_LIKE, category, params});
-//         callback && callback(params);
-//     } catch (e) {
-//         console.log(e);
-//         $toast(`feedLike fail`);
-//     }
-// }

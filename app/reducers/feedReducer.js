@@ -31,27 +31,21 @@ export const feedReducer = createReducer(initialState, {
         return {...state};
     },
 
-    [types.FEED_LIST_LIKE](state, payload) {
-        const {category, params, updateUserActionId, asyncList} = payload.payload;
-        if(Array.isArray(state[category])){
-            state[category].forEach((item) => {
-                if (item._id === params._id) {
-                    // 先在界面上更改点赞行为
-                    if (updateUserActionId) {
-                        item.userAction._id = params.userAction._id;
-                    } else if (asyncList) {
-                        item.userAction = params.userAction;
-                        item.likeNum = params.likeNum
-                    } else {
-                        let actionValue = item.userAction.actionValue;
-                        item.userAction.actionValue = !actionValue;
-                        item.likeNum = !actionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
-                    }
-                }
-            });
-            state[category] = [...state[category]];
-        }
+    [types.FEED_LIST_LIKE](state, {payload: {category, params}}) {
+        const list = state[category];
+        const targetItem = list.find(item=>item._id === params._id);
+        let actionValue = targetItem.userAction.actionValue;
+        targetItem.userAction.actionValue = !actionValue;
+        targetItem.likeNum = !actionValue ? Number(targetItem.likeNum) + 1 : Number(targetItem.likeNum) - 1;
+        state[category] = [...state[category]];
         return {...state};
     },
 
+    [types.FEED_ITEM_CHANGE](state, {payload: {category, params}}) {
+        const list = state[category];
+        const targetItem = list.find(item=>item._id === params._id);
+        Object.assign(targetItem,params)
+        state[category] = [...state[category]];
+        return {...state};
+    },
 });

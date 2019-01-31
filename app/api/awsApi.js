@@ -2,16 +2,15 @@ import {API} from 'aws-amplify';
 
 const getBaseConfig = ()=>{
     return {
-        response: true // OPTIONAL (return the entire Axios response object instead of only response.data)
+        // response: true // OPTIONAL (return the entire Axios response object instead of only response.data)
     }
 }
 
 const $API = (method, url, config)=>{
     return new Promise((resolve,reject)=>{
-        API[method]('starkApi', url, config).then((response)=>{
+        API[method]('starkApi', url, config).then((data)=>{
             console.log('================== api response ==================',url)
-            console.log(response);
-            const data = response.data;
+            console.log(data);
             if(data.code === 200){
                 resolve(data.result);
             }else{
@@ -27,10 +26,9 @@ const $API = (method, url, config)=>{
 
 export const $get = (url, params = {}) => {
     const config = getBaseConfig();
-
     config.queryStringParameters = {params: JSON.stringify(params)};
-    console.log('=========== aws api get config ==============')
-    console.log(config)
+    // console.log('=========== aws api get config ==============')
+    // console.log(config)
     return $API('get', url, config)
 };
 

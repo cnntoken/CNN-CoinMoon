@@ -5,7 +5,6 @@ import ListTabBar from './components/ListTabBar'
 import List from './components/List'
 import Item from './components/Item'
 import i18n from 'app/i18n';
-import {$toast} from "../../../utils";
 
 class ViewControl extends Component {
 
@@ -44,24 +43,35 @@ class ViewControl extends Component {
     // renderInfomationItem = ({item, separators})=>{
     //     return <Item info={item} key={item._id} onItemClick={this.goDetail}/>
     // }
+    renderItem = (category,{item, index, separators, cat}) => {
+        return <Item info={item}
+                     key={item._id}
+                     onLike={(...args)=>this.like(category,...args)}
+                     onAvatarClick={this.goUserDetail}
+                     onItemClick={this.goDetail}/>
+    };
 
-    like = (item) => {
+    goUserDetail = (info) => {
+        this.props.navigation.navigate('OthersHome', {userInfo: info.user})
+    };
 
+    goDetail = (info) => {
+        const {_id, category} = info;
+        this.props.navigation.navigate('NewsDetail', {_id, category});
+    };
+    like = (category,item) => {
         if (!this.props.userId) {
             this.props.navigation.navigate('Login', {
                 prevState: this.props.navigation.state
             });
             return;
         }
-
         let actionValue = item.userAction.actionValue;
-        let categorys = ['news', 'info'];
+        console.log(category,item)
         this.props.feedLike({
-            category: categorys[this.state.pageIndex],
-            params: item,
-            updateUserActionId: false
+            category,
+            params: item
         });
-
         // 更新用户对该资源的行为数据
         this.props.updateAction({
             _id: item.userAction._id,
@@ -73,59 +83,29 @@ class ViewControl extends Component {
                 actionValue: !actionValue
             },
             callback: (res) => {
-                // 如果没有userAction._id ，则是第一次点赞，需要更新id
+                // 如果没有userAction._id，则是第一次点赞，需要更新id
                 if (!item.userAction._id) {
                     item.userAction._id = res._id;
-                    this.props.feedLike({
-                        category: categorys[this.state.pageIndex],
-                        params: item,
-                        updateUserActionId: true
-                    });
                 }
             }
         });
     };
-
-    renderItem = ({item, index, separators, cat}) => {
-        return <Item info={item}
-                     key={item._id}
-                     onLike={this.like.bind(item)}
-                     onAvatarClick={this.goUserDetail.bind(this, item)}
-                     onItemClick={this.goDetail}/>
-    };
-
-    goUserDetail = (info) => {
-        this.props.navigation.navigate('OthersHome', {userInfo: info.user})
-    };
-
-    goDetail = (info) => {
-        const {_id, category} = info;
-        this.props.navigation.navigate('NewsDetail', {_id, category})
-        // console.log('goDetail', info)
-    };
-
     onChangeTab = (index) => {
         this.setState({
             pageIndex: index
         })
     };
 
-    componentDidMount() {
-        // StatusBar.setBarStyle('light-content', true);
-    }
-
     render() {
-        // return <View><Text>hhh</Text></View>;
         return (
             <ScrollableTabView
                 initialPage={this.state.pageIndex}
                 renderTabBar={() => <ListTabBar/>}
-                onChangeTab={this.onChangeTab}
             >
                 <List
                     tabLabel={i18n.t('page_main.category_news')}
                     data={this.props.news}
-                    renderItem={this.renderItem}
+                    renderItem={(...args)=>this.renderItem('news',...args)}
                     hasMore={this.props.news_hasMore}
                     onRefresh={(...args) => {
                         this.onRefresh('news', ...args)
@@ -134,11 +114,10 @@ class ViewControl extends Component {
                         this.onLoadMore('news', ...args)
                     }}
                 />
-
                 <List
                     tabLabel={i18n.t('page_main.category_info')}
                     data={this.props.info}
-                    renderItem={this.renderItem}
+                    renderItem={(...args)=>this.renderItem('info',...args)}
                     hasMore={this.props.info_hasMore}
                     onRefresh={(...args) => {
                         this.onRefresh('info', ...args)
@@ -147,7 +126,6 @@ class ViewControl extends Component {
                         this.onLoadMore('info', ...args)
                     }}
                 />
-
             </ScrollableTabView>
         );
     }

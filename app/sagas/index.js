@@ -43,7 +43,6 @@ export default function* watch() {
         takeEvery(types.FEED_LIKE_COMMENT, feedSaga.likeComment),
         takeEvery(types.FEED_DELETE_COMMENT, feedSaga.deleteComment),
         takeEvery(types.FEED_LIST_BYUSERID, feedSaga.getListByUserId),
-        // takeEvery(types.FEED_LIST_LIKE, feedSaga.feedLike),
 
 
         // 用户行为
