@@ -97,6 +97,11 @@ class ViewControl extends Component {
             return;
         }
 
+        this.setState({
+            activeComment: null,
+            placeholder: ''
+        });
+
         const {info} = this.state;
         // 如果传入的对象含有id则表明是回复评论
         if (item && !item.images) {
@@ -204,15 +209,28 @@ class ViewControl extends Component {
     };
 
     deleteComment = (item, fn) => {
+        let index = -1;
+        for (let i = 0; i < this.state.comments.length; i++) {
+            let it = this.state.comments[i];
+            if (it._id === item._id) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index === -1) {
+            return;
+        }
+        this.state.comments.splice(index, 1);
+
+        this.setState({
+            activeComment: null,
+            comments: JSON.parse(JSON.stringify(this.state.comments))
+        });
+
         this.props.deleteComment({
             id: item._id,
             callback: (data) => {
-                // $toast('删除成功');
-                let index = this.state.comments.indexOf(item);
-                this.state.comments.splice(index, 1);
-                this.setState({
-                    activeComment: null
-                });
                 if (fn) fn();
             }
         });

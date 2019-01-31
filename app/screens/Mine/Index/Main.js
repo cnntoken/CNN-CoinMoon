@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 import {
-    Text, Button, Spinner
+    Text, Button, Spinner, ActionSheet
 } from "native-base";
 
 import Modal from "react-native-modal";
@@ -166,37 +166,68 @@ class ViewControl extends Component {
         });
     };
 
+    // // 显示删除弹框
+    // showDeleteDialog = (item) => {
+    //     this.setState({
+    //         isModalVisible: true,
+    //         activeItem: item
+    //     });
+    // };
+
     // 显示删除弹框
     showDeleteDialog = (item) => {
-        this.setState({
-            isModalVisible: true,
-            activeItem: item
-        });
-    };
 
-    // 确定删除
-    confirmDelete = (item) => {
-        this.props.deleteDisclose({
-            id: item._id,
-            callback: (data) => {
-                $toast('删除爆料成功');
-                let index = this.state.Items.indexOf(item);
-                this.state.Items.splice(index, 1);
-                this.setState({
-                    isModalVisible: false,
-                    activeItem: null
-                });
+        let index = this.state.Items.indexOf(item);
+        this.state.Items.splice(index, 1);
+
+        ActionSheet.show(
+            {
+                options: ['取消', '删除'],
+                cancelButtonIndex: 0,
+                destructiveButtonIndex: 1,
+                title: "是否删除该爆料"
+            },
+            buttonIndex => {
+                if (buttonIndex === 1) {
+                    this.props.deleteDisclose({
+                        id: item._id,
+                        callback: (data) => {
+                            this.setState({
+                                // isModalVisible: false,
+                                activeItem: null,
+                                Items: JSON.parse(JSON.stringify(this.state.Items))
+                            });
+
+                        }
+                    });
+                }
             }
-        });
+        );
     };
 
-    // 取消删除
-    cancelDelete = () => {
-        this.setState({
-            isModalVisible: false,
-            activeItem: null
-        })
-    };
+    // // 确定删除
+    // confirmDelete = (item) => {
+    //     this.props.deleteDisclose({
+    //         id: item._id,
+    //         callback: (data) => {
+    //             $toast('删除爆料成功');
+    //             let index = this.state.Items.indexOf(item);
+    //             this.state.Items.splice(index, 1);
+    //             this.setState({
+    //                 // isModalVisible: false,
+    //                 activeItem: null
+    //             });
+    //         }
+    //     });
+    // };
+    //
+    // // 取消删除
+    // cancelDelete = () => {
+    //     this.setState({
+    //         isModalVisible: false,
+    //         activeItem: null
+    //     })
+    // };
 
     // 渲染列表
     renderListItem = ({item, index}) => {
@@ -385,22 +416,24 @@ class ViewControl extends Component {
                     </View>
                 )}
 
-                renderOthers={() => {
-                    return <View>
-                        <Modal isVisible={this.state.isModalVisible}>
-                            <View>
-                                <Button style={styles.modal_btn} block transparent light
-                                        onPress={this.confirmDelete.bind(this, this.state.activeItem)}>
-                                    <Text style={styles.modal_btn_del_text}>删除</Text>
-                                </Button>
-                                <Button style={styles.modal_btn} block transparent light
-                                        onPress={this.cancelDelete}>
-                                    <Text style={styles.modal_btn_calcel_text}>取消</Text>
-                                </Button>
-                            </View>
-                        </Modal>
-                    </View>
-                }}
+                // renderOthers={() => {
+                //     return <View>
+                //         <Modal isVisible={this.state.isModalVisible}>
+                //             <View>
+                //                 <Button style={styles.modal_btn} block transparent light
+                //                         onPress={this.confirmDelete.bind(this, this.state.activeItem)}>
+                //                     <Text style={styles.modal_btn_del_text}>删除</Text>
+                //                 </Button>
+                //                 <Button style={styles.modal_btn} block transparent light
+                //                         onPress={this.cancelDelete}>
+                //                     <Text style={styles.modal_btn_calcel_text}>取消</Text>
+                //                 </Button>
+                //             </View>
+                //         </Modal>
+                //     </View>
+                // }}
+
+
                 renderRight={() => (<Button style={{
                     marginRight: 16,
                     marginTop: 26,

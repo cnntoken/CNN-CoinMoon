@@ -60,7 +60,7 @@ class ViewControl extends Component {
     // }
 
     goLogin = () => {
-        this.props.navigation.navigate('Auth');
+        this.props.navigation.navigate('Login');
     };
 
 
