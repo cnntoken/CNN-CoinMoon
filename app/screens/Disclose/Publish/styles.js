@@ -146,7 +146,7 @@ export default StyleSheet.create({
         borderTopRightRadius: 8,
     },
     carousel_back_icon: {
-        width: 18,
+        width: 10,
         height: 18
     },
     carousel_del_icon: {

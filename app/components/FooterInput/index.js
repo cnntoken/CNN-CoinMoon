@@ -220,6 +220,7 @@ class FooterInput extends Component {
                             <Image style={{
                                 width: 16,
                                 height: 16,
+                                borderRadius: 8,
                                 marginLeft: 16,
                             }} source={source}/>
                         </Col>

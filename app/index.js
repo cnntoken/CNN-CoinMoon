@@ -17,6 +17,8 @@ import getTheme from "./theme/components";
 import variables from "./theme/variables/commonColor";
 import appServices from './services/app';
 
+
+
 const {persistor, store} = configureStore();
 
 export default class Index extends Component {
@@ -29,11 +31,11 @@ export default class Index extends Component {
     }
 
     async componentDidMount(){
-        
+
         RNLanguages.addEventListener('change', this._onLanguagesChange);
         SplashScreen.hide();
         appServices.prepare(store);
-        
+
     }
     render() {
         return (

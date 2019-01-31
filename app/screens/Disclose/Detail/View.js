@@ -534,7 +534,9 @@ class Page extends Component {
 
                         <View>
                             {/***********************内容详情区域  start**********************/}
-                            <View>
+                            <View style={{
+                                marginRight: 15
+                            }}>
                                 {/*****爆料详情区域****/}
 
                                 <List

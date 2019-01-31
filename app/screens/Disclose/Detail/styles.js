@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         color: '#333333',
         fontSize: 14,
         marginTop: 4,
-        lineHeight: 14
+        lineHeight: 19
     },
     col_time: {
         color: '#666666',

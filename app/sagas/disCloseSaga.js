@@ -1,4 +1,6 @@
 import {put, call, select} from 'redux-saga/effects';
+import {delay} from "redux-saga/utils"
+
 import {Auth} from 'aws-amplify';
 import {$toast} from '../utils';
 import * as Types from '../actions/types';
@@ -11,10 +13,39 @@ import * as navigationActions from 'app/actions/navigationActions';
 export function* upload({payload}) {
     const {images, callback} = payload;
     try {
-        const res = yield call(services.upload, images);
+        // let tasks = [];
+        // // let tasks2 = [];
+        // // let tasks3 = [];
+        // let res = [];
+        // images.forEach((item) => {
+        //     tasks.push(call(services.upload, [item]));
+        //     tasks.push(call(delay, 10, null));
+        // });
+        // const results = yield tasks;
+
+        let results = [];
+        let res = [];
+        let length = images.length;
+        if (length > 0) results.push(yield call(services.upload, [images[0]]));
+        if (length > 1) results.push(yield call(services.upload, [images[1]]));
+        if (length > 2) results.push(yield call(services.upload, [images[2]]));
+        if (length > 3) results.push(yield call(services.upload, [images[3]]));
+        if (length > 4) results.push(yield call(services.upload, [images[4]]));
+        if (length > 5) results.push(yield call(services.upload, [images[5]]));
+        if (length > 6) results.push(yield call(services.upload, [images[6]]));
+        if (length > 7) results.push(yield call(services.upload, [images[7]]));
+        if (length > 8) results.push(yield call(services.upload, [images[8]]));
+
+        results.forEach((item) => {
+            res.push(item[0])
+        });
         if (callback) callback(res);
     } catch (e) {
-        $toast(`upload image fail: ${e.message}`);
+        debugger;
+        if (callback) callback({
+            error: 'upload fail'
+        });
+        // $toast(`upload image fail: ${e.message}`);
     }
 }
 

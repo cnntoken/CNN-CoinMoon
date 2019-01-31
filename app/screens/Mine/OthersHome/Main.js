@@ -48,8 +48,9 @@ const styles = StyleSheet.create({
         // borderTopColor:'#408EF5',
         // borderTopWidth:20,
         flexDirection: 'row',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
+        alignItems: 'center',
+        justifyContent: 'center',
+        // justifyContent: 'space-between',
         // paddingBottom: 20
     },
     userInfo_other: {
@@ -57,7 +58,7 @@ const styles = StyleSheet.create({
     },
     userAvatar: {
         top: -40,
-        marginLeft: 30,
+        // marginLeft: 30,
         // marginBottom: 10
     },
     editBtn: {
@@ -175,7 +176,7 @@ class ViewControl extends Component {
         return <Item info={item}
                      key={item._id}
                      onLike={this.like.bind(item)}
-                     onAvatarClick={this.goUserDetail.bind(this,item)}
+                     onAvatarClick={this.goUserDetail.bind(this, item)}
                      onItemClick={this.goDetail}/>
     };
 
@@ -216,7 +217,8 @@ class ViewControl extends Component {
             params: {
                 limit: limit || 10,
                 LastEvaluatedKey: LastEvaluatedKey || null,
-                userId: this.props.navigation.getParam('userInfo').sub
+                id: this.props.navigation.getParam('userInfo').sub,
+                userId: this.props.user.id
             },
             callback: (data) => {
                 let {Items, LastEvaluatedKey} = data;
@@ -315,9 +317,9 @@ class ViewControl extends Component {
                 renderBack={() => {
                     return <Button transparent onPress={this.goBack.bind(this)}>
                         <Image style={{
-                            width: 18,
+                            width: 10,
                             height: 18,
-                            marginRight: 5,
+                            marginRight: 8,
                         }} source={require('app/images/icon_back_white.png')}/>
 
                     </Button>

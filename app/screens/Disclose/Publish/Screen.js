@@ -59,8 +59,9 @@ class Screen extends Component {
             ImagePicker.openPicker({
                 multiple: true,
                 // width: 400,
+                forceJpg: true,
                 compressImageMaxWidth: 400,
-                compressImageMaxHeight: 800,
+                compressImageMaxHeight: 400,
                 // includeExif: true,
                 includeBase64: true,
                 compressImageQuality: 0.1,
@@ -154,10 +155,19 @@ class Screen extends Component {
                 mime: item.mime
             })
         });
+
         this.props.upload({
             images: datas,
             callback: (data) => {
                 // console.log(data);
+                if (data.error) {
+                    $toast('upload fail , pls retry');
+                    this.setState({
+                        publishing: false
+                    });
+                    return;
+                }
+                // debugger;
                 let uris = [];
                 data.forEach((item) => {
                     uris.push(item.uri);

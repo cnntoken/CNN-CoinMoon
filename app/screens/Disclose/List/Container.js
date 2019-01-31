@@ -26,7 +26,8 @@ function mapStateToProps({userReducer: {info}}) {
             "name": attributes['custom:disclose_name'],
             "nickname": attributes['nickname'],
             "picture": attributes.picture,
-            "avatar": avatars[getNumByUserId(attributes.sub || '0')]
+            "avatar": avatars[getNumByUserId(attributes.sub || '0')],
+            "firstEntry": info.firstEntry
         }
     };
 }

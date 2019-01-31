@@ -8,22 +8,21 @@ import {$toast, uniqueById, getSeconds, getNumByUserId} from 'app/utils';
 
 import * as navigationActions from 'app/actions/navigationActions';
 import DiscloseListItem from 'app/components/DiscloseListItem';
+import Modal from 'react-native-modal';
 
 import i18n from 'app/i18n';
 import avatars from 'app/services/constants'
 import RefreshListView, {RefreshState} from 'app/components/RefreshListView';
 
+
 import Storage from 'react-native-storage';
 import {AsyncStorage} from 'react-native';
 
-const storage = new Storage({
+const __storage__ = new Storage({
     // maximum capacity, default 1000
     size: 100,
-    storageBackend: AsyncStorage, // for web: window.localStorage
-    // expire time, default: 1 day (1000 * 3600 * 24 milliseconds).
-    // can be null, which means never expire.
+    storageBackend: AsyncStorage,
     defaultExpires: null,
-    // cache data in the memory. default is true.
     enableCache: true,
 
 });
@@ -43,6 +42,7 @@ class Screen extends Component {
             LastEvaluatedKey: null,
             initLoading: true,
             refreshState: RefreshState.Idle,
+            firstEntryDisclose: false
         }
     }
 
@@ -273,13 +273,43 @@ class Screen extends Component {
     };
 
     componentDidMount() {
-        storage.save({
-            key: 'firstEntryDisclose',
-            data: true,
-            expires: null
-        });
+
+        __storage__
+            .load({
+                key: 'firstEntry',
+            })
+            .then(ret => {
+                this.setState({
+                    firstEntryDisclose: false
+                })
+            })
+            .catch(err => {
+                console.warn(err.message);
+                this.setState({
+                    firstEntryDisclose: true
+                }, () => {
+                    if (this.state.firstEntryDisclose) {
+                        __storage__.save({
+                            key: 'firstEntry',
+                            data: {
+                                disclose: false
+                            },
+                            expires: null
+                        });
+                    }
+                });
+                setTimeout(() => {
+                    this.setState({
+                        firstEntryDisclose: false
+                    })
+                }, 3000)
+            });
+
+
         this.getList(10, null, false, false);
         this.subscription = DeviceEventEmitter.addListener('updateDiscloseListData', this.updateState);
+
+
     }
 
     componentWillUnmount() {
@@ -287,7 +317,12 @@ class Screen extends Component {
     };
 
     render() {
+
         const {refreshing, loadMoreing, Items} = this.state;
+
+        let avatarType = getNumByUserId(this.props.user.id || '0');
+        let source = avatars[avatarType % 5];
+
         return (
             <Container>
                 <Header>
@@ -320,26 +355,54 @@ class Screen extends Component {
                 /> : <Content><Spinner size={'small'} color={'#408EF5'}/></Content>
 
                 }
-                {/*需要删除爆料时，弹框提示确定modal*/}
-                {/*<View>*/}
-                {/*<Modal isVisible={this.state.isModalVisible}>*/}
-                {/*<View>*/}
-                {/*<Button style={styles.modal_btn} block transparent light*/}
-                {/*onPress={this.confirmDelete.bind(this, this.state.activeItem)}>*/}
-                {/*<Text style={styles.modal_btn_del_text}>{i18n.t('disclose.delete')}</Text>*/}
-                {/*</Button>*/}
-                {/*<Button style={styles.modal_btn} block transparent light onPress={this.cancelDelete}>*/}
-                {/*<Text style={styles.modal_btn_calcel_text}>{i18n.t('disclose.cancel')}</Text>*/}
-                {/*</Button>*/}
-                {/*</View>*/}
-                {/*</Modal>*/}
+
                 {/*/!* 首次进入匿名爆料区时，进行评论和发帖弹框 *!/*/}
-                {/*<Modal isVisible={this.state.firstEntry}>*/}
-                {/*<View>*/}
-                {/*<Text style={styles.modal_btn_del_text}>{i18n.t('disclose.delete')}</Text>*/}
-                {/*</View>*/}
-                {/*</Modal>*/}
-                {/*</View>*/}
+                <View style={{
+                    justifyContent: "center",
+                }}>
+                    <Modal
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            display: 'flex'
+                        }}
+                        isVisible={this.state.firstEntryDisclose}
+                        backdropOpacity={0.3}
+                    >
+                        <View style={{
+                            backgroundColor: "#FCFCFC",
+                            paddingTop: 30,
+                            paddingBottom: 20,
+                            paddingLeft: 20,
+                            paddingRight: 20,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 12,
+                            // display: 'flex',
+                            width: 260,
+                        }}>
+                            <Text style={{
+                                color: '#030303',
+                                fontSize: 18,
+                                lineHeight: 25,
+                                textAlign: 'center'
+                            }}>您将以匿名身份爆料区进行评论及发帖</Text>
+                            <Image style={{
+                                color: '#030303',
+                                width: 50,
+                                height: 50,
+                                marginTop: 11,
+                                marginBottom: 11
+                            }} source={source}/>
+                            <Text style={{
+                                color: '#666666',
+                                fontSize: 14,
+                                lineHeight: 20
+                            }}>{this.props.user.name}</Text>
+                        </View>
+                    </Modal>
+                </View>
+
             </Container>
         );
     }

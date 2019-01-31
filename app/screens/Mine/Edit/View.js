@@ -94,7 +94,7 @@ class ViewControl extends PureComponent {
                 // multiple: true,
                 // width: 400,
                 compressImageMaxWidth: 400,
-                compressImageMaxHeight: 800,
+                compressImageMaxHeight: 400,
                 // includeExif: true,
                 includeBase64: true,
                 compressImageQuality: 0.1,

@@ -20,7 +20,8 @@ export function* refresh({user}) {
         const info = {
             attributes: payload ? {...payload, ...attr} : attr,
             username: user.username,
-            userDataKey: user.userDataKey
+            userDataKey: user.userDataKey,
+            firstEntry: true
         };
         yield put({type: Types.SET_USER_INFO, info: info})
     } catch (e) {

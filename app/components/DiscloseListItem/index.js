@@ -72,7 +72,7 @@ export default class DiscloseListItem extends Component {
         return (
             <ListItem style={[{
                 marginBottom: -15,
-                marginTop:-10,
+                marginTop: -10,
             }, this.props.separators]} avatar>
                 {/* 左侧图标 */}
                 <Left>
@@ -109,9 +109,9 @@ export default class DiscloseListItem extends Component {
 
                 {/* 点击标题 ， 图片跳到详情页面 */}
                 <TouchableOpacity onPress={this.pressItem.bind(this, item)}>
-                    <View  style={{
-                        marginTop:-5,
-                        marginBottom:-5,
+                    <View style={{
+                        marginTop: -5,
+                        marginBottom: -5,
                     }}>
                         <Grid>
                             <Row>
@@ -180,11 +180,11 @@ export default class DiscloseListItem extends Component {
                         <View style={styles.interact}>
                             <Button transparent light onPress={this.pressItem.bind(this, item)}>
                                 <Image source={require('app/images/icon_view.png')}/>
-                                <Text style={styles.number}>{item.viewNum}</Text>
+                                <Text style={styles.number}>{item.viewNum || 0}</Text>
                             </Button>
                             <Button transparent light onPress={this.pressItem.bind(this, item)}>
                                 <Image source={require('app/images/icon_comment_small.png')}/>
-                                <Text style={styles.number}>{item.commentsNum}</Text>
+                                <Text style={styles.number}>{item.commentsNum || 0}</Text>
                             </Button>
                             <Button transparent light onPress={this.like.bind(this, item)}>
                                 {
@@ -192,7 +192,7 @@ export default class DiscloseListItem extends Component {
                                         <Image source={require('app/images/icon_like_small.png')}/> :
                                         <Image source={require('app/images/icon_liked_small.png')}/>
                                 }
-                                <Text style={styles.number}>{item.likeNum}</Text>
+                                <Text style={styles.number}>{item.likeNum || 0}</Text>
                             </Button>
                         </View>
                     </Col>
