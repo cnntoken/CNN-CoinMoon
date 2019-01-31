@@ -186,12 +186,17 @@ class ViewControl extends Component {
 
     getNews = (id, category) => {
         this.props.getInfo({id, category, userId: this.props.user.id}, (info) => {
-            info.content = this.transformHtmlContent(info.content, info.images);
-            info.updatedAt = moment(info.updatedAt).format('YYYY.MM.DD HH:mm');
-            info.source = info.user && info.user.picture ? {uri: info.user.picture} : require('app/images/avatar_default.png');
+            const content = this.transformHtmlContent(info.content, info.images);
+            const updatedAt = moment(info.updatedAt).format('YYYY.MM.DD HH:mm');
+            const source = info.user && info.user.picture ? {uri: info.user.picture} : require('app/images/avatar_default.png');
             this.setState({
                 contentLoading: false,
-                info
+                info:{
+                    ...info,
+                    content,
+                    updatedAt,
+                    source
+                }
             }, () => {
                 this.viewArticle(id)
             });
