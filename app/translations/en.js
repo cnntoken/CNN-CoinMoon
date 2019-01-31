@@ -85,6 +85,10 @@ export default {
         footerFailureText: '我擦嘞，居然失败了 =.=!',
         footerNoMoreDataText: '-我是有底线的-',
         footerEmptyDataText: '-好像什么东西都没有-',
+        
+        refreshControlNormalText: '下拉刷新', // 正常状态
+        refreshControlPrepareText: '松开加载', // 达到临界值, 松开即可触发刷新
+        refreshControlLoadingText: '正在加载中...', // 加载中状态
 
         // 爆料详情
         delete: '删除',

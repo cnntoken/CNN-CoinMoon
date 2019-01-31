@@ -9,16 +9,15 @@ import {
     Left,
     Spinner
 } from 'native-base';
-import {Image, View, SafeAreaView, DeviceEventEmitter} from 'react-native';
+import {Image, View, DeviceEventEmitter} from 'react-native';
 import styles from './styles';
 import moment from 'moment';
 import WebContent from './components/WebContent';
 import IconText from 'app/components/IconText';
 import FooterInput from 'app/components/FooterInput';
 import CommentList from 'app/components/CommentList';
-import {$toast, getNumByUserId} from 'app/utils';
+import {$toast} from 'app/utils';
 import i18n from 'app/i18n';
-import avatars from "../../../services/constants";
 
 class ViewControl extends Component {
 
@@ -75,7 +74,7 @@ class ViewControl extends Component {
         }));
         this.setState({
             info:{...info},
-            comments: [...this.state.comments],
+            comments: this.state.comments.map(obj=>({...obj})),
             placeholder: ''
         },()=>{
             this.changePropertiesInList();
@@ -164,7 +163,7 @@ class ViewControl extends Component {
             params: {
                 limit: 20,
                 LastEvaluatedKey: this.state.LastEvaluatedKey,
-                userId: this.props.userInfo.id,
+                userId: this.props.user.id
             },
             callback: (data) => {
                 const {comments = []} = this.state;
@@ -233,7 +232,7 @@ class ViewControl extends Component {
         this.setState({
             info: {...info},
             activeComment: null,
-            comments: [...this.state.comments]
+            comments: this.state.comments.map(obj=>({...obj}))
         },()=>{
             this.props.deleteComment({
                 id: item._id,
@@ -265,29 +264,35 @@ class ViewControl extends Component {
             });
             return;
         }
-
+        const {comments} = this.state
         let actionValue = item.userAction.actionValue;
         item.userAction.actionValue = !actionValue;
         item.likeNum = !actionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
+       
+        
         this.setState({
-            comments: [...this.state.comments]
-        });
-        // 更新用户对该资源的行为数据
-        this.props.updateAction({
-            _id: item.userAction._id,
-            obj: {
-                objectId: item._id,
-                userId: this.props.userInfo.id,
-                actionType: 1,  // 点赞
-                objectType: 2,  // feed comment
-                actionValue: !actionValue
-            },
-            callback: (data) => {
-                if (!item.userAction._id) {
-                    item.userAction._id = data._id;
+            // comments: [...comments]
+            comments: comments.map(obj=>({...obj}))
+        },()=>{
+            // 更新用户对该资源的行为数据
+            this.props.updateAction({
+                _id: item.userAction._id,
+                obj: {
+                    objectId: item._id,
+                    userId: this.props.userInfo.id,
+                    actionType: 1,  // 点赞
+                    objectType: 2,  // feed comment
+                    actionValue: !actionValue
+                },
+                callback: (data) => {
+                    if (!item.userAction._id) {
+                        const targetItem = this.state.comments.find(obj=>obj._id === item._id)
+                        targetItem.userAction._id = data._id;
+                    }
                 }
-            }
+            });
         });
+        
     };
 
     likeArticle = () => {
@@ -411,7 +416,7 @@ class ViewControl extends Component {
                                     </View>
                                 }
 
-                                {this.state.comments && this.state.comments.length > 0 ?
+                                {comments && comments.length > 0 ?
                                     <CommentList data={info}
                                                  showNickName={true}
                                                  clickAvatar={this.clickAvatar}
