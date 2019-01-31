@@ -19,6 +19,7 @@ import * as Types from 'app/actions/types'
 import NavigationService from 'app/navigation/NavigationService'
 class ViewControl extends PureComponent {
     onLogout = ()=>{
+        //TODO 国际化
         ActionSheet.show(
             {
               options: ['退出','取消'],

@@ -45,25 +45,35 @@ class Screen extends Component {
     }
 
     selectPhotoTapped = () => {
+
+        if (this.state.images.length > 9) {
+            // todo 国际化
+            $toast('最多只能添加9张图片');
+            return;
+        }
+
         // 直接调用相册
         try {
+
+            let length = this.state.images.length;
             ImagePicker.openPicker({
                 multiple: true,
                 // width: 400,
-                compressImageMaxWidth: 600,
-                compressImageMaxHeight: 1200,
+                compressImageMaxWidth: 400,
+                compressImageMaxHeight: 800,
                 // includeExif: true,
                 includeBase64: true,
                 compressImageQuality: 0.1,
                 mediaType: 'photo',
-                maxFiles: 9,
+                maxFiles: 10 - length,
             }).then(images => {
                 images.forEach((item) => {
                     item.dataurl = `data:${item.mime};base64,${item.data}`
                 });
-                this.setState({
-                    images: [...images, btn_img_soruce]
-                });
+                this.state.images.splice(length - 2, 0, ...images);
+                // this.setState({
+                //     images: [...images, btn_img_soruce]
+                // });
                 this.setState({});
             });
         } catch (e) {

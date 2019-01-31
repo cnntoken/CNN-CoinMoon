@@ -10,7 +10,7 @@ import {
     Body,
     List,
     Spinner,
-    ListItem
+    ListItem, ActionSheet
 } from "native-base";
 import {Col, Row, Grid} from "react-native-easy-grid";
 import {Image, Text, View, DeviceEventEmitter, TouchableWithoutFeedback} from "react-native";
@@ -18,7 +18,7 @@ import Carousel from "react-native-snap-carousel";
 import FooterInput from 'app/components/FooterInput';
 import CommentList from 'app/components/CommentList';
 import {sliderWidth} from "../Publish/styles";
-import Modal from "react-native-modal";
+// import Modal from "react-native-modal";
 import {$toast, getNumByUserId, formatDate} from "app/utils";
 import NavigationService from 'app/navigation/NavigationService';
 import avatars from "../../../services/constants";
@@ -44,7 +44,6 @@ class Page extends Component {
             loadMoreing: false,
             initLoading: true,
             placeholder: '',
-
         }
     }
 
@@ -114,6 +113,7 @@ class Page extends Component {
             });
             return;
         }
+
         if (!text) {
             $toast(i18n.t('comment.isNull'));
             return;
@@ -122,6 +122,12 @@ class Page extends Component {
             $toast(i18n.t('disclose.tooLong'));
             return;
         }
+
+        this.setState({
+            activeComment: null,
+            placeholder: ''
+        });
+
         // 如果传入的对象不含有images字段，则是回复某条评论
         if (item && !item.images) {
             this.props.commentDisclose({
@@ -140,9 +146,7 @@ class Page extends Component {
                 },
                 callback: (data) => {
                     completeCallback(data);
-                    this.setState({
-                        activeComment: null,
-                    });
+
                     this.commentOk(data);
                 }
             });
@@ -160,9 +164,6 @@ class Page extends Component {
                 },
                 callback: (data) => {
                     completeCallback(data);
-                    this.setState({
-                        activeComment: null,
-                    });
                     this.commentOk(data);
                 }
             });
@@ -276,21 +277,35 @@ class Page extends Component {
 
 
     // 删除评论
-    deleteComment = (item) => {
+    deleteComment = (item, fn) => {
+        let index = -1;
+        for (let i = 0; i < this.state.comments.length; i++) {
+            let it = this.state.comments[i];
+            if (it._id === item._id) {
+                index = i;
+                break;
+            }
+        }
 
-        // 现在界面上删除数据
-        let index = this.state.comments.indexOf(item);
+        if (index === -1) {
+            return;
+        }
+
         this.state.comments.splice(index, 1);
+
         this.setState({
-            activeComment: null
+            activeComment: null,
+            comments: JSON.parse(JSON.stringify(this.state.comments))
         });
 
         this.props.deleteComment({
             id: item._id,
             callback: (data) => {
                 // $toast('删除成功');
+                if (fn) fn();
             }
         });
+
     };
 
     // loadmore 加载更多评论
@@ -318,7 +333,9 @@ class Page extends Component {
             }
         }));
         this.setState({
-            comments: JSON.parse(JSON.stringify(this.state.comments))
+            comments: JSON.parse(JSON.stringify(this.state.comments)),
+            placeholder: '',
+            activeComment: null,
         });
     };
 
@@ -366,7 +383,7 @@ class Page extends Component {
                     item.source = avatars[avatarType % 5];
                 });
                 this.setState({
-                    comments: refresh ? [...Items] : [...(this.state.comments || []), ...Items],
+                    comments: refresh ? JSON.parse(JSON.stringify([...Items])) : JSON.parse(JSON.stringify([...(this.state.comments || []), ...Items])),
                     LastEvaluatedKey: LastEvaluatedKey,
                     loadMoreing: false,
                     activeComment: null,
@@ -381,27 +398,60 @@ class Page extends Component {
 
     componentDidMount() {
         this.getDiscloseDetail();
-        this.getDiscloseComments(1, false, true);
+        this.getDiscloseComments(10, false, true);
     }
 
     // 显示删除弹框
     showDeleteDialog = () => {
-        this.setState({
-            isModalVisible: true,
-        });
+        // this.setState({
+        //     isModalVisible: true,
+        // });
+        // todo 国际化
+        ActionSheet.show(
+            {
+                options: ['取消', '删除'],
+                cancelButtonIndex: 0,
+                destructiveButtonIndex: 1,
+                title: "是否删除该爆料"
+            },
+            buttonIndex => {
+                if (buttonIndex === 1) {
+                    this.props.deleteDisclose({
+                        id: this.state.data._id,
+                        callback: (data) => {
+                            // $toast('删除爆料成功');
+                            DeviceEventEmitter.emit('updateDiscloseListData', 'delete', this.state.data);
+                            this.props.navigation.pop();
+                        }
+                    });
+                }
+            }
+        );
+
+        // this.props.deleteDisclose({
+        //     id: this.state.data._id,
+        //     callback: (data) => {
+        //         // $toast('删除爆料成功');
+        //         DeviceEventEmitter.emit('updateDiscloseListData', 'delete', this.state.data);
+        //         this.props.navigation.pop();
+        //     }
+        // });
+
+
     };
 
-    // 确定删除
-    confirmDelete = () => {
-        this.props.deleteDisclose({
-            id: this.state.data._id,
-            callback: (data) => {
-                // $toast('删除爆料成功');
-                DeviceEventEmitter.emit('updateDiscloseListData', 'delete', this.state.data);
-                this.props.navigation.pop();
-            }
-        });
-    };
+    // // 确定删除
+    // confirmDelete = () => {
+    //
+    //     this.props.deleteDisclose({
+    //         id: this.state.data._id,
+    //         callback: (data) => {
+    //             // $toast('删除爆料成功');
+    //             DeviceEventEmitter.emit('updateDiscloseListData', 'delete', this.state.data);
+    //             this.props.navigation.pop();
+    //         }
+    //     });
+    // };
 
     viewArticle = (item) => {
         this.props.updateAction({
@@ -417,9 +467,9 @@ class Page extends Component {
 
     // 取消删除
     cancelDelete = () => {
-        this.setState({
-            isModalVisible: false,
-        })
+        // this.setState({
+        //     isModalVisible: false,
+        // })
     };
 
     render() {
@@ -628,7 +678,7 @@ class Page extends Component {
                                              comments={comments}
                                              loadedAllData={!LastEvaluatedKey}
                                              loadMoreing={loadMoreing}
-                                             deleteComment={this.deleteComment.bind(this)}
+                                             deleteComment={this.deleteComment}
                                              loadMore={this.loadMore.bind(this)}
                                              likeComment={this.likeComment.bind(this)}
                                              reply={this.reply.bind(this)}/>
@@ -637,20 +687,20 @@ class Page extends Component {
                         </View>
 
                         {/*************删除确认弹框modal***************/}
-                        <View>
-                            <Modal isVisible={this.state.isModalVisible}>
-                                <View>
-                                    <Button style={styles.modal_btn} block transparent light
-                                            onPress={this.confirmDelete}>
-                                        <Text style={styles.modal_btn_del_text}>{i18n.t('disclose.delete')}</Text>
-                                    </Button>
-                                    <Button style={styles.modal_btn} block transparent light
-                                            onPress={this.cancelDelete}>
-                                        <Text style={styles.modal_btn_calcel_text}>{i18n.t('disclose.cancel')}</Text>
-                                    </Button>
-                                </View>
-                            </Modal>
-                        </View>
+                        {/*<View>*/}
+                        {/*<Modal isVisible={this.state.isModalVisible}>*/}
+                        {/*<View>*/}
+                        {/*<Button style={styles.modal_btn} block transparent light*/}
+                        {/*onPress={this.confirmDelete}>*/}
+                        {/*<Text style={styles.modal_btn_del_text}>{i18n.t('disclose.delete')}</Text>*/}
+                        {/*</Button>*/}
+                        {/*<Button style={styles.modal_btn} block transparent light*/}
+                        {/*onPress={this.cancelDelete}>*/}
+                        {/*<Text style={styles.modal_btn_calcel_text}>{i18n.t('disclose.cancel')}</Text>*/}
+                        {/*</Button>*/}
+                        {/*</View>*/}
+                        {/*</Modal>*/}
+                        {/*</View>*/}
                     </Content>) : <Content><Spinner size={'small'} color={'#408EF5'}/></Content>
                 }
 

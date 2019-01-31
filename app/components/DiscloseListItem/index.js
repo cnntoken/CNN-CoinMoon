@@ -72,6 +72,7 @@ export default class DiscloseListItem extends Component {
         return (
             <ListItem style={[{
                 marginBottom: -15,
+                marginTop:-10,
             }, this.props.separators]} avatar>
                 {/* 左侧图标 */}
                 <Left>
@@ -79,6 +80,7 @@ export default class DiscloseListItem extends Component {
                         <Image style={styles.avatar} source={item.source}/>
                     </Button>
                 </Left>
+
                 <Body style={{borderBottomWidth: 0}}>
 
                 {/* 用户名& 发布时间& 编辑*/}
@@ -91,23 +93,26 @@ export default class DiscloseListItem extends Component {
                             </View>
                         </Col>
                         {/* 仅仅只有自己发布的匿名信息可以删除 */}
-                        {
-                            isMine ?
-                                <Col size={1}>
-                                    <View style={styles.edit}>
-                                        <Button block transparent light
-                                                onPress={this.showDeleteDialog.bind(this, item)}>
-                                            <Image source={require('app/images/icon_more_black.png')}/>
-                                        </Button>
-                                    </View></Col> : null
 
-                        }
+                        <Col size={1}>
+                            <View style={styles.edit}>
+                                {
+                                    isMine ? <Button block transparent light
+                                                     onPress={this.showDeleteDialog.bind(this, item)}>
+                                        <Image source={require('app/images/icon_more_black.png')}/>
+                                    </Button> : <Button/>
+                                }
+                            </View>
+                        </Col>
                     </Row>
                 </Grid>
 
                 {/* 点击标题 ， 图片跳到详情页面 */}
                 <TouchableOpacity onPress={this.pressItem.bind(this, item)}>
-                    <View>
+                    <View  style={{
+                        marginTop:-5,
+                        marginBottom:-5,
+                    }}>
                         <Grid>
                             <Row>
                                 <Col>

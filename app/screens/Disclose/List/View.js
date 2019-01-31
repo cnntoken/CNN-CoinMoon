@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 import DoubleClicker from 'app/components/DoubleClicker';
 import styles from './styles';
-import {Container, Header, Content, Text, Button, Left, Right, Body, Title, Spinner} from "native-base";
+import {Container, Header, Content, Text, Button, Left, Right, Body, Title, Spinner, ActionSheet} from "native-base";
 import {View, Image, DeviceEventEmitter} from 'react-native';
 
-import Modal from "react-native-modal";
 import {$toast, uniqueById, getSeconds, getNumByUserId} from 'app/utils';
 
 import * as navigationActions from 'app/actions/navigationActions';
@@ -128,40 +127,40 @@ class Screen extends Component {
 
     // 显示删除弹框
     showDeleteDialog = (item) => {
-        this.setState({
-            isModalVisible: true,
-            activeItem: item
-        });
-    };
 
-    // 确定删除
-    confirmDelete = (item) => {
-        this.props.deleteDisclose({
-            id: item._id,
-            callback: (data) => {
-                $toast(i18n.t('disclose.deleteOk'));
-                let index = this.state.Items.indexOf(item);
-                this.state.Items.splice(index, 1);
-                this.setState({
-                    isModalVisible: false,
-                    activeItem: null
-                });
+        let index = this.state.Items.indexOf(item);
+        this.state.Items.splice(index, 1);
+
+        ActionSheet.show(
+            {
+                options: ['取消', '删除'],
+                cancelButtonIndex: 0,
+                destructiveButtonIndex: 1,
+                title: "是否删除该爆料"
+            },
+            buttonIndex => {
+                if (buttonIndex === 1) {
+                    this.props.deleteDisclose({
+                        id: item._id,
+                        callback: (data) => {
+                            this.setState({
+                                isModalVisible: false,
+                                activeItem: null,
+                                Items: JSON.parse(JSON.stringify(this.state.Items))
+                            });
+
+                        }
+                    });
+                }
             }
-        });
+        );
     };
 
-    // 取消删除
-    cancelDelete = () => {
-        this.setState({
-            isModalVisible: false,
-            activeItem: null
-        })
-    };
 
     // 渲染列表
     renderListItem = ({item, index, separators}) => {
         const {hasData, Items} = this.state;
-        return <DiscloseListItem showDeleteDialog={this.showDeleteDialog}
+        return <DiscloseListItem showDeleteDialog={this.showDeleteDialog.bind(this, item)}
                                  separators={separators}
             // clickAvatar={this.clickAvatar}
                                  like={this.like}
@@ -322,25 +321,25 @@ class Screen extends Component {
 
                 }
                 {/*需要删除爆料时，弹框提示确定modal*/}
-                <View>
-                    <Modal isVisible={this.state.isModalVisible}>
-                        <View>
-                            <Button style={styles.modal_btn} block transparent light
-                                    onPress={this.confirmDelete.bind(this, this.state.activeItem)}>
-                                <Text style={styles.modal_btn_del_text}>{i18n.t('disclose.delete')}</Text>
-                            </Button>
-                            <Button style={styles.modal_btn} block transparent light onPress={this.cancelDelete}>
-                                <Text style={styles.modal_btn_calcel_text}>{i18n.t('disclose.cancel')}</Text>
-                            </Button>
-                        </View>
-                    </Modal>
-                    {/* 首次进入匿名爆料区时，进行评论和发帖弹框 */}
-                    <Modal isVisible={this.state.firstEntry}>
-                        <View>
-                            <Text style={styles.modal_btn_del_text}>{i18n.t('disclose.delete')}</Text>
-                        </View>
-                    </Modal>
-                </View>
+                {/*<View>*/}
+                {/*<Modal isVisible={this.state.isModalVisible}>*/}
+                {/*<View>*/}
+                {/*<Button style={styles.modal_btn} block transparent light*/}
+                {/*onPress={this.confirmDelete.bind(this, this.state.activeItem)}>*/}
+                {/*<Text style={styles.modal_btn_del_text}>{i18n.t('disclose.delete')}</Text>*/}
+                {/*</Button>*/}
+                {/*<Button style={styles.modal_btn} block transparent light onPress={this.cancelDelete}>*/}
+                {/*<Text style={styles.modal_btn_calcel_text}>{i18n.t('disclose.cancel')}</Text>*/}
+                {/*</Button>*/}
+                {/*</View>*/}
+                {/*</Modal>*/}
+                {/*/!* 首次进入匿名爆料区时，进行评论和发帖弹框 *!/*/}
+                {/*<Modal isVisible={this.state.firstEntry}>*/}
+                {/*<View>*/}
+                {/*<Text style={styles.modal_btn_del_text}>{i18n.t('disclose.delete')}</Text>*/}
+                {/*</View>*/}
+                {/*</Modal>*/}
+                {/*</View>*/}
             </Container>
         );
     }

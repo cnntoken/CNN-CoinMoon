@@ -5,7 +5,9 @@ import {
     Left,
     Body,
     List,
-    ListItem, Spinner
+    ListItem,
+    Spinner,
+    ActionSheet
 } from "native-base";
 import Modal from "react-native-modal";
 
@@ -51,24 +53,43 @@ class CommentList extends Component {
 
     // 删除评论
     deleteComment = (item) => {
-        this.cacheDeleteItem = item;
-        this.setState({
-            isModalVisible: true
-        })
+        // this.cacheDeleteItem = item;
+        // 国际化
+        console.log(item);
+        ActionSheet.show(
+            {
+                options: ['取消', '删除'],
+                cancelButtonIndex: 0,
+                destructiveButtonIndex: 1,
+                title: "是否删除该评论"
+            },
+            buttonIndex => {
+                if (buttonIndex === 1) {
+                    if (this.props.deleteComment) {
+                        this.props.deleteComment(item, () => {
+                            console.log('删除成功');
+                        });
+                    }
+                }
+            }
+        )
     };
-    cancelDelete = () => {
-        this.setState({
-            isModalVisible: false
-        })
-    };
-    confirmDelete = () => {
-        this.setState({
-            isModalVisible: false
-        });
-        if (this.props.deleteComment) {
-            this.props.deleteComment(this.cacheDeleteItem);
-        }
-    };
+
+    // cancelDelete = () => {
+    //     this.setState({
+    //         isModalVisible: false
+    //     })
+    // };
+    //
+    // confirmDelete = () => {
+    //     this.setState({
+    //         isModalVisible: false
+    //     });
+    //     if (this.props.deleteComment) {
+    //         this.props.deleteComment(this.cacheDeleteItem);
+    //     }
+    // };
+
     // loadmore 加载更多评论
     loadMore = (item) => {
         if (this.props.loadMore) {
@@ -130,14 +151,13 @@ class CommentList extends Component {
                     }}>暂无评论~</Text></View> :
                     <List
                         dataArray={comments}
-                        renderRow={(item) => {
+                        renderRow={(item, idx) => {
                             const isMyComment = user.id === item.userId;
                             let username = item.user ? item.user['custom:disclose_name'] : '';
                             if (showNickName) {
                                 username = item.user ? item.user['nickname'] : ''
                             }
-
-                            return <ListItem style={styles.listitem} avatar>
+                            return <ListItem key={item._id || idx} style={styles.listitem} avatar>
                                 {/* 左侧图标 */}
                                 <Left>
                                     <Button transparent light onPress={this.clickAvatar.bind(this, item)}>
@@ -217,23 +237,25 @@ class CommentList extends Component {
                             </ListItem>
                         }}/>
             }
+
             {/*加载更多评论按钮*/}
             <Grid style={styles.loadmore}>
                 {loadMoreing ? <Spinner size={'small'} color={'#408EF5'}/> : loadMoreBtn}
             </Grid>
+
             {/*************删除确认弹框modal***************/}
-            <Modal isVisible={this.state.isModalVisible}>
-                <View>
-                    <Button style={styles.modal_btn} block transparent light
-                            onPress={this.confirmDelete}>
-                        <Text style={styles.modal_btn_del_text}>删除</Text>
-                    </Button>
-                    <Button style={styles.modal_btn} block transparent light
-                            onPress={this.cancelDelete}>
-                        <Text style={styles.modal_btn_calcel_text}>取消</Text>
-                    </Button>
-                </View>
-            </Modal>
+            {/*<Modal isVisible={this.state.isModalVisible}>*/}
+            {/*<View>*/}
+            {/*<Button style={styles.modal_btn} block transparent light*/}
+            {/*onPress={this.confirmDelete}>*/}
+            {/*<Text style={styles.modal_btn_del_text}>删除</Text>*/}
+            {/*</Button>*/}
+            {/*<Button style={styles.modal_btn} block transparent light*/}
+            {/*onPress={this.cancelDelete}>*/}
+            {/*<Text style={styles.modal_btn_calcel_text}>取消</Text>*/}
+            {/*</Button>*/}
+            {/*</View>*/}
+            {/*</Modal>*/}
         </View>)
     }
 }

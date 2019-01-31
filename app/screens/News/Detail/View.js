@@ -203,16 +203,17 @@ class ViewControl extends Component {
         this.props.navigation.navigate('OthersHome', {userInfo: item.user})
     };
 
-    deleteComment = (item) => {
+    deleteComment = (item, fn) => {
         this.props.deleteComment({
             id: item._id,
-            callback: () => {
-                $toast('删除成功');
+            callback: (data) => {
+                // $toast('删除成功');
                 let index = this.state.comments.indexOf(item);
                 this.state.comments.splice(index, 1);
                 this.setState({
                     activeComment: null
                 });
+                if (fn) fn();
             }
         });
     };
