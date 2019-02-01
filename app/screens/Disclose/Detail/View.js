@@ -370,7 +370,7 @@ class Page extends Component {
         this.props.getDiscloseComments({
             id: id,
             params: {
-                limit: limit || 1,
+                limit: limit || 10,
                 LastEvaluatedKey: this.state.LastEvaluatedKey,
                 userId: this.props.user.id,
             },
@@ -398,7 +398,7 @@ class Page extends Component {
 
     componentDidMount() {
         this.getDiscloseDetail();
-        this.getDiscloseComments(10, false, true);
+        this.getDiscloseComments(20, false, true);
     }
 
     // 显示删除弹框
@@ -406,7 +406,6 @@ class Page extends Component {
         // this.setState({
         //     isModalVisible: true,
         // });
-        // todo 国际化
         ActionSheet.show(
             {
                 options: [i18n.t('cancel'), i18n.t('delete')],
@@ -661,7 +660,7 @@ class Page extends Component {
                                                                 <Image
                                                                     source={require('app/images/icon_liked_big.png')}/>
                                                         }
-                                                        <Text style={styles.btns_text}>{data.likeNum}</Text>
+                                                        <Text style={styles.btns_text}>{data.likeNum || comments.length}</Text>
                                                     </View>
                                                 </Button>
                                             </View>

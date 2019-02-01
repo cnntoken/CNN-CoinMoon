@@ -50,7 +50,7 @@ class Screen extends Component {
 
         if (this.state.images.length > 9) {
             // todo 国际化
-            $toast('最多只能添加9张图片');
+            $toast(i18n.t('tooimages'));
             return;
         }
 

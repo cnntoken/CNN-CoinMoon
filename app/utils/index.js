@@ -16,6 +16,7 @@ export const $toast = (msg) => {
 
 // 过滤对象组成的数组
 export function uniqueById(items) {
+    console.log(items);
     const map = new Map();
     items.forEach((item) => {
         if (!map.has(item._id)) {

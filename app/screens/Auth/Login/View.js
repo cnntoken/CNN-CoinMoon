@@ -48,7 +48,6 @@ class ViewControl extends Component {
             return false
         }
         const {info} = this.state;
-        // todo 国际化
         $toast(i18n.t('page_login.loging'));
         this.props.onLogin({email: info.email, password: info.password}, (e) => {
             if (e) {
@@ -66,7 +65,6 @@ class ViewControl extends Component {
                     $toast(i18n.t('page_login.login_fail'));
                 }
             } else {
-                // todo 国际化
                 $toast(i18n.t('page_login.login_success'));
                 let prevState = this.props.navigation.getParam('prevState');
                 if (prevState) {

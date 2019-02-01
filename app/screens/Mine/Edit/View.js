@@ -55,9 +55,14 @@ class ViewControl extends PureComponent {
 
     onSubmit = () => {
         // todo 国际化
-        $toast('正在提交...');
+
+        $toast('page_register.reging_tip');
+
         this.uploadPicture(async (url) => {
             try {
+                if (!this.state.nick_name) {
+                    $toast('valid_user_isnull');
+                }
                 let obj = {
                     'nickname': this.state.nick_name,
                 };

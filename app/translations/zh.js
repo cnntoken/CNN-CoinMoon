@@ -31,7 +31,7 @@ export default {
         pwd_len_invalid: '密码不能少于8位',
         pwd_eq_invalid: '密码不一致',
 
-        reging_tip: '正在提交, 请稍后!!!',
+        reging_tip: '正在提交, 请稍后!',
 
         reg_ok: '注册成功',
         reg_fail: '注册失败',
@@ -114,33 +114,33 @@ export default {
         publish: '发布'
     },
 
-////////新添加
+    //////// 新添加
     logging: '正在登录, 请稍后!',
     go_verify: '去验证',
     cancel: '取消',
-    login_ok:'登陆成功',
-    edit_info:'编辑信息',
-    username:'用户名',
-    save:'保存',
-    edit_ok:'修改成功',
-    exit:'退出',
-    confirm_logout:'确认退出登录',
-    settting:'设置',
-    account:'账户',
-    logout:'退出登录',
-    allComments:'所有评论',
-    no_comment:'暂无评论',
-    reply_comment:'回复评论',
-    like_comment:'赞评论',
-    delete_comment:'删除评论',
-    loadmore_comments:'加载更多评论',
-    delete:"删除",
-    delete_disclose_confirm:'是否删除该爆料',
-    delete_comment_confirm:'是否删除该评论',
-    no_access_photo :' Cannot access images. Please allow access if you want to be able to select images.'
-
-
-
+    login_ok: '登陆成功',
+    edit_info: '编辑信息',
+    username: '用户名',
+    save: '保存',
+    edit_ok: '修改成功',
+    exit: '退出',
+    confirm_logout: '确认退出登录',
+    settting: '设置',
+    account: '账户',
+    logout: '退出登录',
+    allComments: '所有评论',
+    no_comment: '暂无评论',
+    reply_comment: '回复评论',
+    like_comment: '赞评论',
+    delete_comment: '删除评论',
+    loadmore_comments: '加载更多评论',
+    delete: "删除",
+    delete_disclose_confirm: '是否删除该爆料',
+    delete_comment_confirm: '是否删除该评论',
+    no_access_photo: ' Cannot access images. Please allow access if you want to be able to select images.',
+    valid_user_isnull: '用户名不能为空',
+    tooimages:'最多只能添加9张图片',
+    firstEntryDisclose:'您将以匿名身份在爆料区进行评论及发帖'
 
 
 }

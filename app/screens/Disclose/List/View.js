@@ -208,7 +208,9 @@ class Screen extends Component {
             },
             callback: (data) => {
                 let {Items, LastEvaluatedKey} = data;
+
                 Items.forEach((item) => {
+                    console.log(item.updatedAt,new Date(item.updatedAt).valueOf());
                     let avatarType = getNumByUserId(item.userId);
                     item.source = avatars[avatarType % 5];
                     item.userName = i18n.t('disclose.anonymous');
@@ -391,7 +393,7 @@ class Screen extends Component {
                                 fontSize: 18,
                                 lineHeight: 25,
                                 textAlign: 'center'
-                            }}>您将以匿名身份爆料区进行评论及发帖</Text>
+                            }}>{i18n.t('firstEntryDisclose')}</Text>
                             <Image style={{
                                 color: '#030303',
                                 width: 50,

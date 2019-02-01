@@ -67,7 +67,7 @@ export default class DiscloseListItem extends Component {
         // 是否是我发布的，如果是，则可以删除
         const isMine = userId === item.userId;
 
-        let time = formatDate(item.createdAt);
+        let time = formatDate(item.updatedAt);
 
         return (
             <ListItem style={[{

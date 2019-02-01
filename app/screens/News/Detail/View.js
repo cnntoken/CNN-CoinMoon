@@ -409,7 +409,7 @@ class ViewControl extends Component {
                                 <WebContent html={info.content} style={styles.webview} onReady={this.showOperate}/>
 
                                 {this.state.showOperateBox && <View style={styles.viewBox}>
-                                    <IconText type='view' text={info.viewNum || 0}/>
+                                    <IconText type='view' text={info.viewNum || comments.length || 0}/>
                                 </View>}
 
                                 {

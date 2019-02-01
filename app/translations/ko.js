@@ -95,7 +95,7 @@ export default {
         refreshControlNormalText: '아래로 당기시면 새로고침', // 正常状态
         refreshControlPrepareText: '손을 놓으시면 로딩', // 达到临界值, 松开即可触发刷新
         refreshControlLoadingText: '로딩중', // 加载中状态
-        
+
         // 爆料详情
         delete: '삭제',
         deleteOk: '삭제 성공！',
@@ -112,5 +112,36 @@ export default {
         tooLong: '최대 500자 입력 가능합니다',
         isNull: '내용을 입력하여 주세요',
         publish: '등록'
-    }
+    },
+
+
+    //////// 新添加
+    //////// 新添加
+    logging: '로그인 중입니다',
+    go_verify: '인증하기',
+    cancel: '취소',
+    login_ok: '로그인 되었습니다',
+    edit_info: '프로필 편집',
+    username: '닉네임',
+    save: '저장',
+    edit_ok: '-변경되었습니다',
+    exit: '로그아웃',
+    confirm_logout: '로그아웃 확인',
+    settting: '설정',
+    account: '계정',
+    logout: '-로그아웃',
+    allComments: '전체 댓글',
+    no_comment: 'no comment',
+    reply_comment: '댓글',
+    like_comment: '추천',
+    delete_comment: '삭제',
+    loadmore_comments: '댓글 더 보기',
+    delete: "삭제",
+    delete_disclose_confirm: '풍문 게시글 삭제',
+    delete_comment_confirm: '댓글 삭제',
+    no_access_photo: '이미지를 선택하려면 이미지에 접근 권한을 부여하시길 바랍니다.',
+
+    valid_user_isnull: '닉네임을 입력하셔야 합니다',
+    tooimages:'최대한 9장 이미지 추가',
+    firstEntryDisclose:'풍문 게시판에서 게시물을 올리거나 댓글을 다는 활동 등은 모두 익명으로 진행됩니다.'
 }

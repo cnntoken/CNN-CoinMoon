@@ -143,9 +143,9 @@ class FooterInput extends Component {
 
     onComment = (item) => {
         let text = this.state.text;
-        if (!text) {
-            $toast('请输入评论内容');
-        }
+        // if (!text) {
+        //     $toast('请输入评论内容');
+        // }
         if (this.props.onComment) {
             this.props.onComment(item, text, () => {
                 // $toast('评论成功');
