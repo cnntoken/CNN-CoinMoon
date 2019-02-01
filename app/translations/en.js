@@ -72,6 +72,9 @@ export default {
 
 
     },
+    page_news_detail: {
+        from: '출 처'
+    },
     toast: {},
     // i18n.t('disclose.deleteOk')
     disclose: {
@@ -107,7 +110,6 @@ export default {
 
 
     },
-
     comment: {
         tooLong: '최대 500자 입력 가능합니다',
         isNull: '내용을 입력하여 주세요',

@@ -12,6 +12,11 @@ const styles = StyleSheet.create({
     content:{
         marginTop: 20,
     },
+    source: {
+        marginTop: 5,
+        flexDirection: 'row',
+        fontSize: 10
+    },
     title: {
         fontWeight: 'bold',
         color: '#333333',

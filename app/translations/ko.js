@@ -72,6 +72,9 @@ export default {
 
 
     },
+    page_news_detail: {
+        from: '출 처'
+    },
     toast: {},
     // i18n.t('disclose.deleteOk')
     disclose: {
