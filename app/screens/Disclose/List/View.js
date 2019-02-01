@@ -189,6 +189,18 @@ class Screen extends Component {
             loadMoreing: true,
             refreshState: RefreshState.FooterRefreshing
         });
+
+
+        // // debugger;
+        // let Items = this.state.Items;
+        // let lastItem = Items[Items.length - 1];
+        // let LastEvaluatedKey = {
+        //     Index: 1,
+        //     userId: lastItem.userId,
+        //     _id: lastItem._id,
+        // };
+        // console.log(LastEvaluatedKey);
+
         this.getList(10, this.state.LastEvaluatedKey, false, true);
     };
 
@@ -270,7 +282,8 @@ class Screen extends Component {
                 break;
         }
         this.setState({
-            Items: [...Items]
+            Items: [...Items],
+            refreshState: Items.length < 1 ? RefreshState.EmptyData : RefreshState.Idle,
         });
     };
 

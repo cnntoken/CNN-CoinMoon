@@ -205,30 +205,6 @@ class ViewControl extends Component {
         );
     };
 
-    // // 确定删除
-    // confirmDelete = (item) => {
-    //     this.props.deleteDisclose({
-    //         id: item._id,
-    //         callback: (data) => {
-    //             $toast('删除爆料成功');
-    //             let index = this.state.Items.indexOf(item);
-    //             this.state.Items.splice(index, 1);
-    //             this.setState({
-    //                 // isModalVisible: false,
-    //                 activeItem: null
-    //             });
-    //         }
-    //     });
-    // };
-    //
-    // // 取消删除
-    // cancelDelete = () => {
-    //     this.setState({
-    //         isModalVisible: false,
-    //         activeItem: null
-    //     })
-    // };
-
     // 渲染列表
     renderListItem = ({item, index}) => {
         const {hasData, Items} = this.state;
@@ -254,13 +230,24 @@ class ViewControl extends Component {
 
     // 上拉加载更多
     handleLoadMore = () => {
+
         if (this.state.loadMoreing) {
             return false;
         }
+
         this.setState({
             loadMoreing: true,
             refreshState: RefreshState.FooterRefreshing
         });
+
+        // let Items = this.state.Items;
+        // let lastItem = Items[Items.length - 1];
+        // let LastEvaluatedKey = {
+        //     updatedAt: lastItem.updatedAt,
+        //     userId: lastItem.userId,
+        //     _id: lastItem._id,
+        // };
+
         this.getList(10, this.state.LastEvaluatedKey, false, true);
     };
 
@@ -276,15 +263,14 @@ class ViewControl extends Component {
             params: {
                 limit: limit || 10,
                 LastEvaluatedKey: LastEvaluatedKey || null,
-                userId: this.props.navigation.getParam('id') || this.props.user.id
+                userId: this.props.user.id
             },
             callback: (data) => {
                 let {Items, LastEvaluatedKey} = data;
-                console.log("user disolose",Items);
                 Items.forEach((item) => {
                     let avatarType = getNumByUserId(item.userId || 0);
                     item.source = avatars[avatarType % 5];
-                    item.userName = item.userName || 'Anonymity';
+                    item.userName = item.userName || i18n.t('disclose.anonymous');
                 });
                 let list = [];
                 // 向下拉时，更新最新前面的数据
@@ -338,15 +324,16 @@ class ViewControl extends Component {
                 break;
         }
 
+
         this.setState({
-            Items: [...Items]
+            Items: [...Items],
+            refreshState: Items.length < 1 ? RefreshState.EmptyData : RefreshState.Idle,
         });
     };
 
 
     ////////////////////////////////////////////////////////////////////////////// 列表部分逻辑 end
     componentDidMount() {
-        console.log('componentDidMount');
         this.getList(10, null, false, false);
         this.subscription = DeviceEventEmitter.addListener('updateDiscloseListData', this.updateState);
         // StatusBar.setBarStyle('light-content', true);

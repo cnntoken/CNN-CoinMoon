@@ -150,7 +150,7 @@ class Index extends PureComponent<Props, State> {
         switch (this.props.refreshState) {
             case RefreshState.Idle:
                 footer = (<View style={styles.footerContainer}/>)
-                break
+                break;
             case RefreshState.Failure: {
                 footer = (
                     <TouchableOpacity onPress={() => {

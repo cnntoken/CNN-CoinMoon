@@ -278,7 +278,8 @@ class ViewControl extends Component {
                 break;
         }
         this.setState({
-            Items: [...Items]
+            Items: [...Items],
+            refreshState: Items.length < 1 ? RefreshState.EmptyData : RefreshState.Idle,
         });
     };
 
@@ -287,7 +288,6 @@ class ViewControl extends Component {
         this.getList(10, null, false, false);
         this.subscription = DeviceEventEmitter.addListener('updateFeedListData', this.updateState);
     }
-
 
     componentWillUnmount() {
         // debugger;
