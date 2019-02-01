@@ -426,12 +426,12 @@ class ViewControl extends Component {
                                     </TouchableWithoutFeedback>
                                 </View>}
                                 {this.state.showOperateBox && <View style={styles.viewBox}>
-                                    <IconText type='view' text={info.viewNum || comments.length || 0}/>
+                                    <IconText type='view' text={info.viewNum || 0}/>
                                 </View>}
 
                                 {
                                     this.state.showOperateBox && <View style={styles.operateBox}>
-                                        <IconText type='comment_big' text={info.commentsNum || 0} vertical={true}
+                                        <IconText type='comment_big' text={info.commentsNum || comments.length || 0} vertical={true}
                                                   onPress={this.comment.bind(this, info)}/>
                                         <View style={{width: 74}}></View>
                                         <IconText type={info.userAction.actionValue ? 'liked_big' : 'like_big'}

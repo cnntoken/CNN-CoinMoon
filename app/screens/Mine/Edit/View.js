@@ -54,9 +54,8 @@ class ViewControl extends PureComponent {
 
 
     onSubmit = () => {
-        // todo 国际化
 
-        $toast('page_register.reging_tip');
+        $toast(i18n.t('page_register.reging_tip'));
 
         this.uploadPicture(async (url) => {
             try {
@@ -110,7 +109,10 @@ class ViewControl extends PureComponent {
                 this.setState({image: image, needupload: true});
             });
         } catch (e) {
-            console.log(e);
+            // console.log(e);
+            if(e && e.code === 'E_PERMISSION_MISSING'){
+                $toast(i18n.t('no_access_photo'));
+            }
         }
     };
 

@@ -56,8 +56,8 @@ class ViewControl extends Component {
                         'Notice',
                         i18n.t('page_login.password'),
                         [
-                            {text: $toast(i18n.t('page_login.go_verify')), onPress: () => this.goVerify(info.email)},
-                            {text: $toast(i18n.t('label_cancel')), onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
+                            {text: i18n.t('page_login.go_verify'), onPress: () => this.goVerify(info.email)},
+                            {text: i18n.t('label_cancel'), onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
                         ],
                         {cancelable: false}
                     )
