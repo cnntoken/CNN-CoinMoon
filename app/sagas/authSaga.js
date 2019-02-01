@@ -33,18 +33,12 @@ export function* refresh({user}) {
 
 
 export function* login({payload, callback}) {
-    // check the current user when the App component is loaded
-    console.log(payload, callback)
     const {email, password} = payload
     try {
         const user = yield Auth.signIn(email, password);
         yield put({type: Types.AUTH_REFRESH, user});
-        console.log('user', user);
         callback()
     } catch (e) {
-        // console.log('login fail')
-        // console.log(e);
-        $toast(`login fail: ${e.message}`)
         callback(e)
     }
 }
@@ -95,7 +89,6 @@ export function* resend({payload, callback}) {
     } catch (e) {
         console.log('resend fail');
         console.log(e);
-        $toast(`resend fail: ${e.message}`)
     }
 }
 

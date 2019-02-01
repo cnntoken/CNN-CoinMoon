@@ -86,7 +86,8 @@ class ViewControl extends Component {
     };
 
     showLincense = () => {
-        console.log('show lincense');
+        // console.log('show lincense');
+        this.props.navigation.navigate('Policy')
     };
 
     componentDidMount() {
@@ -129,13 +130,13 @@ class ViewControl extends Component {
                             textContentType='password'
                         />
 
-                        {/*<View style={{alignItems:'center'}}>*/}
-                        {/*<TouchableOpacity style={[styles.licenseBox,styles.text1]} onPress={this.toggleLincense}>*/}
-                        {/*<Image style={styles.agree} source={isAgree ? require('./img/checkbox_checked.png') : require('./img/checkbox_normal.png')} />*/}
-                        {/*<Text>{i18n.t('page_register.license')}</Text>*/}
-                        {/*/!* <TouchableOpacity onPress={this.showLincense}><Text style={[styles.highlight]}>隐私政策</Text></TouchableOpacity> *!/*/}
-                        {/*</TouchableOpacity>*/}
-                        {/*</View>*/}
+                        <View style={{alignItems:'center'}}>
+                            <TouchableOpacity style={[styles.licenseBox,styles.text1]} onPress={this.toggleLincense}>
+                                <Image style={styles.agree} source={isAgree ? require('./img/checkbox_checked.png') : require('./img/checkbox_normal.png')} />
+                                <TouchableOpacity onPress={this.showLincense}><Text style={[styles.highlight]}> {i18n.t('page_register.license1')}</Text></TouchableOpacity>
+                                <Text> {i18n.t('page_register.license2')}</Text>
+                            </TouchableOpacity>
+                        </View>
 
                         <Button block full rounded style={[styles.btn, isBtnDisabled && styles.btnDisabled]}
                                 disabled={isBtnDisabled} onPress={this.onRegister}>

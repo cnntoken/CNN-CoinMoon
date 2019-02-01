@@ -139,7 +139,34 @@ class ViewControl extends Component {
                 initialPage={this.state.pageIndex}
                 renderTabBar={() => <ListTabBar/>}
             >
-                <RefreshListView
+            {['info','news'].map((cate,index)=>{
+                return <RefreshListView
+                key={index}
+                tabLabel={i18n.t(`page_main.category_${cate}`)}
+                data={this.props[cate]}
+                refreshState={this.state[cate].refreshState}
+                renderItem={(...args)=>this.renderItem(cate,...args)}
+                onHeaderRefresh={(...args) => {
+                    this.onRefresh(cate, ...args)
+                }}
+                onFooterRefresh={(...args) => {
+                    this.onLoadMore(cate, ...args)
+                }}
+
+                // 可选
+                footerRefreshingText={i18n.t('disclose.footerRefreshingText')}
+                footerFailureText={i18n.t('disclose.footerFailureText')}
+                footerNoMoreDataText={i18n.t('disclose.footerNoMoreDataText')}
+                footerEmptyDataText={i18n.t('disclose.footerEmptyDataText')}
+
+
+
+                refreshControlNormalText={i18n.t('disclose.refreshControlNormalText')}
+                refreshControlPrepareText={i18n.t('disclose.refreshControlPrepareText')}
+                refreshControlLoadingText={i18n.t('disclose.refreshControlLoadingText')}
+            />
+            })}
+                {/* <RefreshListView
                     tabLabel={i18n.t('page_main.category_news')}
                     data={this.props.news}
                     refreshState={this.state.news.refreshState}
@@ -180,7 +207,11 @@ class ViewControl extends Component {
                     footerFailureText={i18n.t('disclose.footerFailureText')}
                     footerNoMoreDataText={i18n.t('disclose.footerNoMoreDataText')}
                     footerEmptyDataText={i18n.t('disclose.footerEmptyDataText')}
-                />
+
+                    refreshControlNormalText={i18n.t('disclose.refreshControlNormalText')}
+                    refreshControlPrepareText={i18n.t('disclose.refreshControlPrepareText')}
+                    refreshControlLoadingText={i18n.t('disclose.refreshControlLoadingText')}
+                /> */}
             </ScrollableTabView>
         );
     }
