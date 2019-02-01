@@ -28,7 +28,6 @@ class ViewControl extends Component {
             // 用于控制是否展示提示输入邮箱验证码的弹层
             showSentCodeTip: !!props.navigation.getParam('stage'),
         };
-        console.log(this.state,'1234567890');
     }
 
     onSend = () => {

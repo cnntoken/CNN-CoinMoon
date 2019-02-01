@@ -27,6 +27,7 @@ class WebContent extends PureComponent {
                     body{
                         width: 100%;
                         overflow-x: hidden;
+                        word-break: break-all;
                     }
                 </style>
             </head>

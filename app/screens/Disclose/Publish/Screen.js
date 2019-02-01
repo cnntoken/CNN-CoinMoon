@@ -85,7 +85,7 @@ class Screen extends Component {
                 // });
                 this.setState({});
             }).catch((e) => {
-                $toast('Cannot access images. Please allow access if you want to be able to select images.');
+                $toast(i18n.t('no_access_photo'));
             });
         } catch (e) {
             console.log(e);

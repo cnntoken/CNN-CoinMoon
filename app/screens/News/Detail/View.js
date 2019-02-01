@@ -33,16 +33,17 @@ class ViewControl extends Component {
     }
 
     transformHtmlContent = (html, images = []) => {
+
         if (!images.length) {
             return html
         }
-        html = html.replace(/<cnn-image\/>/ig, () => {
+        let str = html.replace(/<cnn-image\/>/ig, () => {
             const src = images.shift();
             return `<img src='${src}'/>`
         }).replace(/<a.*?href=.*?>/ig, () => {
             return `<a href="javascript:void 0">`
         })
-        return html
+        return str
     }
     // webview 加载完成, 显示操作按钮
     showOperate = () => {
@@ -186,12 +187,17 @@ class ViewControl extends Component {
 
     getNews = (id, category) => {
         this.props.getInfo({id, category, userId: this.props.user.id}, (info) => {
-            info.content = this.transformHtmlContent(info.content, info.images);
-            info.updatedAt = moment(info.updatedAt).format('YYYY.MM.DD HH:mm');
-            info.source = info.user && info.user.picture ? {uri: info.user.picture} : require('app/images/avatar_default.png');
+            const content = this.transformHtmlContent(info.content, [...info.images]);
+            const updatedAt = moment(info.updatedAt).format('YYYY.MM.DD HH:mm');
+            const source = info.user && info.user.picture ? {uri: info.user.picture} : require('app/images/avatar_default.png');
             this.setState({
                 contentLoading: false,
-                info
+                info:{
+                    ...info,
+                    content,
+                    updatedAt,
+                    source
+                }
             }, () => {
                 this.viewArticle(id)
             });

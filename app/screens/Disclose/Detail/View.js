@@ -409,10 +409,10 @@ class Page extends Component {
         // todo 国际化
         ActionSheet.show(
             {
-                options: ['取消', '删除'],
+                options: [i18n.t('cancel'), i18n.t('delete')],
                 cancelButtonIndex: 0,
                 destructiveButtonIndex: 1,
-                title: "是否删除该爆料"
+                title: i18n.t('delete_disclose_confirm')
             },
             buttonIndex => {
                 if (buttonIndex === 1) {

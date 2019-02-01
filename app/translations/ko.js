@@ -21,8 +21,8 @@ export default {
         email: '이메일',
         password: '비밀번호',
         re_password: '비밀번호 재확인',
-        license: '회원가입을 클릭하면 서비스 약관, 개인정보 처리방침에 동의하게 됩니다',
-        license_link: '이용 약관',
+        license1: '개인정보 처리방침',
+        license2: '동의',
         register: '회원가입',
         go_login: '로그인',
 

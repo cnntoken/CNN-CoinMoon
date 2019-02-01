@@ -27,6 +27,7 @@ import OthersHome from '../screens/Mine/OthersHome';
 import Login from '../screens/Auth/Login';
 import Register from '../screens/Auth/Register';
 import Verify from '../screens/Auth/Verify';
+import Policy from '../screens/Auth/Policy';
 
 
 const TabNavigator = createBottomTabNavigator({
@@ -187,6 +188,13 @@ const AuthStack = createStackNavigator({
             gesturesEnabled: false
         }
     },
+    Policy: {
+        screen: Policy,
+        navigationOptions: {
+            header: null,
+            gesturesEnabled: false
+        }
+    }
 });
 
 const RNApp = createAppContainer(

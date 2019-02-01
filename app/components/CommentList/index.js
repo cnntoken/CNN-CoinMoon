@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import styles from './styles';
+import i18n from 'app/i18n'
 import {
     Button,
     Left,
@@ -58,10 +59,10 @@ class CommentList extends Component {
         console.log(item);
         ActionSheet.show(
             {
-                options: ['取消', '删除'],
+                options: [i18n.t('cancel'), i18n.t('delete')],
                 cancelButtonIndex: 0,
                 destructiveButtonIndex: 1,
-                title: "是否删除该评论"
+                title: i18n.t('delete_comment_confirm')
             },
             buttonIndex => {
                 if (buttonIndex === 1) {
@@ -129,7 +130,7 @@ class CommentList extends Component {
         let loadMoreBtn = !loadedAllData ?
             <Button style={styles.loadmore_btn} block transparent light
                     onPress={this.loadMore.bind(this, data)}>
-                <Text style={styles.loadmore_btn_text}>加载更多评论</Text>
+                <Text style={styles.loadmore_btn_text}>{i18n.t('loadmore_comments')}</Text>
             </Button> : null;
 
 
@@ -137,8 +138,7 @@ class CommentList extends Component {
         return (<View>
             {/*评论头部*/}
             <View style={styles.comments_header}>
-                {/*<Text style={styles.comments_header_text}>所有评论({comments.length})</Text>*/}
-                <Text style={styles.comments_header_text}>所有评论</Text>
+                <Text style={styles.comments_header_text}>{i18n.t('allComments')}</Text>
             </View>
             {/*评论列表*/}
             {
@@ -148,7 +148,7 @@ class CommentList extends Component {
                         color: '#666666',
                         fontSize: 14,
                         lineHeight: 17
-                    }}>暂无评论~</Text></View> :
+                    }}>{i18n.t('no_comment')}</Text></View> :
                     <List
                         dataArray={comments}
                         renderRow={(item, idx) => {
@@ -201,7 +201,7 @@ class CommentList extends Component {
                                                         source={require('app/images/icon_comment_small.png')}/>
                                                 </Col>
                                                 <Col>
-                                                    <Text style={styles.comments_btn_text}>回复评论</Text>
+                                                    <Text style={styles.comments_btn_text}>{i18n.t('reply_comment')}</Text>
                                                 </Col>
                                             </Grid>
                                         </Button>
@@ -216,7 +216,7 @@ class CommentList extends Component {
                                                     }
                                                 </Col>
                                                 <Col>
-                                                    <Text style={styles.comments_btn_text}>赞评论</Text>
+                                                    <Text style={styles.comments_btn_text}>{i18n.t('like_comment')}</Text>
                                                 </Col>
                                             </Grid>
                                         </Button>
@@ -226,7 +226,7 @@ class CommentList extends Component {
                                                 onPress={this.deleteComment.bind(this, item)}>
                                             <Grid style={styles.comments_btn_comment}>
                                                 <Col>
-                                                    <Text style={styles.comments_btn_text}>删除评论</Text>
+                                                    <Text style={styles.comments_btn_text}>{i18n.t('delete_comment')}</Text>
                                                 </Col>
                                             </Grid>
                                         </Button>
@@ -243,19 +243,7 @@ class CommentList extends Component {
                 {loadMoreing ? <Spinner size={'small'} color={'#408EF5'}/> : loadMoreBtn}
             </Grid>
 
-            {/*************删除确认弹框modal***************/}
-            {/*<Modal isVisible={this.state.isModalVisible}>*/}
-            {/*<View>*/}
-            {/*<Button style={styles.modal_btn} block transparent light*/}
-            {/*onPress={this.confirmDelete}>*/}
-            {/*<Text style={styles.modal_btn_del_text}>删除</Text>*/}
-            {/*</Button>*/}
-            {/*<Button style={styles.modal_btn} block transparent light*/}
-            {/*onPress={this.cancelDelete}>*/}
-            {/*<Text style={styles.modal_btn_calcel_text}>取消</Text>*/}
-            {/*</Button>*/}
-            {/*</View>*/}
-            {/*</Modal>*/}
+
         </View>)
     }
 }

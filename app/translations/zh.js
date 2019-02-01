@@ -108,13 +108,12 @@ export default {
         publish: '发布'
     },
 
-//     新添加
+////////新添加
     logging: '正在登录, 请稍后!',
     go_verify: '去验证',
     cancel: '取消',
     login_ok:'登陆成功',
     edit_info:'编辑信息',
-
     username:'用户名',
     save:'保存',
     edit_ok:'修改成功',
@@ -122,9 +121,20 @@ export default {
     confirm_logout:'确认退出登录',
     settting:'设置',
     account:'账户',
-    logout:'退出登录'
+    logout:'退出登录',
+    allComments:'所有评论',
+    no_comment:'暂无评论',
+    reply_comment:'回复评论',
+    like_comment:'赞评论',
+    delete_comment:'删除评论',
+    loadmore_comments:'加载更多评论',
+    delete:"删除",
+    delete_disclose_confirm:'是否删除该爆料',
+    delete_comment_confirm:'是否删除该评论',
+    no_access_photo :' Cannot access images. Please allow access if you want to be able to select images.'
 
-    
+
+
 
 
 }

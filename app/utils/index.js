@@ -40,9 +40,9 @@ export function getNumByUserId(userId) {
 export function formatDate(date) {
     let time = '';
     if (moment(new Date()).isSame(date, 'day')) {
-        time = moment(date).format('HH:MM')
+        time = moment(date).format('HH:mm')
     } else {
-        time = moment(date).format('YYYY-MM-DD HH:MM')
+        time = moment(date).format('YYYY-MM-DD HH:mm')
     }
     return time;
 }
