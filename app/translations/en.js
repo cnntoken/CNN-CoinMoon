@@ -51,11 +51,11 @@ export default {
         loginout_ok: '로그아웃 하였습니다',
         loginout_fail: '로그아웃 실패',
         
-        loging: '正在登录,请稍后...',
-        login_success: '登录成功',
-        login_fail: '登录失败',
-        not_verify_message: '您还没有验证',
-        go_verify: '去验证'
+        loging: '로그인 중입니다',
+        login_success: '로그인 되었습니다',
+        login_fail: '로그인 실패',
+        not_verify_message: '아직 인증되지 않았습니다',
+        go_verify: '인증하기'
 
     },
     page_verify: {

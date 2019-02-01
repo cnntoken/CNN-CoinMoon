@@ -47,7 +47,13 @@ export default {
         login: '로그인',
         email_register: '회원가입',
         loginout_ok: '로그아웃 하였습니다',
-        loginout_fail: '로그아웃 실패'
+        loginout_fail: '로그아웃 실패',
+
+        loging: '로그인 중입니다',
+        login_success: '로그인 되었습니다',
+        login_fail: '로그인 실패',
+        not_verify_message: '아직 인증되지 않았습니다',
+        go_verify: '인증하기'
     },
     page_verify: {
         email_verify: '이메일 인증',

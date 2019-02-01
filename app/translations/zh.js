@@ -48,7 +48,13 @@ export default {
         login: '登录',
         email_register: '邮箱注册',
         loginout_ok: 'logout ok',
-        loginout_fail: 'logout fail'
+        loginout_fail: 'logout fail',
+
+        loging: '正在登录,请稍后',
+        login_success: '登录成功',
+        login_fail: '登录失败',
+        not_verify_message: '您还没有验证',
+        go_verify: '去验证'
     },
     page_verify: {
         email_verify: '验证邮箱',
