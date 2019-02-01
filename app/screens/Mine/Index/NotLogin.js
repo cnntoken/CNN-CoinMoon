@@ -7,7 +7,7 @@ import {
 } from "native-base";
 import {StyleSheet, Image} from 'react-native';
 import NavigationService from 'app/navigation/NavigationService'
-
+import i18n from "app/i18n";
 const styles = StyleSheet.create({
     head: {
         height: 119,
@@ -49,7 +49,7 @@ class ViewControl extends Component {
                 </View>
                 <View style={styles.loginBox}>
                     <Button primary style={styles.btn} onPress={this.goLogin}>
-                        <Text>请登录</Text>
+                        <Text>{i18n.t('label_please_login')}</Text>
                     </Button>
                 </View>
             </Container>

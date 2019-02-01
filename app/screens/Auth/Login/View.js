@@ -51,7 +51,7 @@ class ViewControl extends Component {
         }
         const {info} = this.state;
         // todo 国际化
-        $toast('正在登录, 请稍后!!!');
+        $toast(i18n.t('logging'));
         this.props.onLogin({email: info.email, password: info.password}, (e) => {
             if (e) {
                 if (e.code === 'UserNotConfirmedException') {
@@ -59,8 +59,8 @@ class ViewControl extends Component {
                         'Notice',
                         e.message,
                         [
-                            {text: '去验证', onPress: () => this.goVerify(info.email)},
-                            {text: '取消', onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
+                            {text: i18n.t('go_verify'), onPress: () => this.goVerify(info.email)},
+                            {text: i18n.t('cancel'), onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
                         ],
                         {cancelable: false}
                     )
@@ -69,7 +69,7 @@ class ViewControl extends Component {
                 }
             } else {
                 // todo 国际化
-                $toast('登录成功');
+                $toast(i18n.t('login_ok'));
                 let prevState = this.props.navigation.getParam('prevState');
                 if (prevState) {
                     this.props.navigation.navigate(prevState.routeName, prevState.params)

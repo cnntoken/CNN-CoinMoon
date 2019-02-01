@@ -89,7 +89,7 @@ export default {
         refreshControlNormalText: '下拉刷新', // 正常状态
         refreshControlPrepareText: '松开加载', // 达到临界值, 松开即可触发刷新
         refreshControlLoadingText: '正在加载中...', // 加载中状态
-        
+
         // 爆料详情
         delete: '删除',
         deleteOk: '删除成功！',
@@ -97,7 +97,7 @@ export default {
 
         needLoginForPublish: '需要登录才能发布',
 
-        publishing:'发布中...'
+        publishing: '发布中...'
 
 
     },
@@ -106,5 +106,25 @@ export default {
         tooLong: '最多只能输入1000个字符',
         isNull: '输入内容不能为空',
         publish: '发布'
-    }
+    },
+
+//     新添加
+    logging: '正在登录, 请稍后!',
+    go_verify: '去验证',
+    cancel: '取消',
+    login_ok:'登陆成功',
+    edit_info:'编辑信息',
+
+    username:'用户名',
+    save:'保存',
+    edit_ok:'修改成功',
+    exit:'退出',
+    confirm_logout:'确认退出登录',
+    settting:'设置',
+    account:'账户',
+    logout:'退出登录'
+
+    
+
+
 }

@@ -411,7 +411,7 @@ class ViewControl extends Component {
                             nickname: userInfo.attributes.nickname
                         }} big/>
                         {isMine ? <Button transparent onPress={this.goEdit}>
-                            <Text>编辑信息</Text>
+                            <Text>{i18n.t('edit_info')}</Text>
                         </Button> : null}
                     </View>
                 )}
@@ -460,10 +460,10 @@ class ViewControl extends Component {
                     onHeaderRefresh={this.handleRefresh}
                     onFooterRefresh={this.handleLoadMore}
                     // 可选
-                    footerRefreshingText='玩命加载中....'
-                    footerFailureText='我擦嘞，居然失败了 =.=!'
-                    footerNoMoreDataText='-我是有底线的-'
-                    footerEmptyDataText='-好像什么东西都没有-'
+                    footerRefreshingText={i18n.t('disclose.footerRefreshingText')}
+                    footerFailureText={i18n.t('disclose.footerFailureText')}
+                    footerNoMoreDataText={i18n.t('disclose.footerNoMoreDataText')}
+                    footerEmptyDataText={i18n.t('disclose.footerEmptyDataText')}
                 /> : <ScrollView><Spinner size={'small'} color={'#408EF5'}/></ScrollView>}
             </AnimatedHeader>
         );

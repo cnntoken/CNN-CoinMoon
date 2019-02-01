@@ -13,6 +13,8 @@ import {
 } from "native-base";
 
 import Spinner from 'react-native-loading-spinner-overlay';
+// import Permissions from 'react-native-permissions'
+
 import {View, Image, DeviceEventEmitter, TouchableWithoutFeedback} from 'react-native';
 
 import ImagePicker from 'react-native-image-crop-picker';
@@ -55,6 +57,12 @@ class Screen extends Component {
         // 直接调用相册
         try {
 
+            // Permissions.check('photo').then(response => {
+            //     debugger;
+            //     // Response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
+            //     this.setState({ photoPermission: response })
+            // });
+
             let length = this.state.images.length;
             ImagePicker.openPicker({
                 multiple: true,
@@ -76,6 +84,8 @@ class Screen extends Component {
                 //     images: [...images, btn_img_soruce]
                 // });
                 this.setState({});
+            }).catch((e) => {
+                $toast('Cannot access images. Please allow access if you want to be able to select images.');
             });
         } catch (e) {
             console.log(e);

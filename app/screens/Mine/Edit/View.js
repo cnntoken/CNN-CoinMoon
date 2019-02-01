@@ -16,6 +16,7 @@ import InputFocus from 'app/components/InputFocus';
 import userService from 'app/services/user';
 import styles from './styles';
 import {$toast} from 'app/utils';
+import i18n from 'app/i18n';
 // import * as Types from 'app/actions/types'
 import ImagePicker from 'react-native-image-crop-picker';
 
@@ -67,8 +68,7 @@ class ViewControl extends PureComponent {
                     }
                 }
                 const res = await userService.updateAttributes(obj);
-                // TODO 国际化
-                $toast('修改成功!');
+                $toast(i18n.t('edit_ok'));
                 this.setState({
                     image: null
                 });
@@ -136,11 +136,11 @@ class ViewControl extends PureComponent {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.infobox}>
-                        <Label style={styles.label}>用户名</Label>
+                        <Label style={styles.label}>{i18n.t('username')}</Label>
                         <InputFocus onChangeText={this.onChangeNickName} value={nick_name} style={styles.input}/>
                     </View>
                     <Button block full rounded style={styles.btn} onPress={this.onSubmit}>
-                        <Text>保 存</Text>
+                        <Text>{i18n.t('save')}</Text>
                     </Button>
                 </Content>
             </Container>
