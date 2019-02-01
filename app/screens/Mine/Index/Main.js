@@ -249,7 +249,7 @@ class ViewControl extends Component {
             refreshState: RefreshState.HeaderRefreshing
         });
         // let userId = this.props.navigation.getParam('id') || this.props.user.id;
-        this.getList(this.state.userId, this.state.Items.length, null, true, false);
+        this.getList(10, null, true, false);
     };
 
     // 上拉加载更多
@@ -280,6 +280,7 @@ class ViewControl extends Component {
             },
             callback: (data) => {
                 let {Items, LastEvaluatedKey} = data;
+                console.log("user disolose",Items);
                 Items.forEach((item) => {
                     let avatarType = getNumByUserId(item.userId || 0);
                     item.source = avatars[avatarType % 5];
@@ -294,7 +295,7 @@ class ViewControl extends Component {
                 else if (loadmore) {
                     list = uniqueById([...this.state.Items, ...Items]);
                 } else {
-                    list = Items;
+                    list = uniqueById(Items);
                 }
                 this.setState({
                     Items: list,

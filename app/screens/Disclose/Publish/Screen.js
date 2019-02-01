@@ -15,7 +15,7 @@ import {
 import Spinner from 'react-native-loading-spinner-overlay';
 // import Permissions from 'react-native-permissions'
 
-import {View, Image, DeviceEventEmitter, TouchableWithoutFeedback} from 'react-native';
+import {View, Image, DeviceEventEmitter, TouchableOpacity} from 'react-native';
 
 import ImagePicker from 'react-native-image-crop-picker';
 
@@ -85,7 +85,9 @@ class Screen extends Component {
                 // });
                 this.setState({});
             }).catch((e) => {
-                $toast(i18n.t('no_access_photo'));
+                if (e && e.code === 'E_PERMISSION_MISSING') {
+                    $toast(i18n.t('no_access_photo'));
+                }
             });
         } catch (e) {
             console.log(e);
@@ -341,20 +343,21 @@ class Screen extends Component {
                                         {
                                             index !== images.length - 1 ?
                                                 <View style={styles.item}>
-                                                    <Button onPress={this.previewImage.bind(this, item, index)}>
+                                                    <TouchableOpacity
+                                                        onPress={this.previewImage.bind(this, item, index)}>
                                                         <Image style={styles.itemImg} source={{uri: item.dataurl}}/>
-                                                    </Button>
-                                                    < Button small onPress={this.delImage.bind(this, item, index)}
-                                                             transparent
-                                                             style={styles.delBtn}>
+                                                    </TouchableOpacity>
+                                                    < TouchableOpacity onPress={this.delImage.bind(this, item, index)}
+                                                                       transparent
+                                                                       style={styles.delBtn}>
                                                         <Image style={styles.delIcon}
                                                                source={require('app/images/icon_delete_small.png')}/>
-                                                    </Button>
+                                                    </TouchableOpacity>
                                                 </View> :
                                                 <View style={styles.item}>
-                                                    <Button onPress={this.addImage.bind(this, item, index)}>
+                                                    <TouchableOpacity onPress={this.addImage.bind(this, item, index)}>
                                                         <Image style={styles.itemImg} source={item.dataurl}/>
-                                                    </Button>
+                                                    </TouchableOpacity>
                                                 </View>
                                         }
                                     </View>

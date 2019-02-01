@@ -644,7 +644,7 @@ class Page extends Component {
                                                     <View>
                                                         <Image
                                                             source={require('app/images/icon_comment_big.png')}/>
-                                                        <Text style={styles.btns_text}>{data.commentsNum}</Text>
+                                                        <Text style={styles.btns_text}>{data.commentsNum || comments.length}</Text>
                                                     </View>
                                                 </Button>
                                             </View>
@@ -660,7 +660,7 @@ class Page extends Component {
                                                                 <Image
                                                                     source={require('app/images/icon_liked_big.png')}/>
                                                         }
-                                                        <Text style={styles.btns_text}>{data.likeNum || comments.length}</Text>
+                                                        <Text style={styles.btns_text}>{data.likeNum}</Text>
                                                     </View>
                                                 </Button>
                                             </View>

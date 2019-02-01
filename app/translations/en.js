@@ -21,10 +21,8 @@ export default {
         email: '이메일',
         password: '비밀번호',
         re_password: '비밀번호 재확인',
-        
         license1: '개인정보 처리방침',
         license2: '동의',
-
         register: '회원가입',
         go_login: '로그인',
 
@@ -50,13 +48,12 @@ export default {
         email_register: '회원가입',
         loginout_ok: '로그아웃 하였습니다',
         loginout_fail: '로그아웃 실패',
-        
+
         loging: '로그인 중입니다',
         login_success: '로그인 되었습니다',
         login_fail: '로그인 실패',
         not_verify_message: '아직 인증되지 않았습니다',
         go_verify: '인증하기'
-
     },
     page_verify: {
         email_verify: '이메일 인증',
@@ -115,5 +112,36 @@ export default {
         tooLong: '최대 500자 입력 가능합니다',
         isNull: '내용을 입력하여 주세요',
         publish: '등록'
-    }
+    },
+
+
+    //////// 新添加
+    //////// 新添加
+    logging: '로그인 중입니다',
+    go_verify: '인증하기',
+    cancel: '취소',
+    login_ok: '로그인 되었습니다',
+    edit_info: '프로필 편집',
+    username: '닉네임',
+    save: '저장',
+    edit_ok: '변경되었습니다',
+    exit: '로그아웃',
+    confirm_logout: '로그아웃 확인',
+    settting: '설정',
+    account: '계정',
+    logout: '로그아웃',
+    allComments: '전체 댓글',
+    no_comment: 'no comment',
+    reply_comment: '댓글',
+    like_comment: '추천',
+    delete_comment: '삭제',
+    loadmore_comments: '댓글 더 보기',
+    delete: "삭제",
+    delete_disclose_confirm: '풍문 게시글 삭제',
+    delete_comment_confirm: '댓글 삭제',
+    no_access_photo: '이미지를 선택하려면 이미지에 접근 권한을 부여하시길 바랍니다.',
+
+    valid_user_isnull: '닉네임을 입력하셔야 합니다',
+    tooimages:'최대한 9장 이미지 추가',
+    firstEntryDisclose:'풍문 게시판에서 게시물을 올리거나 댓글을 다는 활동 등은 모두 익명으로 진행됩니다.'
 }

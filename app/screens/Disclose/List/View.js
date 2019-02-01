@@ -200,6 +200,7 @@ class Screen extends Component {
      * @param loadmore     加载更多
      * */
     getList = (limit, LastEvaluatedKey, refresh, loadmore) => {
+
         this.props.getList({
             params: {
                 limit: limit || 10,
@@ -210,7 +211,6 @@ class Screen extends Component {
                 let {Items, LastEvaluatedKey} = data;
 
                 Items.forEach((item) => {
-                    console.log(item.updatedAt,new Date(item.updatedAt).valueOf());
                     let avatarType = getNumByUserId(item.userId);
                     item.source = avatars[avatarType % 5];
                     item.userName = i18n.t('disclose.anonymous');
@@ -224,7 +224,7 @@ class Screen extends Component {
                 else if (loadmore) {
                     list = uniqueById([...this.state.Items, ...Items]);
                 } else {
-                    list = Items;
+                    list = uniqueById(Items);
                 }
                 this.setState({
                     Items: list,
