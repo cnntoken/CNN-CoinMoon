@@ -11,6 +11,7 @@ export default class List extends PureComponent{
             refreshing: false,
             loadingText: '下拉刷新'
         }
+        this.busy = false;
     }
     _onLoadMore = ()=>{
         if(!this.props.hasMore || this.state.refreshing || this.loadingMore){

@@ -2,7 +2,9 @@ import React, {Component} from 'react';
 
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ListTabBar from './components/ListTabBar'
-import List from './components/List'
+// import List from './components/List'
+// import RefreshList from 'app/components/RefreshListView/index2'
+import RefreshListView, {RefreshState} from 'app/components/RefreshListView/index2';
 import Item from './components/Item'
 import i18n from 'app/i18n';
 
@@ -12,22 +14,51 @@ class ViewControl extends Component {
         super(props);
         this.state = {
             pageIndex: 0,
+            info: {
+                refreshState: RefreshState.Idle
+            },
+            news: {
+                refreshState: RefreshState.Idle
+            }
         };
         this.LastEvaluatedKey = {}
     }
 
     onRefresh = (category, params) => {
+        this.setState({
+            [category]: {
+                refreshState: RefreshState.HeaderRefreshing
+            }
+        })
         this.props.getList({
-                isRefresh: true, category, params: {
-                    userId: this.props.userId
+            isRefresh: true, 
+            category, 
+            params: {
+                userId: this.props.userId
+            }
+        },
+        (LastEvaluatedKey) => {
+            this.setState({
+                [category]: {
+                    refreshState: LastEvaluatedKey ? RefreshState.Idle : RefreshState.NoMoreData
                 }
-            },
-            (LastEvaluatedKey) => {
-                this.LastEvaluatedKey[category] = LastEvaluatedKey;
             })
+            this.LastEvaluatedKey[category] = LastEvaluatedKey;
+        },()=>{
+            this.setState({
+                [category]: {
+                    refreshState: RefreshState.Failure
+                }
+            })
+        })
     };
     onLoadMore = (category, params) => {
         // console.log('onloadmore', params)
+        this.setState({
+            [category]: {
+                refreshState: RefreshState.FooterRefreshing
+            }
+        })
         this.props.getList({
                 category,
                 params: {
@@ -36,7 +67,18 @@ class ViewControl extends Component {
                 }
             },
             (LastEvaluatedKey) => {
+                this.setState({
+                    [category]: {
+                        refreshState: LastEvaluatedKey ? RefreshState.Idle : RefreshState.NoMoreData
+                    }
+                })
                 this.LastEvaluatedKey[category] = LastEvaluatedKey;
+            },()=>{
+                this.setState({
+                    [category]: {
+                        refreshState: RefreshState.Failure
+                    }
+                })
             })
     };
 
@@ -90,11 +132,6 @@ class ViewControl extends Component {
             }
         });
     };
-    onChangeTab = (index) => {
-        this.setState({
-            pageIndex: index
-        })
-    };
 
     render() {
         return (
@@ -102,29 +139,47 @@ class ViewControl extends Component {
                 initialPage={this.state.pageIndex}
                 renderTabBar={() => <ListTabBar/>}
             >
-                <List
+                <RefreshListView
                     tabLabel={i18n.t('page_main.category_news')}
                     data={this.props.news}
+                    refreshState={this.state.news.refreshState}
                     renderItem={(...args)=>this.renderItem('news',...args)}
-                    hasMore={this.props.news_hasMore}
-                    onRefresh={(...args) => {
+                    onHeaderRefresh={(...args) => {
                         this.onRefresh('news', ...args)
                     }}
-                    onLoadMore={(...args) => {
+                    onFooterRefresh={(...args) => {
                         this.onLoadMore('news', ...args)
                     }}
+
+                    // 可选
+                    footerRefreshingText={i18n.t('disclose.footerRefreshingText')}
+                    footerFailureText={i18n.t('disclose.footerFailureText')}
+                    footerNoMoreDataText={i18n.t('disclose.footerNoMoreDataText')}
+                    footerEmptyDataText={i18n.t('disclose.footerEmptyDataText')}
+
+
+
+                    refreshControlNormalText={i18n.t('disclose.refreshControlNormalText')}
+                    refreshControlPrepareText={i18n.t('disclose.refreshControlPrepareText')}
+                    refreshControlLoadingText={i18n.t('disclose.refreshControlLoadingText')}
                 />
-                <List
+                <RefreshListView
                     tabLabel={i18n.t('page_main.category_info')}
                     data={this.props.info}
+                    refreshState={this.state.info.refreshState}
                     renderItem={(...args)=>this.renderItem('info',...args)}
-                    hasMore={this.props.info_hasMore}
-                    onRefresh={(...args) => {
+                    onHeaderRefresh={(...args) => {
                         this.onRefresh('info', ...args)
                     }}
-                    onLoadMore={(...args) => {
+                    onFooterRefresh={(...args) => {
                         this.onLoadMore('info', ...args)
                     }}
+
+                    // 可选
+                    footerRefreshingText={i18n.t('disclose.footerRefreshingText')}
+                    footerFailureText={i18n.t('disclose.footerFailureText')}
+                    footerNoMoreDataText={i18n.t('disclose.footerNoMoreDataText')}
+                    footerEmptyDataText={i18n.t('disclose.footerEmptyDataText')}
                 />
             </ScrollableTabView>
         );

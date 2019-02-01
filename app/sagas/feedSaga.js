@@ -5,22 +5,24 @@ import * as services from '../services/feed';
 // import * as feedActions from '../actions/feedActions';
 
 // 获取列表
-export function* getList({payload, callback}) {
+export function* getList({payload,onSuccess, onFail}) {
     const {isRefresh, category, params} = payload;
+
     console.log('is refresh', isRefresh, category, params)
     try {
         const res = yield call(services.getlist, category, params);
         const list = res.Items;
-        const hasMore = res.LastEvaluatedKey ? true : false;
+        // const hasMore = res.LastEvaluatedKey ? true : false;
         if (isRefresh) {
-            yield put({type: Types.FEED_PREPEND_LIST, category, list, hasMore});
+            yield put({type: Types.FEED_PREPEND_LIST, category, list});
         } else {
-            yield put({type: Types.FEED_APPEND_LIST, category, list, hasMore});
+            yield put({type: Types.FEED_APPEND_LIST, category, list});
         }
-        callback && callback(res.LastEvaluatedKey)
+        onSuccess && onSuccess(res.LastEvaluatedKey)
     } catch (e) {
+        onFail && onFail()
         console.log(e);
-        $toast(`getList fail`);
+        // $toast(`getList fail`);
     }
 }
 
@@ -48,20 +50,20 @@ const getDetailFromStateByIdAndCategory = (id, category) => {
 };
 
 // 获取详情
-export function* getDetail({payload, callback}) {
+export function* getDetail({payload, onSuccess}) {
     const {id, category, userId} = payload;
-    // const info = yield select(getDetailFromStateByIdAndCategory(id, category));
-    // if (info) {
-    //     callback && callback(info);
-    //     return false;
-    // }
-    try {
-        const res = yield call(services.getFeedDetail, id, userId);
-        callback && callback(res);
-    } catch (e) {
-        $toast(`getDiscloseDetail fail: ${e.message}`);
-        // callback && callback(e);
+    const info = yield select(getDetailFromStateByIdAndCategory(id, category));
+    if (info) {
+        onSuccess && onSuccess(info);
+        return false;
     }
+    // try {
+    //     const res = yield call(services.getFeedDetail, id, userId);
+    //     onSuccess && onSuccess(res);
+    // } catch (e) {
+    //     $toast(`getDiscloseDetail fail: ${e.message}`);
+    //     // callback && callback(e);
+    // }
 }
 
 

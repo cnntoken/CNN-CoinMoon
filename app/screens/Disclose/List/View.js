@@ -12,7 +12,7 @@ import Modal from 'react-native-modal';
 
 import i18n from 'app/i18n';
 import avatars from 'app/services/constants'
-import RefreshListView, {RefreshState} from 'app/components/RefreshListView';
+import RefreshListView, {RefreshState} from 'app/components/RefreshListView/index2';
 
 
 import Storage from 'react-native-storage';
@@ -351,6 +351,11 @@ class Screen extends Component {
                     footerFailureText={i18n.t('disclose.footerFailureText')}
                     footerNoMoreDataText={i18n.t('disclose.footerNoMoreDataText')}
                     footerEmptyDataText={i18n.t('disclose.footerEmptyDataText')}
+
+
+                    refreshControlNormalText={i18n.t('disclose.refreshControlNormalText')}
+                    refreshControlPrepareText={i18n.t('disclose.refreshControlPrepareText')}
+                    refreshControlLoadingText={i18n.t('disclose.refreshControlLoadingText')}
 
                 /> : <Content><Spinner size={'small'} color={'#408EF5'}/></Content>
 

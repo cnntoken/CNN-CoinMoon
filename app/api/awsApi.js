@@ -27,8 +27,8 @@ const $API = (method, url, config)=>{
 export const $get = (url, params = {}) => {
     const config = getBaseConfig();
     config.queryStringParameters = {params: JSON.stringify(params)};
-    // console.log('=========== aws api get config ==============')
-    // console.log(config)
+    console.log('=========== aws api get config ==============');
+    console.log(config);
     return $API('get', url, config)
 };
 

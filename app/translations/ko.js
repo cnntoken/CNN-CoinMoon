@@ -85,6 +85,11 @@ export default {
         footerNoMoreDataText: '-구분선-',
         footerEmptyDataText: '-아무것도 없네요-',
 
+
+        refreshControlNormalText: '아래로 당기시면 새로고침', // 正常状态
+        refreshControlPrepareText: '손을 놓으시면 로딩', // 达到临界值, 松开即可触发刷新
+        refreshControlLoadingText: '로딩중', // 加载中状态
+        
         // 爆料详情
         delete: '삭제',
         deleteOk: '삭제 성공！',
