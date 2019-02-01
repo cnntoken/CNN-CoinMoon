@@ -460,7 +460,7 @@ class Page extends Component {
                 userId: this.props.user.id,
                 actionType: 3,  // 查看
                 objectType: 3,   // 爆料
-                actionValue: 1
+                actionValue: true
             }
         });
     };

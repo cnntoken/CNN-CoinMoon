@@ -46,3 +46,7 @@ export function formatDate(date) {
     }
     return time;
 }
+
+export function cloneByJson(data) {
+    return JSON.parse(JSON.stringify(data));
+}

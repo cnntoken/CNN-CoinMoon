@@ -16,7 +16,7 @@ import WebContent from './components/WebContent';
 import IconText from 'app/components/IconText';
 import FooterInput from 'app/components/FooterInput';
 import CommentList from 'app/components/CommentList';
-import {$toast, getNumByUserId} from 'app/utils';
+import {$toast, getNumByUserId, cloneByJson} from 'app/utils';
 import i18n from 'app/i18n';
 import avatars from "../../../services/constants";
 
@@ -74,10 +74,10 @@ class ViewControl extends Component {
             source: this.props.user && this.props.user.picture ? {uri: this.props.user.picture} : require('app/images/avatar_default.png')
         }));
         this.setState({
-            info:{...info},
-            comments: [...this.state.comments],
+            info: {...info},
+            comments: cloneByJson(this.state.comments),
             placeholder: ''
-        },()=>{
+        }, () => {
             this.changePropertiesInList();
         });
     };
@@ -175,7 +175,7 @@ class ViewControl extends Component {
                     item.source = item.user && item.user.picture ? {uri: item.user.picture} : require('app/images/avatar_default.png');
                 });
                 this.setState({
-                    comments: [...comments, ...Items],
+                    comments: cloneByJson([...comments, ...Items]),
                     LastEvaluatedKey: LastEvaluatedKey,
                     loadMoreing: false,
                     activeComment: null
@@ -233,13 +233,12 @@ class ViewControl extends Component {
         this.setState({
             info: {...info},
             activeComment: null,
-            comments: [...this.state.comments]
-        },()=>{
+            comments: cloneByJson(this.state.comments)
+        }, () => {
             this.props.deleteComment({
                 id: item._id,
                 callback: (data) => {
                     if (fn) fn();
-
                     this.changePropertiesInList();
                 }
             });
@@ -270,7 +269,7 @@ class ViewControl extends Component {
         item.userAction.actionValue = !actionValue;
         item.likeNum = !actionValue ? Number(item.likeNum) + 1 : Number(item.likeNum) - 1;
         this.setState({
-            comments: [...this.state.comments]
+            comments: cloneByJson(this.state.comments)
         });
         // 更新用户对该资源的行为数据
         this.props.updateAction({
@@ -305,7 +304,7 @@ class ViewControl extends Component {
         info.userAction.actionValue = !actionValue;
         info.likeNum = !actionValue ? info.likeNum + 1 : info.likeNum - 1;
 
-        this.setState({},()=>{
+        this.setState({}, () => {
             // 查询用户对该资源的行为数据
             this.props.updateAction({
                 _id: info.userAction._id,
@@ -337,7 +336,7 @@ class ViewControl extends Component {
         const {info} = this.state;
         info.viewNum++;
         this.props.updateAction({
-            info:{...info},
+            info: {...info},
             obj: {
                 objectId: id,
                 userId: this.props.userInfo.id,
@@ -346,11 +345,11 @@ class ViewControl extends Component {
                 actionValue: true
             },
             callback: () => {
-               this.changePropertiesInList()
+                this.changePropertiesInList()
             }
         });
     };
-    changePropertiesInList = ()=>{
+    changePropertiesInList = () => {
         const {navigation} = this.props;
         const category = navigation.getParam('category');
         const {info} = this.state;
@@ -365,6 +364,7 @@ class ViewControl extends Component {
             }
         });
     }
+
     componentDidMount() {
         const {navigation} = this.props;
         const id = navigation.getParam('_id');
