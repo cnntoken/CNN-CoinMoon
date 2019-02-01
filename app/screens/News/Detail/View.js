@@ -9,7 +9,7 @@ import {
     Left,
     Spinner
 } from 'native-base';
-import {Image, View, DeviceEventEmitter} from 'react-native';
+import {Image, View, DeviceEventEmitter,Linking,TouchableWithoutFeedback} from 'react-native';
 import styles from './styles';
 import moment from 'moment';
 import WebContent from './components/WebContent';
@@ -375,7 +375,19 @@ class ViewControl extends Component {
             }
         });
     }
-
+    openSource = ()=>{
+        const {info} = this.state;
+        const url = info.sourceUrl
+        Linking.canOpenURL(url)
+        .then((supported) => {
+            if (!supported) {
+            console.log("Can't handle url: " + url);
+            } else {
+                return Linking.openURL(url);
+            }
+        })
+        .catch((err) => console.error('An error occurred', err));  
+    }
     componentDidMount() {
         const {navigation} = this.props;
         const id = navigation.getParam('_id');
@@ -407,7 +419,12 @@ class ViewControl extends Component {
                                     <Text style={styles.ctime}>{info.updatedAt}</Text>
                                 </View>
                                 <WebContent html={info.content} style={styles.webview} onReady={this.showOperate}/>
-
+                                {this.state.showOperateBox && <View style={styles.source}>
+                                    <Text>{i18n.t('page_news_detail.from')} </Text>
+                                    <TouchableWithoutFeedback onPress={this.openSource}>
+                                        <Text>{info.sourceUrl}</Text>
+                                    </TouchableWithoutFeedback>
+                                </View>}
                                 {this.state.showOperateBox && <View style={styles.viewBox}>
                                     <IconText type='view' text={info.viewNum || comments.length || 0}/>
                                 </View>}

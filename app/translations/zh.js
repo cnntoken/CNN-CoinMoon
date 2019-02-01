@@ -73,6 +73,9 @@ export default {
 
 
     },
+    page_news_detail: {
+        from: '来源'
+    },
     toast: {},
     // i18n.t('disclose.deleteOk')
     disclose: {
