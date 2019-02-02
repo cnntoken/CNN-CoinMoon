@@ -42,9 +42,7 @@ export default class Item extends PureComponent{
                             <Row><Text numberOfLines={3} style={styles.title}>{info.title}</Text></Row>
                         </Grid>
                         {
-                            info.images && info.images.length ?
-                            <Grid style={styles.itemRow}><Row><Image source={{uri: info.images[0]}} style={[styles.image]}/></Row></Grid>
-                            :null
+                            info.cover && <Grid style={styles.itemRow}><Row><Image source={{uri: info.cover}} style={[styles.image]}/></Row></Grid>
                         }
                         <View style={[styles.itemRow,styles.interact]}>
                             <IconText type='view' text={info.viewNum || 0}  onPress={this.clickItem}/>
