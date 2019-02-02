@@ -97,14 +97,16 @@ class ViewControl extends PureComponent {
             ImagePicker.openPicker({
                 // multiple: true,
                 // width: 400,
+                forceJpg: true,
                 compressImageMaxWidth: 400,
                 compressImageMaxHeight: 400,
                 // includeExif: true,
                 includeBase64: true,
-                compressImageQuality: 0.1,
+                compressImageQuality: 0.3,
                 mediaType: 'photo',
                 maxFiles: 1,
             }).then(response => {
+                console.log(response);
                 let image = Object.assign(response, {dataUrl: `data:${response.mime};base64,${response.data}`});
                 this.setState({image: image, needupload: true});
             });

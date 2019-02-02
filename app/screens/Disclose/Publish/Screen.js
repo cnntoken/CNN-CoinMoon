@@ -72,10 +72,11 @@ class Screen extends Component {
                 compressImageMaxHeight: 400,
                 // includeExif: true,
                 includeBase64: true,
-                compressImageQuality: 0.1,
+                compressImageQuality: 0.3,
                 mediaType: 'photo',
                 maxFiles: 10 - length,
             }).then(images => {
+                console.log(images);
                 images.forEach((item) => {
                     item.dataurl = `data:${item.mime};base64,${item.data}`
                 });
