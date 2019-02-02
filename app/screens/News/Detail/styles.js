@@ -15,7 +15,12 @@ const styles = StyleSheet.create({
     source: {
         marginTop: 5,
         flexDirection: 'row',
-        fontSize: 10
+        fontSize: 10,
+        flexWrap: "wrap"
+    },
+    sourceUrl:{
+        flexWrap: 'wrap',
+        textDecorationLine: 'underline'
     },
     title: {
         fontWeight: 'bold',
@@ -44,7 +49,8 @@ const styles = StyleSheet.create({
         color: '#666666'
     },
     webview: {
-        marginTop: 18
+        marginTop: 18,
+        // height: 200,
     },
     viewBox:{
         marginTop: 30

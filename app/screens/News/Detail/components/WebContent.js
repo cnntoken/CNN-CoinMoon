@@ -33,6 +33,13 @@ class WebContent extends PureComponent {
             </head>
             <body>
                 ${content}
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", function(event) {
+                        var height = document.body.scrollHeight;
+                        window.ReactNativeWebView.postMessage(Math.ceil(height).toFixed(0))
+                    });
+                </script>
             </body>
             </html>
         `
@@ -41,13 +48,16 @@ class WebContent extends PureComponent {
         this.setState({
             WebViewHeight: parseInt(event.nativeEvent.data)
         })
-        this.props.onReady && this.props.onReady()
+        if(!this.isReady){
+            this.isReady = true;
+            this.props.onReady && this.props.onReady()
+        }
     }
     webViewLoaded = ()=>{
         this._webview.injectJavaScript(`
             var height = document.body.scrollHeight;
             
-            window.postMessage(Math.ceil(height).toFixed(0))
+            window.ReactNativeWebView.postMessage(Math.ceil(height).toFixed(0))
         `)
     }
     render() {
