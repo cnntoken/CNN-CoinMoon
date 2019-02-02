@@ -292,7 +292,7 @@ class Page extends Component {
         }
 
         this.state.comments.splice(index, 1);
-
+        this.state.data.commentsNum = this.state.comments.length;
         this.setState({
             activeComment: null,
             comments: JSON.parse(JSON.stringify(this.state.comments))
@@ -302,6 +302,7 @@ class Page extends Component {
             id: item._id,
             callback: (data) => {
                 // $toast('删除成功');
+                DeviceEventEmitter.emit('updateDiscloseListData', 'update', this.state.data);
                 if (fn) fn();
             }
         });

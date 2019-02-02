@@ -79,6 +79,7 @@ class ViewControl extends Component {
             placeholder: ''
         }, () => {
             this.changePropertiesInList();
+            DeviceEventEmitter.emit('updateFeedListData', 'update', info);
         });
     };
 
@@ -332,7 +333,7 @@ class ViewControl extends Component {
                         this.setState({});
                     }
                     // 同步点赞数据到列表，防止返回时数据没有更新
-                    this.changePropertiesInList()
+                    this.changePropertiesInList();
                     // this.props.feedLike({
                     //     category: category,
                     //     params: info
@@ -356,7 +357,8 @@ class ViewControl extends Component {
                 actionValue: true
             },
             callback: () => {
-                this.changePropertiesInList()
+                this.changePropertiesInList();
+                DeviceEventEmitter.emit('updateFeedListData', 'update', info);
             }
         });
     };
@@ -386,7 +388,7 @@ class ViewControl extends Component {
                 return Linking.openURL(url);
             }
         })
-        .catch((err) => console.error('An error occurred', err));  
+        .catch((err) => console.error('An error occurred', err));
     }
     componentDidMount() {
         const {navigation} = this.props;
