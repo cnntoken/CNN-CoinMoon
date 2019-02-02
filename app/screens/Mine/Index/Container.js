@@ -6,7 +6,7 @@ import * as disCloseActions from "../../../actions/disCloseActions";
 import * as userAction from "../../../actions/userAction";
 import avatars from "../../../services/constants";
 import {getNumByUserId} from "../../../utils";
-import Page from "../../Disclose/Detail/Container";
+// import Page from "../../Disclose/Detail/Container";
 
 
 function mapStateToProps({userReducer: {info}}) {
@@ -60,7 +60,6 @@ class Container extends Component {
 
     render() {
         const {user = {}} = this.props;
-        console.log("7890");
         if (user && user.id) {
             return <Main {...this.props}/>
         } else {
