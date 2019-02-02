@@ -422,10 +422,7 @@ class ViewControl extends Component {
                                 </View>
                                 <WebContent html={info.content} style={styles.webview} onReady={this.showOperate}/>
                                 {this.state.showOperateBox && <View style={styles.source}>
-                                    <Text>{i18n.t('page_news_detail.from')} </Text>
-                                    <TouchableWithoutFeedback onPress={this.openSource}>
-                                        <Text>{info.sourceUrl}</Text>
-                                    </TouchableWithoutFeedback>
+                                    <Text>{i18n.t('page_news_detail.from')} </Text><Text style={styles.sourceUrl}  onPress={this.openSource}>{info.sourceUrl}</Text>
                                 </View>}
                                 {this.state.showOperateBox && <View style={styles.viewBox}>
                                     <IconText type='view' text={info.viewNum || 0}/>
