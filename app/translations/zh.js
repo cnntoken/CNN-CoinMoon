@@ -146,5 +146,7 @@ export default {
 
     valid_user_isnull: '닉네임을 입력하셔야 합니다',
     tooimages:'최대한 9장 이미지 추가',
-    firstEntryDisclose:'풍문 게시판에서 게시물을 올리거나 댓글을 다는 활동 등은 모두 익명으로 진행됩니다.'
+    firstEntryDisclose:'풍문 게시판에서 게시물을 올리거나 댓글을 다는 활동 등은 모두 익명으로 진행됩니다.',
+
+    upload_fail:'업로드 실패하였습니다. 다시 시도해주세요.'
 }

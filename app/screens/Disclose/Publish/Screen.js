@@ -173,7 +173,7 @@ class Screen extends Component {
             callback: (data) => {
                 // console.log(data);
                 if (data.error) {
-                    $toast('upload fail , pls retry');
+                    $toast(i18n.t('upload_fail'));
                     this.setState({
                         publishing: false
                     });

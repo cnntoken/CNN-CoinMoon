@@ -332,10 +332,13 @@ class Page extends Component {
                 actionValue: false
             }
         }));
+        this.state.data.commentsNum = this.state.comments.length;
         this.setState({
             comments: JSON.parse(JSON.stringify(this.state.comments)),
             placeholder: '',
             activeComment: null,
+        }, () => {
+            DeviceEventEmitter.emit('updateDiscloseListData', 'update', this.state.data);
         });
     };
 
@@ -460,8 +463,13 @@ class Page extends Component {
                 actionType: 3,  // 查看
                 objectType: 3,   // 爆料
                 actionValue: true
+            },
+            callback: (res) => {
+                DeviceEventEmitter.emit('updateDiscloseListData', 'update', this.state.data);
             }
         });
+
+
     };
 
     // 取消删除
@@ -644,7 +652,8 @@ class Page extends Component {
                                                     <View>
                                                         <Image
                                                             source={require('app/images/icon_comment_big.png')}/>
-                                                        <Text style={styles.btns_text}>{data.commentsNum || comments.length}</Text>
+                                                        <Text
+                                                            style={styles.btns_text}>{data.commentsNum || comments.length}</Text>
                                                     </View>
                                                 </Button>
                                             </View>
