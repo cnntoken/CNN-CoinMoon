@@ -85,9 +85,8 @@ class ViewControl extends Component {
         }))
     };
 
-    showLincense = () => {
-        // console.log('show lincense');
-        this.props.navigation.navigate('Policy')
+    showLincense = (policy) => {
+        this.props.navigation.navigate('Policy', {policy});
     };
 
     componentDidMount() {
@@ -133,7 +132,9 @@ class ViewControl extends Component {
                         <View style={{alignItems:'center'}}>
                             <TouchableOpacity style={[styles.licenseBox,styles.text1]} onPress={this.toggleLincense}>
                                 <Image style={styles.agree} source={isAgree ? require('./img/checkbox_checked.png') : require('./img/checkbox_normal.png')} />
-                                <TouchableOpacity onPress={this.showLincense}><Text style={[styles.highlight]}> {i18n.t('page_register.license1')}</Text></TouchableOpacity>
+                                <TouchableOpacity onPress={()=>this.showLincense('policy')}><Text style={[styles.highlight]}> {i18n.t('page_register.license1')}</Text></TouchableOpacity>
+                                <Text>, </Text>
+                                <TouchableOpacity onPress={()=>this.showLincense('user-terms')}><Text style={[styles.highlight]}> {i18n.t('page_register.license3')}</Text></TouchableOpacity>
                                 <Text> {i18n.t('page_register.license2')}</Text>
                             </TouchableOpacity>
                         </View>

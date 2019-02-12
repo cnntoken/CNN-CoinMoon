@@ -12,8 +12,12 @@ const styles = StyleSheet.create({
         borderRadius: 15
     },
     firstRow:{
+        justifyContent:'space-between',
         flexDirection: 'row',
         alignItems: 'center'
+    },
+    actionBtn:{
+        width: 22
     },
     name:{
         marginRight: 10,

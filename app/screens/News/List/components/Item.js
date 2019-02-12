@@ -39,7 +39,9 @@ export default class Item extends PureComponent{
                     <TouchableOpacity onPress={this.clickItem}>
                         <Grid>
                             <Row style={styles.firstRow}>
-                                <Text style={styles.name}>{info.user.nickname}</Text><IconText type='time' normal={true} text={formatDate(info.updatedAt)}/>
+                                <Text style={styles.name}>{info.user.nickname}</Text>
+                                <IconText type='time' normal={true} text={formatDate(info.updatedAt)}/>
+                                <Button block transparent light style={styles.actionBtn}><Image source={require('app/images/icon_more_black.png')}/></Button>
                             </Row>
                             <Row><Text numberOfLines={3} style={styles.title}>{info.title}</Text></Row>
                         </Grid>
