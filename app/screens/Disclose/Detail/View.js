@@ -107,7 +107,6 @@ class Page extends Component {
     };
 
 
-
     // 评论
     onComment = (item, text, completeCallback) => {
         if (!this.props.user.id) {
@@ -481,11 +480,24 @@ class Page extends Component {
 
     onSubmit = (text, fn) => {
         let reasons = this.state.reasons;
-        // debugger;
+        this.props.report({
+            params: {
+                text: text,
+                reasons: reasons,
+                type: 2, // 爆料
+                _id: this.state.data._id,
+                userId: this.props.user.id
+            },
+            callback: (data) => {
+                this.setState({
+                    isModalVisible: false,
+                    reasons: []
+                });
+            }
+        });
         if (fn) {
             fn();
         }
-
     };
 
     render() {

@@ -1,8 +1,10 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet, Dimensions, Platform} from 'react-native';
 
-const {width} = Dimensions.get('window');
 
-const img_width = (width - 90) / 3;
+const ios = Platform.OS === 'ios';
+const {width, height} = Dimensions.get('window');
+// from native-base
+const isIphoneX = ios && (height === 812 || width === 812);
 
 const styles = StyleSheet.create({
     // 删除弹框
@@ -58,7 +60,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#408EF5',
     },
 
-    footer_form: {}
+    footer_btn: {
+        // width: width,
+        backgroundColor: '#fff',
+        borderTopColor: '#E6E6E6',
+        borderTopWidth: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: isIphoneX ? 90 : 50
+    }
 
 
 });

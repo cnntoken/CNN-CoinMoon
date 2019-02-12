@@ -68,6 +68,7 @@ class Report extends Component {
     };
 
     onSubmit = () => {
+        debugger;
         let text = this.state.text;
         if (this.props.onSubmit) {
             this.props.onSubmit(text, () => {
@@ -121,7 +122,18 @@ class Report extends Component {
     };
 
     render() {
+        let disabled = true;
         let showInput = this.props.reasons.indexOf(4) > -1;
+
+        if (this.props.reasons.length > 0 && !showInput) {
+            disabled = false;
+        }
+        if (showInput) {
+            if (this.state.text) {
+                disabled = false;
+            }
+        }
+
         return <Modal isVisible={this.props.isModalVisible} style={{
             justifyContent: "flex-end",
             marginBottom: this.state.mb,
@@ -185,6 +197,7 @@ class Report extends Component {
 
                 <View style={{
                     marginTop: 15,
+
                 }}>
 
                     <Form style={showInput ? {
@@ -209,12 +222,32 @@ class Report extends Component {
                         </Item>
                     </Form>
 
-                    <Button onPress={this.onSubmit} full light>
-                        <Text>提交</Text>
-                    </Button>
-
+                    <View  style={styles.footer_btn}>
+                        <Grid>
+                            <Col/>
+                            <Col style={{
+                                width:40,
+                            }}>
+                                <Button style={{
+                                    // width:40,
+                                    // backgroundColor:'#eee'
+                                }}  disabled={disabled} transparent onPress={this.onSubmit}  light>
+                                    <Text style={disabled ? {
+                                        color: '#999999',
+                                        fontSize: 16,
+                                        lineHeight: 23,
+                                    } : {
+                                        color: '#408EF5',
+                                        fontSize: 16,
+                                        lineHeight: 23,
+                                    }
+                                    }>提交</Text>
+                                </Button>
+                            </Col>
+                            <Col/>
+                        </Grid>
+                    </View>
                 </View>
-
             </View>
 
         </Modal>;

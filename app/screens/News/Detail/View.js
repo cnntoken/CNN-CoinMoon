@@ -9,15 +9,17 @@ import {
     Left,
     Spinner
 } from 'native-base';
-import {Image, View, DeviceEventEmitter,Linking} from 'react-native';
+import {Image, View, DeviceEventEmitter, Linking} from 'react-native';
 import styles from './styles';
 import moment from 'moment';
 import WebContent from './components/WebContent';
 import IconText from 'app/components/IconText';
 import FooterInput from 'app/components/FooterInput';
 import CommentList from 'app/components/CommentList';
-import {$toast,cloneByJson} from 'app/utils';
+import {$toast, cloneByJson} from 'app/utils';
 import i18n from 'app/i18n';
+import {Col, Row, Grid} from "react-native-easy-grid";
+import Report from 'app/components/Report';
 
 class ViewControl extends Component {
 
@@ -28,7 +30,9 @@ class ViewControl extends Component {
             activeComment: null,
             showOperateBox: false,
             comments: [],
-            placeholder: ''
+            placeholder: '',
+            reasons: [],
+            isModalVisible: false,
         }
     }
 
@@ -74,8 +78,8 @@ class ViewControl extends Component {
             source: this.props.user && this.props.user.picture ? {uri: this.props.user.picture} : require('app/images/avatar_default.png')
         }));
         this.setState({
-            info:{...info},
-            comments: this.state.comments.map(obj=>({...obj})),
+            info: {...info},
+            comments: this.state.comments.map(obj => ({...obj})),
             placeholder: ''
         }, () => {
             this.changePropertiesInList();
@@ -193,7 +197,7 @@ class ViewControl extends Component {
             const source = info.user && info.user.picture ? {uri: info.user.picture} : require('app/images/avatar_default.png');
             this.setState({
                 contentLoading: false,
-                info:{
+                info: {
                     ...info,
                     content,
                     updatedAt,
@@ -239,8 +243,8 @@ class ViewControl extends Component {
         this.setState({
             info: {...info},
             activeComment: null,
-            comments: this.state.comments.map(obj=>({...obj}))
-        },()=>{
+            comments: this.state.comments.map(obj => ({...obj}))
+        }, () => {
             this.props.deleteComment({
                 id: item._id,
                 callback: (data) => {
@@ -278,8 +282,8 @@ class ViewControl extends Component {
 
         this.setState({
             // comments: [...comments]
-            comments: comments.map(obj=>({...obj}))
-        },()=>{
+            comments: comments.map(obj => ({...obj}))
+        }, () => {
             // 更新用户对该资源的行为数据
             this.props.updateAction({
                 _id: item.userAction._id,
@@ -292,7 +296,7 @@ class ViewControl extends Component {
                 },
                 callback: (data) => {
                     if (!item.userAction._id) {
-                        const targetItem = this.state.comments.find(obj=>obj._id === item._id)
+                        const targetItem = this.state.comments.find(obj => obj._id === item._id)
                         targetItem.userAction._id = data._id;
                     }
                 }
@@ -377,19 +381,73 @@ class ViewControl extends Component {
             }
         });
     }
-    openSource = ()=>{
+    openSource = () => {
         const {info} = this.state;
         const url = info.sourceUrl
         Linking.canOpenURL(url)
-        .then((supported) => {
-            if (!supported) {
-            console.log("Can't handle url: " + url);
-            } else {
-                return Linking.openURL(url);
+            .then((supported) => {
+                if (!supported) {
+                    console.log("Can't handle url: " + url);
+                } else {
+                    return Linking.openURL(url);
+                }
+            })
+            .catch((err) => console.error('An error occurred', err));
+    };
+
+    // 展示举报dialog
+    showReportDialog = (item) => {
+        console.log('展示举报dialog', item);
+        this.setState({
+            isModalVisible: true,
+            reasons: []
+        });
+    };
+
+    onSelect = (item) => {
+        let reasons = this.state.reasons;
+        let index = reasons.indexOf(item.value);
+        if (index === -1) {
+            reasons.push(item.value);
+        } else {
+            reasons.splice(index, 1);
+        }
+        this.state.reasons = [...new Set(reasons)];
+        this.setState({})
+    };
+
+
+
+    closeReport = (item) => {
+        this.setState({
+            isModalVisible: false,
+            reasons: []
+        });
+    };
+
+
+    onSubmit = (text, fn) => {
+        let reasons = this.state.reasons;
+        this.props.report({
+            params: {
+                text: text,
+                reasons: reasons,
+                type: 1,
+                _id: this.state.info._id,
+                userId: this.props.user.id
+            },
+            callback: (data) => {
+                this.setState({
+                    isModalVisible: false,
+                    reasons: []
+                });
             }
-        })
-        .catch((err) => console.error('An error occurred', err));
-    }
+        });
+        if (fn) {
+            fn();
+        }
+    };
+
     componentDidMount() {
         const {navigation} = this.props;
         const id = navigation.getParam('_id');
@@ -422,15 +480,45 @@ class ViewControl extends Component {
                                 </View>
                                 <WebContent html={info.content} style={styles.webview} onReady={this.showOperate}/>
                                 {this.state.showOperateBox && <View style={styles.source}>
-                                    <Text>{i18n.t('page_news_detail.from')} </Text><Text style={styles.sourceUrl}  onPress={this.openSource}>{info.sourceUrl}</Text>
+                                    <Text>{i18n.t('page_news_detail.from')} </Text><Text style={styles.sourceUrl}
+                                                                                         onPress={this.openSource}>{info.sourceUrl}</Text>
                                 </View>}
+
                                 {this.state.showOperateBox && <View style={styles.viewBox}>
-                                    <IconText type='view' text={info.viewNum || 0}/>
+
+                                    <Grid>
+                                        <Col><IconText type='view' text={info.viewNum || 0}/></Col>
+                                        <Col/>
+                                        <Col>
+                                            <Button style={{
+                                                // width: 70,
+                                                // display: 'flex',
+                                                // alignItems: 'center',
+                                                justifyContent: 'center',
+                                            }}  transparent light onPress={this.showReportDialog.bind(this, info)}>
+                                                <Image style={{
+                                                    width: 12,
+                                                    height: 12
+                                                }} source={require('app/images/icon_report.png')}/>
+                                                <Text style={{
+                                                    color: '#999999',
+                                                    fontSize: 12,
+                                                    lineHeight: 17,
+                                                    // width: 60,
+                                                    textAlign: 'center',
+                                                    marginLeft: 5
+                                                }}>{i18n.t('report')}
+                                                </Text>
+                                            </Button>
+                                        </Col>
+                                    </Grid>
                                 </View>}
+
 
                                 {
                                     this.state.showOperateBox && <View style={styles.operateBox}>
-                                        <IconText type='comment_big' text={info.commentsNum || comments.length || 0} vertical={true}
+                                        <IconText type='comment_big' text={info.commentsNum || comments.length || 0}
+                                                  vertical={true}
                                                   onPress={this.comment.bind(this, info)}/>
                                         <View style={{width: 74}}></View>
                                         <IconText type={info.userAction.actionValue ? 'liked_big' : 'like_big'}
@@ -456,6 +544,16 @@ class ViewControl extends Component {
                             </View>
                     }
                 </Content>
+
+                {/*************删除确认弹框modal***************/}
+                <View>
+                    <Report
+                        closeReport={this.closeReport}
+                        reasons={this.state.reasons}
+                        onSubmit={this.onSubmit}
+                        isModalVisible={this.state.isModalVisible}
+                        onSelect={this.onSelect}/>
+                </View>
 
                 {/* 底部评论框 */}
                 <FooterInput

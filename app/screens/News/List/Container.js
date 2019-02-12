@@ -23,6 +23,11 @@ function mapDispatchToProps(dispatch) {
         updateAction: (...args) => {
             dispatch(userAction.update(...args))
         },
+        removeItem: (...args) => {
+            console.log(args);
+            dispatch(feedActions.removeItem(...args))
+        },
+
     };
 }
 

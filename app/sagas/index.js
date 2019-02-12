@@ -48,6 +48,7 @@ export default function* watch() {
         // 用户行为
         takeEvery(types.USERACTION_GETACTION, userActionSaga.getActions),
         takeEvery(types.USERACTION_UPDATE, userActionSaga.update),
+        takeEvery(types.USERACTION_REPORT, userActionSaga.report),
 
     ]);
 }

@@ -48,4 +48,12 @@ export const feedReducer = createReducer(initialState, {
         state[category] = [...state[category]];
         return {...state};
     },
+
+    [types.FEED_ROMEVE_ITEM](state, {payload: {category,item}}) {
+        const list = state[category];
+        const targetIndex = list.findIndex(i=>i._id === item._id);
+        list.splice(targetIndex,1);
+        state[category] = [...state[category]];
+        return {...state};
+    },
 });

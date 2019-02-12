@@ -60,7 +60,11 @@ function mapDispatchToProps(dispatch) {
 
         likeComment: (...args) => {
             dispatch(likeComment(...args))
-        }
+        },
+
+        report: (...args) => {
+            dispatch(userAction.report(...args))
+        },
     };
 }
 

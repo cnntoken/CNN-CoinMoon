@@ -5,7 +5,7 @@ import * as services from '../services/feed';
 // import * as feedActions from '../actions/feedActions';
 
 // 获取列表
-export function* getList({payload,onSuccess, onFail}) {
+export function* getList({payload, onSuccess, onFail}) {
     const {isRefresh, category, params} = payload;
 
     console.log('is refresh', isRefresh, category, params)
@@ -23,6 +23,15 @@ export function* getList({payload,onSuccess, onFail}) {
         onFail && onFail()
         console.log(e);
         // $toast(`getList fail`);
+    }
+}
+
+export function* removeItem({payload}) {
+    const {category, item} = payload;
+    try {
+        yield put({type: Types.FEED_ROMEVE_ITEM, category, item});
+    } catch (e) {
+        console.log(e);
     }
 }
 

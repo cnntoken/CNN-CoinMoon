@@ -141,7 +141,6 @@ class Screen extends Component {
                                 activeItem: null,
                                 Items: JSON.parse(JSON.stringify(this.state.Items))
                             });
-
                         }
                     });
                 }

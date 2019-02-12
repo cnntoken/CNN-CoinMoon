@@ -34,3 +34,15 @@ export function* update({payload}) {
         // if (callback) callback(e)
     }
 }
+
+// 举报接口
+export function* report({payload}) {
+    const {params, callback} = payload;
+    try {
+        const res = yield call(services.report, params);
+        console.log('res', res);
+        if (callback) callback(res);
+    } catch (e) {
+        $toast(`report fail: ${e.message}`);
+    }
+}

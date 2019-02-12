@@ -7,6 +7,7 @@ import ListTabBar from './components/ListTabBar'
 import RefreshListView, {RefreshState} from 'app/components/RefreshListView/index2';
 import Item from './components/Item'
 import i18n from 'app/i18n';
+import {ActionSheet} from "native-base";
 
 class ViewControl extends Component {
 
@@ -31,26 +32,26 @@ class ViewControl extends Component {
             }
         })
         this.props.getList({
-            isRefresh: true,
-            category,
-            params: {
-                userId: this.props.userId
-            }
-        },
-        (LastEvaluatedKey) => {
-            this.setState({
-                [category]: {
-                    refreshState: LastEvaluatedKey ? RefreshState.Idle : RefreshState.NoMoreData
+                isRefresh: true,
+                category,
+                params: {
+                    userId: this.props.userId
                 }
+            },
+            (LastEvaluatedKey) => {
+                this.setState({
+                    [category]: {
+                        refreshState: LastEvaluatedKey ? RefreshState.Idle : RefreshState.NoMoreData
+                    }
+                })
+                this.LastEvaluatedKey[category] = LastEvaluatedKey;
+            }, () => {
+                this.setState({
+                    [category]: {
+                        refreshState: RefreshState.Failure
+                    }
+                })
             })
-            this.LastEvaluatedKey[category] = LastEvaluatedKey;
-        },()=>{
-            this.setState({
-                [category]: {
-                    refreshState: RefreshState.Failure
-                }
-            })
-        })
     };
     onLoadMore = (category, params) => {
         // console.log('onloadmore', params)
@@ -73,7 +74,7 @@ class ViewControl extends Component {
                     }
                 })
                 this.LastEvaluatedKey[category] = LastEvaluatedKey;
-            },()=>{
+            }, () => {
                 this.setState({
                     [category]: {
                         refreshState: RefreshState.Failure
@@ -85,10 +86,11 @@ class ViewControl extends Component {
     // renderInfomationItem = ({item, separators})=>{
     //     return <Item info={item} key={item._id} onItemClick={this.goDetail}/>
     // }
-    renderItem = (category,{item, index, separators, cat}) => {
+    renderItem = (category, {item, index, separators, cat}) => {
         return <Item info={item}
                      key={item._id}
-                     onLike={(...args)=>this.like(category,...args)}
+                     onLike={(...args) => this.like(category, ...args)}
+                     showDislikeDialog={this.showDislikeDialog.bind(this, category, item)}
                      onAvatarClick={this.goUserDetail}
                      onItemClick={this.goDetail}/>
     };
@@ -101,7 +103,7 @@ class ViewControl extends Component {
         const {_id, category} = info;
         this.props.navigation.navigate('NewsDetail', {_id, category});
     };
-    like = (category,item) => {
+    like = (category, item) => {
         if (!this.props.userId) {
             this.props.navigation.navigate('Login', {
                 prevState: this.props.navigation.state
@@ -109,7 +111,7 @@ class ViewControl extends Component {
             return;
         }
         let actionValue = item.userAction.actionValue;
-        console.log(category,item)
+        console.log(category, item)
         this.props.feedLike({
             category,
             params: item
@@ -133,38 +135,55 @@ class ViewControl extends Component {
         });
     };
 
+    // 不感兴趣，并删除该条目
+    showDislikeDialog = (category, item) => {
+        ActionSheet.show(
+            {
+                options: [i18n.t('cancel'), i18n.t('dislike')],
+                cancelButtonIndex: 0,
+                destructiveButtonIndex: 1,
+            },
+            buttonIndex => {
+                if (buttonIndex === 1) {
+                    this.props.removeItem({
+                        item: item,
+                        category: category
+                    })
+                }
+            }
+        );
+    };
+
     render() {
         return (
             <ScrollableTabView
                 initialPage={this.state.pageIndex}
                 renderTabBar={() => <ListTabBar/>}
             >
-            {['info','news'].map((cate,index)=>{
-                return <RefreshListView
-                key={index}
-                tabLabel={i18n.t(`page_main.category_${cate}`)}
-                data={this.props[cate]}
-                refreshState={this.state[cate].refreshState}
-                renderItem={(...args)=>this.renderItem(cate,...args)}
-                onHeaderRefresh={(...args) => {
-                    this.onRefresh(cate, ...args)
-                }}
-                onFooterRefresh={(...args) => {
-                    this.onLoadMore(cate, ...args)
-                }}
-                // 可选
-                footerRefreshingText={i18n.t('disclose.footerRefreshingText')}
-                footerFailureText={i18n.t('disclose.footerFailureText')}
-                footerNoMoreDataText={i18n.t('disclose.footerNoMoreDataText')}
-                footerEmptyDataText={i18n.t('disclose.footerEmptyDataText')}
+                {['info', 'news'].map((cate, index) => {
+                    return <RefreshListView
+                        key={index}
+                        tabLabel={i18n.t(`page_main.category_${cate}`)}
+                        data={this.props[cate]}
+                        refreshState={this.state[cate].refreshState}
+                        renderItem={(...args) => this.renderItem(cate, ...args)}
+                        onHeaderRefresh={(...args) => {
+                            this.onRefresh(cate, ...args)
+                        }}
+                        onFooterRefresh={(...args) => {
+                            this.onLoadMore(cate, ...args)
+                        }}
+                        // 可选
+                        footerRefreshingText={i18n.t('disclose.footerRefreshingText')}
+                        footerFailureText={i18n.t('disclose.footerFailureText')}
+                        footerNoMoreDataText={i18n.t('disclose.footerNoMoreDataText')}
+                        footerEmptyDataText={i18n.t('disclose.footerEmptyDataText')}
 
-
-
-                refreshControlNormalText={i18n.t('disclose.refreshControlNormalText')}
-                refreshControlPrepareText={i18n.t('disclose.refreshControlPrepareText')}
-                refreshControlLoadingText={i18n.t('disclose.refreshControlLoadingText')}
-            />
-            })}
+                        refreshControlNormalText={i18n.t('disclose.refreshControlNormalText')}
+                        refreshControlPrepareText={i18n.t('disclose.refreshControlPrepareText')}
+                        refreshControlLoadingText={i18n.t('disclose.refreshControlLoadingText')}
+                    />
+                })}
                 {/* <RefreshListView
                     tabLabel={i18n.t('page_main.category_news')}
                     data={this.props.news}
