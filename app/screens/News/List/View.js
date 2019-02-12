@@ -31,8 +31,8 @@ class ViewControl extends Component {
             }
         })
         this.props.getList({
-            isRefresh: true, 
-            category, 
+            isRefresh: true,
+            category,
             params: {
                 userId: this.props.userId
             }
@@ -152,7 +152,6 @@ class ViewControl extends Component {
                 onFooterRefresh={(...args) => {
                     this.onLoadMore(cate, ...args)
                 }}
-
                 // 可选
                 footerRefreshingText={i18n.t('disclose.footerRefreshingText')}
                 footerFailureText={i18n.t('disclose.footerFailureText')}

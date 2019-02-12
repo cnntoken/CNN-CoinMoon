@@ -123,11 +123,22 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'center'
     },
-    viewNum_image: {
-        width: 15
-    },
+    // viewNum_image: {
+    //     width: 120,
+    //     display: 'flex',
+    //     alignItems: 'center',
+    //     justifyContent: 'center',
+    // },
     viewNum_text: {
-        maxWidth: 100
+        width: 30,
+        lineHeight: 17,
+        fontSize: 12,
+        color: '#666',
+        // marginBottom: 4
+    },
+    report_text: {
+        // maxWidth: 100
+        textAlign: 'right'
         // lineHeight: 17,
         // fontSize: 12,
         // color: '#666',
@@ -265,18 +276,19 @@ const styles = StyleSheet.create({
     /////////////////////////////// footer input
 
 
-    // 删除弹框
-    modal_btn: {
-        borderRadius: 8,
-        backgroundColor: '#FFFFFF',
-        marginBottom: 15
-    },
-    modal_btn_del_text: {
-        color: '#FF3B30'
-    },
-    modal_btn_calcel_text: {
-        color: '#007AFF'
-    }
+
+    //
+    // modal_btn: {
+    //     borderRadius: 8,
+    //     backgroundColor: '#FFFFFF',
+    //     marginBottom: 15
+    // },
+    // modal_btn_del_text: {
+    //     color: '#FF3B30'
+    // },
+    // modal_btn_calcel_text: {
+    //     color: '#007AFF'
+    // }
 
 
 });

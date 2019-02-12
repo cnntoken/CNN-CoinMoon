@@ -29,6 +29,14 @@ export default class DiscloseListItem extends Component {
         }
     };
 
+    // 展示不敢兴趣dialog
+    showDisLikeDialog = (item) => {
+        // debugger;
+        if (this.props.showDisLikeDialog) {
+            this.props.showDisLikeDialog(item);
+        }
+    };
+
     // 点赞爆料
     like = (item) => {
         if (this.props.like) {
@@ -100,7 +108,10 @@ export default class DiscloseListItem extends Component {
                                     isMine ? <Button block transparent light
                                                      onPress={this.showDeleteDialog.bind(this, item)}>
                                         <Image source={require('app/images/icon_more_black.png')}/>
-                                    </Button> : <Button/>
+                                    </Button> :<Button block transparent light
+                                                       onPress={this.showDisLikeDialog.bind(this, item)}>
+                                        <Image source={require('app/images/icon_more_black.png')}/>
+                                    </Button>
                                 }
                             </View>
                         </Col>

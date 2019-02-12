@@ -1,4 +1,3 @@
-
 export default {
     label_cancel: '취소',
     label_login: '로그인',
@@ -107,7 +106,7 @@ export default {
 
         needLoginForPublish: '먼저 로그인 후 등록 가능합니다',
 
-        publishing:'등록중...'
+        publishing: '등록중...'
 
 
     },
@@ -146,8 +145,15 @@ export default {
     no_access_photo: '이미지를 선택하려면 이미지에 접근 권한을 부여하시길 바랍니다.',
 
     valid_user_isnull: '닉네임을 입력하셔야 합니다',
-    tooimages:'최대한 9장 이미지 추가',
-    firstEntryDisclose:'풍문 게시판에서 게시물을 올리거나 댓글을 다는 활동 등은 모두 익명으로 진행됩니다.',
+    tooimages: '최대한 9장 이미지 추가',
+    firstEntryDisclose: '풍문 게시판에서 게시물을 올리거나 댓글을 다는 활동 등은 모두 익명으로 진행됩니다.',
 
-    upload_fail:'업로드 실패하였습니다. 다시 시도해주세요.'
+    upload_fail: '업로드 실패하였습니다. 다시 시도해주세요.',
+
+
+    // 举报审核相关
+    dislike: '不感兴趣',
+    report: '举报',
+
+
 }

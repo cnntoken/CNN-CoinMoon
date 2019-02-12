@@ -166,19 +166,10 @@ class ViewControl extends Component {
         });
     };
 
-    // // 显示删除弹框
-    // showDeleteDialog = (item) => {
-    //     this.setState({
-    //         isModalVisible: true,
-    //         activeItem: item
-    //     });
-    // };
-
     // 显示删除弹框
     showDeleteDialog = (item) => {
 
         let index = this.state.Items.indexOf(item);
-        this.state.Items.splice(index, 1);
 
         ActionSheet.show(
             {
@@ -189,6 +180,7 @@ class ViewControl extends Component {
             },
             buttonIndex => {
                 if (buttonIndex === 1) {
+                    this.state.Items.splice(index, 1);
                     this.props.deleteDisclose({
                         id: item._id,
                         callback: (data) => {
@@ -205,11 +197,11 @@ class ViewControl extends Component {
         );
     };
 
+
     // 渲染列表
     renderListItem = ({item, index}) => {
         const {hasData, Items} = this.state;
         return <DiscloseListItem showDeleteDialog={this.showDeleteDialog}
-            // clickAvatar={this.clickAvatar}
                                  like={this.like}
                                  opt={{item, index, hasData, Items, userId: this.props.user.id}}
                                  pressItem={this.pressItem}/>
