@@ -11,13 +11,8 @@ import {
     ActionSheet
 } from "native-base";
 import {Image, View, TouchableOpacity} from 'react-native';
-import InputFocus from 'app/components/InputFocus';
-import userService from 'app/services/user';
 import styles from './styles';
-import {$toast} from 'app/utils';
 import i18n from 'app/i18n';
-import * as Types from 'app/actions/types'
-import NavigationService from 'app/navigation/NavigationService'
 
 class ViewControl extends PureComponent {
     onLogout = () => {

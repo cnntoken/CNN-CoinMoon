@@ -77,6 +77,7 @@ class WebContent extends PureComponent {
                 onMessage={this.handleMessage}
                 javaScriptEnabled={true}
                 injectedJavaScript='true'
+                mixedContentMode='compatibility'
             />
         );
     }

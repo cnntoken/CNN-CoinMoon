@@ -23,6 +23,7 @@ export default {
         re_password: '비밀번호 재확인',
         license1: '개인정보 처리방침',
         license2: '동의',
+        license3: '이용약관',
         register: '회원가입',
         go_login: '로그인',
 

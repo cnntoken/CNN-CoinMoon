@@ -9,14 +9,14 @@ import {
     Left,
     Spinner
 } from 'native-base';
-import {Image, View, DeviceEventEmitter,Linking,TouchableWithoutFeedback} from 'react-native';
+import {Image, View, DeviceEventEmitter,Linking} from 'react-native';
 import styles from './styles';
 import moment from 'moment';
 import WebContent from './components/WebContent';
 import IconText from 'app/components/IconText';
 import FooterInput from 'app/components/FooterInput';
 import CommentList from 'app/components/CommentList';
-import {$toast, getNumByUserId, cloneByJson} from 'app/utils';
+import {$toast,cloneByJson} from 'app/utils';
 import i18n from 'app/i18n';
 
 class ViewControl extends Component {

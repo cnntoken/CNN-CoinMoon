@@ -10,6 +10,16 @@ class ViewControl extends Component {
         navigation: PropTypes.object.isRequired
     }
 
+    constructor(props){
+        super(props);
+        const {navigation} = props;
+        const policy = navigation.getParam('policy');
+        const url = policy === 'privacy' ? 'http://a.fslk.co/cnn/h5/personalInfoCollecttion.html' : 'http://a.fslk.co/cnn/h5/radius.html';
+        this.state = {
+            url
+        }
+    }
+
     goBack = () => {
         this.props.navigation.pop()
     }
@@ -20,7 +30,7 @@ class ViewControl extends Component {
                 <CustomHeader onCancel={this.goBack}/>
                 <WebView
                     originWhitelist={['*']}
-                    source={{ uri: 'http://a.fslk.co/cnn/h5/personalInfoCollecttion.html' }}
+                    source={{ uri: this.state.url }}
                     style={styles.container}
                 />
             </Container>
