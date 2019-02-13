@@ -74,7 +74,7 @@ export default {
 
     },
     page_news_detail: {
-        from: '출 처'
+        from: '출처'
     },
     toast: {},
     // i18n.t('disclose.deleteOk')
