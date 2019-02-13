@@ -3,7 +3,7 @@ import {ListItem, Text, Left, Body, Button, Thumbnail, View} from 'native-base';
 import {Image, TouchableOpacity} from 'react-native';
 // import FastImage from 'react-native-fast-image'
 import ImageContent from './ImageContent'
-import {Row, Grid} from 'react-native-easy-grid';
+import {Row, Grid, Col} from 'react-native-easy-grid';
 import IconText from 'app/components/IconText';
 import styles from './item-styles'
 // import moment from 'moment'
@@ -47,11 +47,13 @@ export default class Item extends PureComponent {
                 <TouchableOpacity onPress={this.clickItem}>
                     <Grid>
                         <Row style={styles.firstRow}>
-                            <Text style={styles.name}>{info.user.nickname}</Text>
-                            <IconText type='time' normal={true} text={formatDate(info.updatedAt)}/>
-                            <Button block transparent light style={styles.actionBtn}
+                            <View style={styles.firstRow}>
+                                <Text style={styles.name}>{info.user.nickname}</Text>
+                                <IconText type='time' normal={true} text={formatDate(info.updatedAt)}/>
+                            </View>
+                            <TouchableOpacity block transparent light style={styles.actionBtn}
                                     onPress={this.showDislikeDialog}><Image
-                                source={require('app/images/icon_more_black.png')}/></Button>
+                                source={require('app/images/icon_more_black.png')}/></TouchableOpacity>
                         </Row>
                         <Row><Text numberOfLines={3} style={styles.title}>{info.title}</Text></Row>
                     </Grid>

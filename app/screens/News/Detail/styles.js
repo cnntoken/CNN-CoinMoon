@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
         marginTop: 30,
         display: 'flex',
         // alignItems:'center',
-        flexDirection: 'column',
+        // flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center'
     },

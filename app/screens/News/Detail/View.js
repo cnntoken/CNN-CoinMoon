@@ -9,7 +9,7 @@ import {
     Left,
     Spinner
 } from 'native-base';
-import {Image, View, DeviceEventEmitter, Linking} from 'react-native';
+import {Image, View, DeviceEventEmitter, Linking, TouchableOpacity} from 'react-native';
 import styles from './styles';
 import moment from 'moment';
 import WebContent from './components/WebContent';
@@ -417,7 +417,6 @@ class ViewControl extends Component {
     };
 
 
-
     closeReport = (item) => {
         this.setState({
             isModalVisible: false,
@@ -489,31 +488,34 @@ class ViewControl extends Component {
                                     <Grid>
                                         <Col><IconText type='view' text={info.viewNum || 0}/></Col>
                                         <Col/>
-                                        <Col>
-                                            <Button style={{
-                                                // width: 70,
-                                                // display: 'flex',
-                                                // alignItems: 'center',
+                                        <Col style={{
+                                            // width: 50,
+                                            alignItems: 'flex-end',
+                                            // justifyContent: 'flex-end',
+                                        }}>
+                                            <TouchableOpacity style={{
+                                                width: 40,
+                                                display: 'flex',
+                                                alignItems: 'center',
                                                 justifyContent: 'center',
-                                            }}  transparent light onPress={this.showReportDialog.bind(this, info)}>
+                                                flexDirection: 'row',
+                                            }} transparent light onPress={this.showReportDialog.bind(this, info)}>
                                                 <Image style={{
                                                     width: 12,
-                                                    height: 12
+                                                    height: 12,
+                                                    marginRight: 4,
                                                 }} source={require('app/images/icon_report.png')}/>
                                                 <Text style={{
                                                     color: '#999999',
                                                     fontSize: 12,
                                                     lineHeight: 17,
-                                                    // width: 60,
-                                                    textAlign: 'center',
-                                                    marginLeft: 5
+                                                    // width: 30,
                                                 }}>{i18n.t('report')}
                                                 </Text>
-                                            </Button>
+                                            </TouchableOpacity>
                                         </Col>
                                     </Grid>
                                 </View>}
-
 
                                 {
                                     this.state.showOperateBox && <View style={styles.operateBox}>
