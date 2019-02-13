@@ -1,20 +1,21 @@
 import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
-    wrap:{
+    wrap: {
         height: 42,
         paddingLeft: 14
     },
-    item:{
+    item: {
         marginRight: 18,
         height: 42,
         justifyContent: 'center'
     },
-    text:{
-        fontSize: 14,
-        color: '#fff'
+    text: {
+        fontSize: 16,
+        color: '#fff',
+        lineHeight: 41,
     },
-    active:{
+    active: {
         fontWeight: 'bold'
     }
 });
