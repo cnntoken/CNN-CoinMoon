@@ -50,7 +50,8 @@
     "eslint-plugin-react-native": "^3.5.0",
     "jest": "23.6.0",
     "metro-react-native-babel-preset": "0.48.5",
-    "react-test-renderer": "16.6.3"
+    "react-test-renderer": "16.6.3",
+    "request": "^2.88.0"
   },
   "jest": {
     "preset": "react-native"
