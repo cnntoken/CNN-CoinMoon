@@ -97,7 +97,7 @@ class FooterInput extends Component {
 
     // 键盘弹出事件响应
     keyboardDidShowHandler(event) {
-        if (!this.props.isModalVisible && this.props.activeComment) {
+        if (!this.props.isModalVisible) {
             this.setState({
                 KeyboardShown: true,
                 footerHeight: event.endCoordinates.height + 70

@@ -152,8 +152,12 @@ export default {
 
 
     // 举报审核相关
-    dislike: '不感兴趣',
-    report: '举报',
+    // dislike: '不感兴趣',
+    // report: '举报',
+    dislike: '관심 없습니다',
+    report: '신고',
+    report_placeholder:'신고 사유를 선택하십시오. 허위 신고시 차단될 수 있습니다.',
+    report_submit:'제출',
 
 
 }

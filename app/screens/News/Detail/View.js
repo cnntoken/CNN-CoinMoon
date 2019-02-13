@@ -397,7 +397,7 @@ class ViewControl extends Component {
 
     // 展示举报dialog
     showReportDialog = (item) => {
-        console.log('展示举报dialog', item);
+        // console.log('展示举报dialog', item);
         this.setState({
             isModalVisible: true,
             reasons: []
@@ -436,12 +436,15 @@ class ViewControl extends Component {
                 userId: this.props.user.id
             },
             callback: (data) => {
-                this.setState({
-                    isModalVisible: false,
-                    reasons: []
-                });
+
             }
         });
+
+        this.setState({
+            isModalVisible: false,
+            reasons: []
+        });
+
         if (fn) {
             fn();
         }

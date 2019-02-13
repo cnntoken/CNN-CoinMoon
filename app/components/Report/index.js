@@ -164,12 +164,12 @@ class Report extends Component {
                             <Text style={{
                                 // flex: 1,
                                 // textAlign:'center',
-                                marginLeft: 94,
+                                // marginLeft: 94,
                                 color: '#000',
                                 fontSize: 16,
                                 // width: 100,
                                 lineHeight: 23,
-                            }}>请选择举报理由</Text>
+                            }}>{i18n.t('report_placeholder')}</Text>
                         </Col>
                     </Grid>
                 </View>
@@ -241,7 +241,7 @@ class Report extends Component {
                                         fontSize: 16,
                                         lineHeight: 23,
                                     }
-                                    }>提交</Text>
+                                    }>{i18n.t('report_submit')}</Text>
                                 </Button>
                             </Col>
                             <Col/>

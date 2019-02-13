@@ -148,7 +148,7 @@ class Screen extends Component {
         );
     };
     // 不感兴趣，并删除该条目
-    showDisLikeDialog= (item) => {
+    showDisLikeDialog = (item) => {
         let index = this.state.Items.indexOf(item);
         ActionSheet.show(
             {
@@ -160,16 +160,12 @@ class Screen extends Component {
             buttonIndex => {
                 if (buttonIndex === 1) {
                     this.state.Items.splice(index, 1);
-                    // this.props.deleteDisclose({
-                    //     id: item._id,
-                    //     callback: (data) => {
-                    //         this.setState({
-                    //             isModalVisible: false,
-                    //             activeItem: null,
-                    //             Items: JSON.parse(JSON.stringify(this.state.Items))
-                    //         });
-                    //     }
-                    // });
+                    this.setState({
+                        isModalVisible: false,
+                        activeItem: null,
+                        Items: JSON.parse(JSON.stringify(this.state.Items))
+                    });
+
                 }
             }
         );

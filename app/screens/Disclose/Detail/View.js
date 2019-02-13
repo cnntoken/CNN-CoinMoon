@@ -13,7 +13,7 @@ import {
     ListItem, ActionSheet
 } from "native-base";
 import {Col, Row, Grid} from "react-native-easy-grid";
-import {Image, Text, View, DeviceEventEmitter, TouchableWithoutFeedback} from "react-native";
+import {Image, Text, View, DeviceEventEmitter, TouchableWithoutFeedback , TouchableOpacity} from "react-native";
 import Carousel from "react-native-snap-carousel";
 import FooterInput from 'app/components/FooterInput';
 import CommentList from 'app/components/CommentList';
@@ -479,6 +479,7 @@ class Page extends Component {
 
 
     onSubmit = (text, fn) => {
+
         let reasons = this.state.reasons;
         this.props.report({
             params: {
@@ -495,6 +496,12 @@ class Page extends Component {
                 });
             }
         });
+
+        this.setState({
+            isModalVisible: false,
+            reasons: []
+        });
+
         if (fn) {
             fn();
         }
@@ -671,13 +678,15 @@ class Page extends Component {
                                         <Col/>
                                         {/* 举报 */}
                                         <Col style={{
-                                            width: 70
+                                            // width: 70,
+                                            alignItems: 'flex-end',
                                         }}>
-                                            <Button style={{
-                                                // width: 70,
-                                                // display: 'flex',
-                                                // alignItems: 'center',
+                                            <TouchableOpacity style={{
+                                                width: 50,
+                                                display: 'flex',
+                                                alignItems: 'center',
                                                 justifyContent: 'center',
+                                                flexDirection: 'row',
                                             }} block transparent light onPress={this.showReportDialog.bind(this, data)}>
                                                 <Image style={{
                                                     width: 12,
@@ -692,7 +701,7 @@ class Page extends Component {
                                                     marginLeft: 5
                                                 }}>{i18n.t('report')}
                                                 </Text>
-                                            </Button>
+                                            </TouchableOpacity>
                                         </Col>
                                     </Grid>
                                     <View style={styles.divider}/>
