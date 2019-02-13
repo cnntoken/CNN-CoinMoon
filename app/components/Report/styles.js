@@ -1,10 +1,11 @@
 import {StyleSheet, Dimensions, Platform} from 'react-native';
 
 
-const ios = Platform.OS === 'ios';
 const {width, height} = Dimensions.get('window');
-// from native-base
-const isIphoneX = ios && (height === 812 || width === 812);
+
+const platform = Platform.OS;
+const isIphoneX = platform === "ios" && (height === 812 || width === 812 || height === 896 || width === 896);
+
 
 const styles = StyleSheet.create({
     // 删除弹框
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        height: isIphoneX ? 90 : 50
+        height: isIphoneX ? 60 : 50
     }
 
 

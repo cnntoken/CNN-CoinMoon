@@ -5,8 +5,7 @@ import createReducer from 'app/lib/createReducer';
 import * as types from '../actions/types';
 
 const initialState = {
-    // 客户端被用户点击不感兴趣的feed
-    dislikeFeed: {},
+
 };
 
 export const feedReducer = createReducer(initialState, {
@@ -17,27 +16,15 @@ export const feedReducer = createReducer(initialState, {
     },
     [types.FEED_APPEND_LIST](state, {list, category, hasMore}) {
         const oldlist = state[category] || [];
-        // state[category] = [...oldlist, ...list];
-
-        if (!state.dislikeFeed[category]) {
-            state.dislikeFeed[category] = [];
-        }
-
-        state[category] = [...oldlist, ...list].filter(item=>{
-            return state.dislikeFeed[category].indexOf(item._id) === -1;
-        });
+        state[category] = [...oldlist, ...list];
         state[`${category}_hasMore`] = hasMore;
         return {...state};
     },
     [types.FEED_PREPEND_LIST](state, {list, category, hasMore}) {
         // const oldlist = state[category] || [];
         // state[category] = [...list,...oldlist];
-        if (!state.dislikeFeed[category]) {
-            state.dislikeFeed[category] = [];
-        }
-        state[category] = list.filter(item=>{
-            return  state.dislikeFeed[category].indexOf(item._id) === -1;
-        });
+
+        state[category] = list;
         state[`${category}_hasMore`] = hasMore;
         return {...state};
     },
@@ -67,12 +54,6 @@ export const feedReducer = createReducer(initialState, {
 
     [types.FEED_ROMEVE_ITEM](state, {payload: {category,item}}) {
         const list = state[category];
-        // 添加不感兴趣的feedID
-        if (!state.dislikeFeed[category]) {
-            state.dislikeFeed[category] = [];
-        }
-        state.dislikeFeed[category] = [...state.dislikeFeed[category], item._id];
-
         const targetIndex = list.findIndex(i=>i._id === item._id);
         list.splice(targetIndex,1);
         state[category] = [...state[category]];

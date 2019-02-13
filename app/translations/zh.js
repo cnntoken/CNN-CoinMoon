@@ -158,6 +158,7 @@ export default {
     report: '신고',
     report_placeholder:'신고 사유 선택 (허위 신고시 차단될 수 있습니다.)',
     report_submit:'제출',
+    report_ok:'제출하였습니다.',
 
 
 }

@@ -5,11 +5,12 @@ import * as  feedActions from 'app/actions/feedActions';
 import * as userAction from "app/actions/userAction";
 
 
-function mapStateToProps({feedReducer, userReducer: {info}}) {
+function mapStateToProps({feedReducer, userReducer: {info, dislikeFeed}}) {
     let attributes = info.attributes || {};
     return {
         ...feedReducer,
-        userId: attributes.sub
+        userId: attributes.sub,
+        dislikeFeed
     };
 }
 
@@ -25,7 +26,8 @@ function mapDispatchToProps(dispatch) {
         },
         removeItem: (...args) => {
             // console.log(args);
-            dispatch(feedActions.removeItem(...args))
+            dispatch(feedActions.removeItem(...args));
+            dispatch(userAction.dislike_feedId(...args));
         },
 
     };

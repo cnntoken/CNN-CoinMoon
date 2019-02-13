@@ -495,10 +495,7 @@ class Page extends Component {
                 resourceId: this.state.data._id
             },
             callback: (data) => {
-                this.setState({
-                    isModalVisible: false,
-                    reasons: []
-                });
+                $toast(i18n.t('report_ok'));
             }
         });
 

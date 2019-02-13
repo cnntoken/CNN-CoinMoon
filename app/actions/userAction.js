@@ -37,3 +37,12 @@ export const dislike_discloseId = (payload, callback) => {
         callback
     };
 };
+
+// 不再展示feed
+export const dislike_feedId = (payload, callback) => {
+    return {
+        type: types.APPEND_DISLIKE_FEEDID,
+        payload,
+        callback
+    };
+};

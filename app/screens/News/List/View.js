@@ -90,7 +90,7 @@ class ViewControl extends Component {
         return <Item info={item}
                      key={item._id}
                      onLike={(...args) => this.like(category, ...args)}
-                     showDislikeDialog={()=>this.showDislikeDialog(category, item)}
+                     showDislikeDialog={() => this.showDislikeDialog(category, item)}
                      onAvatarClick={this.goUserDetail}
                      onItemClick={this.goDetail}/>
     };
@@ -161,16 +161,27 @@ class ViewControl extends Component {
     };
 
     render() {
+
+
         return (
             <ScrollableTabView
                 initialPage={this.state.pageIndex}
                 renderTabBar={() => <ListTabBar/>}
             >
                 {['info', 'news'].map((cate, index) => {
+
+                    let feedList = this.props[cate];
+                    let filterFeedList = null;
+                    if (feedList && feedList.length && this.props.dislikeFeed[cate] && Array.isArray(this.props.dislikeFeed[cate])) {
+                        filterFeedList = feedList.filter((item) => {
+                            return this.props.dislikeFeed[cate].indexOf(item._id) === -1
+                        });
+                    }
+
                     return <RefreshListView
                         key={index}
                         tabLabel={i18n.t(`page_main.category_${cate}`)}
-                        data={this.props[cate]}
+                        data={filterFeedList || feedList}
                         refreshState={this.state[cate].refreshState}
                         renderItem={(...args) => this.renderItem(cate, ...args)}
                         onHeaderRefresh={(...args) => {

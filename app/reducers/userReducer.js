@@ -6,7 +6,8 @@ import * as types from '../actions/types';
 
 const initialState = {
     info: {},
-
+    // 客户端被用户点击不感兴趣的feed
+    dislikeFeed: {},
     // 客户端被用户点击不感兴趣的爆料
     dislikeDiscloseList: [],
 };
@@ -17,6 +18,15 @@ export const userReducer = createReducer(initialState, {
     },
     [types.CLEAR_USER_INFO]() {
         return {info: {}}
+    },
+
+    // 添加不感兴趣的feedID
+    [types.APPEND_DISLIKE_FEEDID](state, {payload: {category, item}}) {
+        if (!state.dislikeFeed[category]) {
+            state.dislikeFeed[category] = [];
+        }
+        state.dislikeFeed[category] = [...state.dislikeFeed[category], item._id];
+        return {...state};
     },
 
     // 添加不感兴趣的discloseID

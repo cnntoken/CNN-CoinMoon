@@ -7,6 +7,7 @@ export const SET_USER_INFO = 'USER/SET_INFO';
 export const CLEAR_USER_INFO = 'USER/CLEAR_INFO';
 
 // 某个用户不感兴趣的内容的id，下次不再展示该内容
+export const APPEND_DISLIKE_FEEDID = 'USER/APPEND_DISLIKE_FEEDID';
 export const APPEND_DISLIKE_DISCLOSEID = 'USER/APPEND_DISLIKE_DISCLOSEID';
 
 

@@ -441,7 +441,7 @@ class ViewControl extends Component {
                 resourceId: this.state.info._id
             },
             callback: (data) => {
-
+                $toast(i18n.t('report_ok'));
             }
         });
 
