@@ -73,7 +73,7 @@ export default {
 
     },
     page_news_detail: {
-        from: '来源'
+        from: '출처'
     },
     toast: {},
     // i18n.t('disclose.deleteOk')
