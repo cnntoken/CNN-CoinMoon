@@ -147,7 +147,7 @@ class Report extends Component {
                     }}>
                         <Col style={{
                             width: 24,
-                            marginLeft: 16,
+                            marginLeft: 10,
                             // marginTop:16,
                         }}>
                             <Button
@@ -164,7 +164,7 @@ class Report extends Component {
                             <Text style={{
                                 // flex: 1,
                                 // textAlign:'center',
-                                // marginLeft: 94,
+                                marginLeft: 8,
                                 color: '#000',
                                 fontSize: 16,
                                 // width: 100,

@@ -148,12 +148,12 @@ export default {
     tooimages:'최대한 9장 이미지 추가',
     firstEntryDisclose:'풍문 게시판에서 게시물을 올리거나 댓글을 다는 활동 등은 모두 익명으로 진행됩니다.',
 
-    upload_fail:'업로드 실패하였습니다. 다시 시도해주세요.', 
+    upload_fail:'업로드 실패하였습니다. 다시 시도해주세요.',
 
 
 
     dislike: '관심 없습니다',
     report: '신고',
-    report_placeholder:'신고 사유를 선택하십시오. 허위 신고시 차단될 수 있습니다.',
+    report_placeholder:'신고 사유 선택 (허위 신고시 차단될 수 있습니다.)',
     report_submit:'제출',
 }
