@@ -137,17 +137,17 @@ class ViewControl extends Component {
 
     // 不感兴趣，并删除该条目
     showDislikeDialog = (category, item) => {
-        if (!this.props.userId) {
-            this.props.navigation.navigate('Login', {
-                prevState: this.props.navigation.state
-            });
-            return;
-        }
+        // if (!this.props.userId) {
+        //     this.props.navigation.navigate('Login', {
+        //         prevState: this.props.navigation.state
+        //     });
+        //     return;
+        // }
         ActionSheet.show(
             {
                 options: [i18n.t('cancel'), i18n.t('dislike')],
                 cancelButtonIndex: 0,
-                destructiveButtonIndex: 1,
+                // destructiveButtonIndex: 1,
             },
             buttonIndex => {
                 if (buttonIndex === 1) {

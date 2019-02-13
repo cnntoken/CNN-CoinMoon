@@ -13,7 +13,7 @@ import {
     ListItem, ActionSheet
 } from "native-base";
 import {Col, Row, Grid} from "react-native-easy-grid";
-import {Image, Text, View, DeviceEventEmitter, TouchableWithoutFeedback , TouchableOpacity} from "react-native";
+import {Image, Text, View, DeviceEventEmitter, TouchableWithoutFeedback, TouchableOpacity} from "react-native";
 import Carousel from "react-native-snap-carousel";
 import FooterInput from 'app/components/FooterInput';
 import CommentList from 'app/components/CommentList';
@@ -686,27 +686,31 @@ class Page extends Component {
                                             // width: 70,
                                             alignItems: 'flex-end',
                                         }}>
-                                            <TouchableOpacity style={{
-                                                width: 50,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                flexDirection: 'row',
-                                            }} block transparent light onPress={this.showReportDialog.bind(this, data)}>
-                                                <Image style={{
-                                                    width: 12,
-                                                    height: 12
-                                                }} source={require('app/images/icon_report.png')}/>
-                                                <Text style={{
-                                                    color: '#999999',
-                                                    fontSize: 12,
-                                                    lineHeight: 17,
-                                                    // width: 60,
-                                                    textAlign: 'center',
-                                                    marginLeft: 5
-                                                }}>{i18n.t('report')}
-                                                </Text>
-                                            </TouchableOpacity>
+                                            {
+                                                !isMyDisclose ? <TouchableOpacity style={{
+                                                    width: 50,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    flexDirection: 'row',
+                                                }} block transparent light
+                                                                                 onPress={this.showReportDialog.bind(this, data)}>
+                                                    <Image style={{
+                                                        width: 12,
+                                                        height: 12
+                                                    }} source={require('app/images/icon_report.png')}/>
+                                                    <Text style={{
+                                                        color: '#999999',
+                                                        fontSize: 12,
+                                                        lineHeight: 17,
+                                                        // width: 60,
+                                                        textAlign: 'center',
+                                                        marginLeft: 5
+                                                    }}>{i18n.t('report')}
+                                                    </Text>
+                                                </TouchableOpacity> : null
+                                            }
+
                                         </Col>
                                     </Grid>
                                     <View style={styles.divider}/>

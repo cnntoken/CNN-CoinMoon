@@ -24,7 +24,7 @@ function mapDispatchToProps(dispatch) {
             dispatch(userAction.update(...args))
         },
         removeItem: (...args) => {
-            console.log(args);
+            // console.log(args);
             dispatch(feedActions.removeItem(...args))
         },
 

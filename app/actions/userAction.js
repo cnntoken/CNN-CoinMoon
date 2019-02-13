@@ -28,3 +28,12 @@ export const report = (payload, callback) => {
         callback
     };
 };
+
+// 不再展示爆料ID
+export const dislike_discloseId = (payload, callback) => {
+    return {
+        type: types.APPEND_DISLIKE_DISCLOSEID,
+        payload,
+        callback
+    };
+};

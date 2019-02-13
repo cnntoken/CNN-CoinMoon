@@ -6,6 +6,10 @@ export const LOGIN_DISABLE_LOADER = 'LOGIN_DISABLE_LOADER';
 export const SET_USER_INFO = 'USER/SET_INFO';
 export const CLEAR_USER_INFO = 'USER/CLEAR_INFO';
 
+// 某个用户不感兴趣的内容的id，下次不再展示该内容
+export const APPEND_DISLIKE_DISCLOSEID = 'USER/APPEND_DISLIKE_DISCLOSEID';
+
+
 // APP
 export const APP_INIT = 'APP/INIT';
 

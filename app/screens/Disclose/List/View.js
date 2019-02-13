@@ -149,23 +149,26 @@ class Screen extends Component {
     };
     // 不感兴趣，并删除该条目
     showDisLikeDialog = (item) => {
-        if (!this.props.user.id) {
-            this.props.navigation.navigate('Login', {
-                prevState: this.props.navigation.state
-            });
-            return;
-        }
+        // if (!this.props.user.id) {
+        //     this.props.navigation.navigate('Login', {
+        //         prevState: this.props.navigation.state
+        //     });
+        //     return;
+        // }
         let index = this.state.Items.indexOf(item);
         ActionSheet.show(
             {
                 options: [i18n.t('cancel'), i18n.t('dislike')],
                 cancelButtonIndex: 0,
-                destructiveButtonIndex: 1,
+                // destructiveButtonIndex: 1,
                 // title: i18n.t('delete_disclose_confirm')
             },
             buttonIndex => {
                 if (buttonIndex === 1) {
                     this.state.Items.splice(index, 1);
+                    this.props.dislike_discloseId({
+                        item: item
+                    });
                     this.setState({
                         isModalVisible: false,
                         activeItem: null,
@@ -258,9 +261,13 @@ class Screen extends Component {
                 } else {
                     list = uniqueById(Items);
                 }
+
+                let filterList = list.filter((it)=>{
+                    return this.props.dislikeDiscloseList.indexOf(it._id) === -1;
+                });
                 this.setState({
-                    Items: list,
-                    refreshState: list.length < 1 ? RefreshState.EmptyData : RefreshState.Idle,
+                    Items: filterList,
+                    refreshState: filterList.length < 1 ? RefreshState.EmptyData : RefreshState.Idle,
                     LastEvaluatedKey: LastEvaluatedKey,
                     loadMoreing: false,
                     refreshing: false,

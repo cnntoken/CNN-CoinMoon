@@ -18,7 +18,7 @@ class Container extends Component {
 }
 
 
-function mapStateToProps({userReducer: {info}}) {
+function mapStateToProps({userReducer: {info, dislikeDiscloseList}}) {
     let attributes = info.attributes || {};
     return {
         user: {
@@ -28,7 +28,8 @@ function mapStateToProps({userReducer: {info}}) {
             "picture": attributes.picture,
             "avatar": avatars[getNumByUserId(attributes.sub || '0')],
             "firstEntry": info.firstEntry
-        }
+        },
+        dislikeDiscloseList: dislikeDiscloseList
     };
 }
 
@@ -50,6 +51,10 @@ function mapDispatchToProps(dispatch) {
         // 更新用户行为
         updateAction: (...args) => {
             dispatch(userAction.update(...args))
+        },
+
+        dislike_discloseId: (...args) => {
+            dispatch(userAction.dislike_discloseId(...args))
         },
     };
 }

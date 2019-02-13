@@ -7,7 +7,7 @@ export const getList = (payload, onSuccess, onFail)=> {
         onSuccess,
         onFail
     };
-}
+};
 export const getDetail = (payload,onSuccess, onFail)=> {
     return {
         type: types.FEED_GETDETAIL,
