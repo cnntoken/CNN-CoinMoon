@@ -6,7 +6,8 @@ const styles = StyleSheet.create({
         paddingLeft: 14
     },
     item: {
-        marginRight: 18,
+        marginRight: 13,
+        marginLeft: 6,
         height: 42,
         justifyContent: 'center'
     },
