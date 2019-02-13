@@ -54,3 +54,7 @@ export const FEED_LIST_BYUSERID = 'FEED/LISTBYUSERID';
 // userActions
 export const USERACTION_GETACTION = 'USER/GETACTION';
 export const USERACTION_UPDATE = 'USERACTION/UPDATE';
+
+
+// report
+export const REPORT_RESOURCE = 'REPORT/RESOURCE';
