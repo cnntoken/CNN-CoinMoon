@@ -1,9 +1,6 @@
-import {put, call, select} from 'redux-saga/effects';
-import {Auth} from 'aws-amplify';
+import {call} from 'redux-saga/effects';
 import {$toast} from '../utils';
-import * as Types from '../actions/types';
 import * as services from '../services/userAction';
-import * as navigationActions from 'app/actions/navigationActions';
 
 
 //  查询用户行为集合
@@ -32,5 +29,17 @@ export function* update({payload}) {
         // console.log('publish fail');
         // $toast(`publish fail: ${e.message}`);
         // if (callback) callback(e)
+    }
+}
+
+// 举报接口
+export function* report({payload}) {
+    const {params, callback} = payload;
+    try {
+        const res = yield call(services.report, params);
+        console.log('res', res);
+        if (callback) callback(res);
+    } catch (e) {
+        $toast(`report fail: ${e.message}`);
     }
 }

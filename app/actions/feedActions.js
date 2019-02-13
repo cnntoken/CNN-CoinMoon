@@ -88,3 +88,11 @@ export const feedItemChange = (payload,onSuccess, onFail)=> {
         onFail
     };
 };
+
+
+export const removeItem = (payload)=> {
+    return {
+        type: types.FEED_ROMEVE_ITEM,
+        payload
+    };
+};

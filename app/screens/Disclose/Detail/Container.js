@@ -65,6 +65,9 @@ function mapDispatchToProps(dispatch) {
         updateAction: (...args) => {
             dispatch(userAction.update(...args))
         },
+        report: (...args) => {
+            dispatch(userAction.report(...args))
+        },
     };
 }
 

@@ -1,45 +1,52 @@
 import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
-    item:{
+    item: {
         paddingLeft: 16,
         paddingRight: 16,
         paddingVertical: 10,
     },
-    thumbnail:{
+    thumbnail: {
         width: 30,
         height: 30,
         borderRadius: 15
     },
-    firstRow:{
-        justifyContent:'space-between',
+    firstRow: {
+        justifyContent: 'space-between',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        // marginTop: -15,
+        // marginBottom: 0,
     },
-    actionBtn:{
-        width: 22
+    firstRow_item1: {
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        alignItems: 'center',
     },
-    name:{
+    actionBtn: {
+        width: 22,
+    },
+    name: {
         marginRight: 10,
         color: '#333',
         fontSize: 14,
         fontWeight: 'bold'
     },
-    title:{
+    title: {
         marginTop: 4,
         color: '#333',
         fontSize: 14,
     },
 
-    itemRow:{
+    itemRow: {
         marginTop: 10
     },
-    interact:{
+    interact: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between'
     },
-    image:{
+    image: {
         width: '100%',
         height: 160,
         borderRadius: 6

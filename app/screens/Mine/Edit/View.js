@@ -22,7 +22,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 
 class ViewControl extends PureComponent {
     constructor(props) {
-        super(props)
+        super(props);
         const {userInfo} = props;
         this.state = {
             nick_name: userInfo.attributes.nickname,

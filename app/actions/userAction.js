@@ -19,3 +19,12 @@ export const update = (payload, callback) => {
         callback
     };
 };
+
+// 更新行为
+export const report = (payload, callback) => {
+    return {
+        type: types.USERACTION_REPORT,
+        payload,
+        callback
+    };
+};

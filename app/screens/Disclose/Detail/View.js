@@ -13,12 +13,12 @@ import {
     ListItem, ActionSheet
 } from "native-base";
 import {Col, Row, Grid} from "react-native-easy-grid";
-import {Image, Text, View, DeviceEventEmitter, TouchableWithoutFeedback} from "react-native";
+import {Image, Text, View, DeviceEventEmitter, TouchableWithoutFeedback , TouchableOpacity} from "react-native";
 import Carousel from "react-native-snap-carousel";
 import FooterInput from 'app/components/FooterInput';
 import CommentList from 'app/components/CommentList';
+import Report from 'app/components/Report';
 import {sliderWidth} from "../Publish/styles";
-// import Modal from "react-native-modal";
 import {$toast, getNumByUserId, formatDate} from "app/utils";
 import NavigationService from 'app/navigation/NavigationService';
 import avatars from "../../../services/constants";
@@ -44,6 +44,7 @@ class Page extends Component {
             loadMoreing: false,
             initLoading: true,
             placeholder: '',
+            reasons: []
         }
     }
 
@@ -104,6 +105,7 @@ class Page extends Component {
             activeComment: item,
         })
     };
+
 
     // 评论
     onComment = (item, text, completeCallback) => {
@@ -407,15 +409,13 @@ class Page extends Component {
 
     // 显示删除弹框
     showDeleteDialog = () => {
-        // this.setState({
-        //     isModalVisible: true,
-        // });
+
         ActionSheet.show(
             {
                 options: [i18n.t('cancel'), i18n.t('delete')],
                 cancelButtonIndex: 0,
                 destructiveButtonIndex: 1,
-                title: i18n.t('delete_disclose_confirm')
+                // title: i18n.t('delete_disclose_confirm')
             },
             buttonIndex => {
                 if (buttonIndex === 1) {
@@ -430,31 +430,7 @@ class Page extends Component {
                 }
             }
         );
-
-        // this.props.deleteDisclose({
-        //     id: this.state.data._id,
-        //     callback: (data) => {
-        //         // $toast('删除爆料成功');
-        //         DeviceEventEmitter.emit('updateDiscloseListData', 'delete', this.state.data);
-        //         this.props.navigation.pop();
-        //     }
-        // });
-
-
     };
-
-    // // 确定删除
-    // confirmDelete = () => {
-    //
-    //     this.props.deleteDisclose({
-    //         id: this.state.data._id,
-    //         callback: (data) => {
-    //             // $toast('删除爆料成功');
-    //             DeviceEventEmitter.emit('updateDiscloseListData', 'delete', this.state.data);
-    //             this.props.navigation.pop();
-    //         }
-    //     });
-    // };
 
     viewArticle = (item) => {
         this.props.updateAction({
@@ -473,11 +449,67 @@ class Page extends Component {
 
     };
 
-    // 取消删除
-    cancelDelete = () => {
-        // this.setState({
-        //     isModalVisible: false,
-        // })
+    onSelect = (item) => {
+        let reasons = this.state.reasons;
+        let index = reasons.indexOf(item.value);
+        if (index === -1) {
+            reasons.push(item.value);
+        } else {
+            reasons.splice(index, 1);
+        }
+        this.state.reasons = [...new Set(reasons)];
+        this.setState({})
+    };
+
+    // 展示举报dialog
+    showReportDialog = (item) => {
+        if (!this.props.user.id) {
+            this.props.navigation.navigate('Login', {
+                prevState: this.props.navigation.state
+            });
+            return;
+        }
+        console.log('展示举报dialog', item);
+        this.setState({
+            isModalVisible: true,
+            reasons: []
+        });
+    };
+
+    closeReport = (item) => {
+        this.setState({
+            isModalVisible: false,
+            reasons: []
+        });
+    };
+
+
+    onSubmit = (text, fn) => {
+
+        let reasons = this.state.reasons;
+        this.props.report({
+            params: {
+                text: text,
+                reasons: reasons,
+                type: 'disclose', // 爆料
+                resourceId: this.state.data._id
+            },
+            callback: (data) => {
+                this.setState({
+                    isModalVisible: false,
+                    reasons: []
+                });
+            }
+        });
+
+        this.setState({
+            isModalVisible: false,
+            reasons: []
+        });
+
+        if (fn) {
+            fn();
+        }
     };
 
     render() {
@@ -637,11 +669,44 @@ class Page extends Component {
                                 <View>
                                     {/* 查看次数 */}
                                     <Grid style={styles.viewNum}>
-                                        <Col style={styles.viewNum_image}>
-                                            <Image source={require('app/images/icon_view.png')}/>
+                                        <Col style={{
+                                            width: 20
+                                        }}>
+                                            <Image style={{width: 15, height: 15}}
+                                                   source={require('app/images/icon_view.png')}/>
                                         </Col>
-                                        <Col>
+                                        <Col style={{
+                                            width: 60
+                                        }}>
                                             <Text style={styles.viewNum_text}>{data.viewNum}</Text>
+                                        </Col>
+                                        <Col/>
+                                        {/* 举报 */}
+                                        <Col style={{
+                                            // width: 70,
+                                            alignItems: 'flex-end',
+                                        }}>
+                                            <TouchableOpacity style={{
+                                                width: 50,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                flexDirection: 'row',
+                                            }} block transparent light onPress={this.showReportDialog.bind(this, data)}>
+                                                <Image style={{
+                                                    width: 12,
+                                                    height: 12
+                                                }} source={require('app/images/icon_report.png')}/>
+                                                <Text style={{
+                                                    color: '#999999',
+                                                    fontSize: 12,
+                                                    lineHeight: 17,
+                                                    // width: 60,
+                                                    textAlign: 'center',
+                                                    marginLeft: 5
+                                                }}>{i18n.t('report')}
+                                                </Text>
+                                            </TouchableOpacity>
                                         </Col>
                                     </Grid>
                                     <View style={styles.divider}/>
@@ -695,29 +760,28 @@ class Page extends Component {
                                              reply={this.reply.bind(this)}/>
                                 : null}
                             {/******************************评论列表 end*****************************/}
+
+
                         </View>
 
-                        {/*************删除确认弹框modal***************/}
-                        {/*<View>*/}
-                        {/*<Modal isVisible={this.state.isModalVisible}>*/}
-                        {/*<View>*/}
-                        {/*<Button style={styles.modal_btn} block transparent light*/}
-                        {/*onPress={this.confirmDelete}>*/}
-                        {/*<Text style={styles.modal_btn_del_text}>{i18n.t('disclose.delete')}</Text>*/}
-                        {/*</Button>*/}
-                        {/*<Button style={styles.modal_btn} block transparent light*/}
-                        {/*onPress={this.cancelDelete}>*/}
-                        {/*<Text style={styles.modal_btn_calcel_text}>{i18n.t('disclose.cancel')}</Text>*/}
-                        {/*</Button>*/}
-                        {/*</View>*/}
-                        {/*</Modal>*/}
-                        {/*</View>*/}
+
                     </Content>) : <Content><Spinner size={'small'} color={'#408EF5'}/></Content>
                 }
+
+                {/*************删除确认弹框modal***************/}
+                <View>
+                    <Report
+                        closeReport={this.closeReport}
+                        reasons={this.state.reasons}
+                        onSubmit={this.onSubmit}
+                        isModalVisible={this.state.isModalVisible}
+                        onSelect={this.onSelect}/>
+                </View>
 
                 {/* 底部评论框 */}
                 <FooterInput
                     user={user}
+                    isModalVisible={this.state.isModalVisible}
                     isAnonymity={true}
                     activeComment={activeComment}
                     placeholder={this.state.placeholder}

@@ -8,7 +8,6 @@ import * as authSaga from './authSaga';
 import * as disCloseSaga from './disCloseSaga';
 import * as feedSaga from './feedSaga';
 import * as userActionSaga from './userActionSaga';
-import * as reportSaga from './reportSaga';
 
 export default function* watch() {
     yield all([
@@ -49,9 +48,7 @@ export default function* watch() {
         // 用户行为
         takeEvery(types.USERACTION_GETACTION, userActionSaga.getActions),
         takeEvery(types.USERACTION_UPDATE, userActionSaga.update),
-
-        // 举报
-        takeEvery(types.REPORT_RESOURCE, reportSaga.report)
+        takeEvery(types.USERACTION_REPORT, userActionSaga.report)
 
     ]);
 }

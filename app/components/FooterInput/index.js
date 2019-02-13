@@ -97,18 +97,22 @@ class FooterInput extends Component {
 
     // 键盘弹出事件响应
     keyboardDidShowHandler(event) {
-        this.setState({
-            KeyboardShown: true,
-            footerHeight: event.endCoordinates.height + 70
-        });
+        if (!this.props.isModalVisible) {
+            this.setState({
+                KeyboardShown: true,
+                footerHeight: event.endCoordinates.height + 70
+            });
+        }
     }
 
     //键盘隐藏事件响应
     keyboardDidHideHandler(event) {
-        this.setState({
-            KeyboardShown: false,
-            footerHeight: 49
-        });
+        if (!this.props.isModalVisible) {
+            this.setState({
+                KeyboardShown: false,
+                footerHeight: 49
+            });
+        }
     }
 
     // 强制隐藏键盘
@@ -173,18 +177,6 @@ class FooterInput extends Component {
             this.keyboardDidHideListener.remove();
         }
     }
-
-    // componentDidUpdate(prevProps){
-    //     if(this.props.activeComment !== prevProps.activeComment){
-    //         if(this.props.activeComment){
-    //             if(!this._input._root.isFocused()){
-    //                 this._input._root.focus();
-    //             }
-    //         }else{
-    //             this.dissmissKeyboard();
-    //         }
-    //     }
-    // }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps && nextProps.activeComment && !this._input._root.isFocused()) {

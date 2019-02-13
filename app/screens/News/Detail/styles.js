@@ -53,7 +53,12 @@ const styles = StyleSheet.create({
         // height: 200,
     },
     viewBox:{
-        marginTop: 30
+        marginTop: 30,
+        display: 'flex',
+        // alignItems:'center',
+        // flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     operateBox:{
         marginHorizontal: -20,

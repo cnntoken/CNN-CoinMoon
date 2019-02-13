@@ -79,13 +79,6 @@ class Screen extends Component {
         console.log(data);
     };
 
-    // 点击用户头像跳到该用户的个人中心
-    // clickAvatar = (item) => {
-    //     navigationActions.navigateToMine({
-    //         id: item.userId
-    //     });
-    // };
-
     // 点赞
     like = (item) => {
         if (!this.props.user.id) {
@@ -129,17 +122,17 @@ class Screen extends Component {
     showDeleteDialog = (item) => {
 
         let index = this.state.Items.indexOf(item);
-        this.state.Items.splice(index, 1);
 
         ActionSheet.show(
             {
                 options: [i18n.t('cancel'), i18n.t('delete')],
                 cancelButtonIndex: 0,
                 destructiveButtonIndex: 1,
-                title: i18n.t('delete_disclose_confirm')
+                // title: i18n.t('delete_disclose_confirm')
             },
             buttonIndex => {
                 if (buttonIndex === 1) {
+                    this.state.Items.splice(index, 1);
                     this.props.deleteDisclose({
                         id: item._id,
                         callback: (data) => {
@@ -148,21 +141,48 @@ class Screen extends Component {
                                 activeItem: null,
                                 Items: JSON.parse(JSON.stringify(this.state.Items))
                             });
-
                         }
                     });
                 }
             }
         );
     };
+    // 不感兴趣，并删除该条目
+    showDisLikeDialog = (item) => {
+        if (!this.props.user.id) {
+            this.props.navigation.navigate('Login', {
+                prevState: this.props.navigation.state
+            });
+            return;
+        }
+        let index = this.state.Items.indexOf(item);
+        ActionSheet.show(
+            {
+                options: [i18n.t('cancel'), i18n.t('dislike')],
+                cancelButtonIndex: 0,
+                destructiveButtonIndex: 1,
+                // title: i18n.t('delete_disclose_confirm')
+            },
+            buttonIndex => {
+                if (buttonIndex === 1) {
+                    this.state.Items.splice(index, 1);
+                    this.setState({
+                        isModalVisible: false,
+                        activeItem: null,
+                        Items: JSON.parse(JSON.stringify(this.state.Items))
+                    });
 
+                }
+            }
+        );
+    };
 
     // 渲染列表
     renderListItem = ({item, index, separators}) => {
         const {hasData, Items} = this.state;
         return <DiscloseListItem showDeleteDialog={this.showDeleteDialog.bind(this, item)}
+                                 showDisLikeDialog={this.showDisLikeDialog.bind(this, item)}
                                  separators={separators}
-            // clickAvatar={this.clickAvatar}
                                  like={this.like}
                                  opt={{item, index, hasData, Items, userId: this.props.user.id}}
                                  pressItem={this.pressItem}/>
@@ -360,14 +380,11 @@ class Screen extends Component {
                     refreshState={this.state.refreshState}
                     onHeaderRefresh={this.handleRefresh}
                     onFooterRefresh={this.handleLoadMore}
-
                     // 可选
                     footerRefreshingText={i18n.t('disclose.footerRefreshingText')}
                     footerFailureText={i18n.t('disclose.footerFailureText')}
                     footerNoMoreDataText={i18n.t('disclose.footerNoMoreDataText')}
                     footerEmptyDataText={i18n.t('disclose.footerEmptyDataText')}
-
-
                     refreshControlNormalText={i18n.t('disclose.refreshControlNormalText')}
                     refreshControlPrepareText={i18n.t('disclose.refreshControlPrepareText')}
                     refreshControlLoadingText={i18n.t('disclose.refreshControlLoadingText')}
@@ -420,6 +437,7 @@ class Screen extends Component {
                                 lineHeight: 20
                             }}>{this.props.user.name}</Text>
                         </View>
+
                     </Modal>
                 </View>
 
