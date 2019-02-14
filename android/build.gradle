@@ -29,6 +29,10 @@ allprojects {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
             url "$rootDir/../node_modules/react-native/android"
         }
+        // https://github.com/ivpusic/react-native-image-crop-picker
+        maven { url 'https://maven.google.com' }
+        // https://github.com/ivpusic/react-native-image-crop-picker
+        maven { url "https://jitpack.io" }
     }
 }
 
