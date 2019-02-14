@@ -7,6 +7,7 @@ import {
     Text,
     Button,
     Left,
+    Body,
     Spinner
 } from 'native-base';
 import {Image, View, DeviceEventEmitter, Linking, TouchableOpacity} from 'react-native';
@@ -474,6 +475,7 @@ class ViewControl extends Component {
                             <Image source={require('app/images/icon_back_white.png')} style={{width: 10, height: 18}}/>
                         </Button>
                     </Left>
+                    <Body/>
                 </Header>
                 <Content style={styles.wrap}>
                     {

@@ -43,32 +43,30 @@ export default class Item extends PureComponent {
                                    source={info.user && info.user.picture ? {uri: info.user.picture} : require('app/images/avatar_default.png')}/>
                     </Button>
                 </Left>
-                <Body style={{borderBottomWidth: 0, paddingVertical: 0, marginLeft: 6}}>
-                <TouchableOpacity onPress={this.clickItem}>
-                    <Grid>
-                        <Row style={styles.firstRow}>
-                            <View style={styles.firstRow}>
-                                <Text style={styles.name}>{info.user.nickname}</Text>
-                                <IconText type='time' normal={true} text={formatDate(info.updatedAt)}/>
-                            </View>
-                            <TouchableOpacity block transparent light style={styles.actionBtn}
-                                    onPress={this.showDislikeDialog}><Image
-                                source={require('app/images/icon_more_black.png')}/></TouchableOpacity>
-                        </Row>
-                        <Row><Text numberOfLines={3} style={styles.title}>{info.title}</Text></Row>
-                    </Grid>
-                    {
-                        info.cover &&
-                        <Grid style={styles.itemRow}><Row><ImageContent cover={info.cover} style={styles.image}
-                                                                        images={info.images}/></Row></Grid>
-                    }
-                    <View style={[styles.itemRow, styles.interact]}>
-                        <IconText type='view' text={info.viewNum || 0} onPress={this.clickItem}/>
-                        <IconText type='comment_small' text={info.commentsNum || 0} onPress={this.clickItem}/>
-                        <IconText type={info.userAction.actionValue ? 'liked_small' : 'like_small'}
-                                  text={info.likeNum || 0} onPress={this.like}/>
-                    </View>
-                </TouchableOpacity>
+                <Body style={{borderBottomWidth: 0, paddingTop: 0, paddingBottom:0, marginLeft: 6}}>
+                    <TouchableOpacity onPress={this.clickItem}>
+                        <Grid>
+                            <Row style={[styles.firstRow]}>
+                                <View style={styles.firstRow_item1}>
+                                    <Text style={styles.name}>{info.user.nickname}</Text>
+                                    <IconText type='time' normal={true} text={formatDate(info.updatedAt)}/>
+                                </View>
+                                <TouchableOpacity block transparent light style={styles.actionBtn}
+                                        onPress={this.showDislikeDialog}><Image
+                                    source={require('app/images/icon_more_black.png')}/></TouchableOpacity>
+                            </Row>
+                            <Row><Text numberOfLines={3} style={styles.title}>{info.title}</Text></Row>
+                        </Grid>
+                        {
+                            info.cover && <Grid style={styles.itemRow}><Row><ImageContent cover={info.cover} style={styles.image} images={info.images}/></Row></Grid>
+                        }
+                        <View style={[styles.itemRow, styles.interact]}>
+                            <IconText type='view' text={info.viewNum || 0} onPress={this.clickItem}/>
+                            <IconText type='comment_small' text={info.commentsNum || 0} onPress={this.clickItem}/>
+                            <IconText type={info.userAction.actionValue ? 'liked_small' : 'like_small'}
+                                    text={info.likeNum || 0} onPress={this.like}/>
+                        </View>
+                    </TouchableOpacity>
                 </Body>
             </ListItem>
         )

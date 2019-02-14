@@ -79,10 +79,10 @@ const TabNavigator = createBottomTabNavigator({
                 }
             },
             tabBarLabel: ({focused, horizontal, tintColor}) => {
-                console.log('defaultNavigationOptions tabBarLabel');
                 const style = {
                     color: tintColor,
-                    fontSize: 10
+                    fontSize: 10,
+                    textAlign: 'center'
                 };
                 const {routeName} = navigation.state;
                 let text = '';

@@ -14,14 +14,12 @@ const styles = StyleSheet.create({
     firstRow: {
         justifyContent: 'space-between',
         flexDirection: 'row',
-        alignItems: 'center',
-        // marginTop: -15,
-        // marginBottom: 0,
+        alignItems: 'center'
     },
     firstRow_item1: {
-        justifyContent: 'space-between',
         flexDirection: 'row',
         alignItems: 'center',
+        flex: 1
     },
     actionBtn: {
         width: 22,
