@@ -105,7 +105,7 @@ class FooterInput extends Component {
         if (!this.props.isModalVisible) {
             this.setState({
                 KeyboardShown: true,
-                footerHeight: isAndroid ? 49 : event.endCoordinates.height + 70
+                footerHeight: isAndroid ? 70 : event.endCoordinates.height + 70
             });
         }
     }

@@ -11,13 +11,16 @@ class CustomHeader extends Component {
     render() {
         return (
             <Header transparent>
-                <Left>
+                <Left style={{flex:1}}>
                     <Button transparent onPress={this.props.onCancel}><Text style={{color:'#333333',fontSize: 16}}>{i18n.t('label_cancel')}</Text></Button>
                 </Left>
-                <Body>
+                <Body  style={{flex:1,
+                    // backgroundColor:'#eee',
+                    justifyContent: 'center',
+                    alignItems: 'center'}}>
                     <Image source={require('./img/logo_small.png')} style={{width: 83, height: 45}}/>
                 </Body>
-                <Right/>
+                <Right  style={{flex:1}}/>
             </Header>
         );
     }

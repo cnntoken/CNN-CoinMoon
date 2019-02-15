@@ -9,8 +9,6 @@ import {
 import {$toast} from "app/utils";
 import i18n from "app/i18n";
 
-import {Platform} from 'react-native';
-const isAndroid = Platform.OS === "android";
 
 
 import {Col, Row, Grid} from "react-native-easy-grid";
@@ -26,6 +24,8 @@ import styles from './styles';
 import Modal from "react-native-modal";
 import reasons from 'app/data/reportReason';
 
+
+const isAndroid = Platform.OS === "android";
 
 class Report extends Component {
 
