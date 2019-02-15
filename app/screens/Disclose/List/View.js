@@ -369,11 +369,21 @@ class Screen extends Component {
         return (
             <Container>
                 <Header>
-                    <Left/>
-                    <Body>
+                    <Left style={{
+                        flex: 1,
+                        // backgroundColor:'#eee',
+                    }}/>
+                    <Body style={{
+                        // backgroundColor:'#eee',
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}>
                     <Title style={styles.title}>{i18n.t('disclose.title')}</Title>
                     </Body>
-                    <Right>
+                    <Right style={{
+                        flex: 1,
+                    }}>
                         <Button transparent light onPress={this.writeDisclose}>
                             <Image style={styles.writeDiscloseBtn}
                                    source={require('app/images/btn_post.png')}/>

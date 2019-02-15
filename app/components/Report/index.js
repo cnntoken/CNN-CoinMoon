@@ -9,6 +9,10 @@ import {
 import {$toast} from "app/utils";
 import i18n from "app/i18n";
 
+import {Platform} from 'react-native';
+const isAndroid = Platform.OS === "android";
+
+
 import {Col, Row, Grid} from "react-native-easy-grid";
 import {
     Text,
@@ -40,10 +44,11 @@ class Report extends Component {
     // 键盘弹出事件响应
     keyboardDidShowHandler(event) {
         if (this.props.isModalVisible && this.props.reasons.indexOf(4) > -1) {
-            this.setState({
-                KeyboardShown: true,
-                mb: event.endCoordinates.height
-            })
+            let mb =
+                this.setState({
+                    KeyboardShown: true,
+                    mb: isAndroid ? 0 : event.endCoordinates.height
+                })
         }
     }
 
@@ -221,16 +226,16 @@ class Report extends Component {
                         </Item>
                     </Form>
 
-                    <View  style={styles.footer_btn}>
+                    <View style={styles.footer_btn}>
                         <Grid>
                             <Col/>
                             <Col style={{
-                                width:40,
+                                width: 40,
                             }}>
                                 <Button style={{
                                     // width:40,
                                     // backgroundColor:'#eee'
-                                }}  disabled={disabled} transparent onPress={this.onSubmit}  light>
+                                }} disabled={disabled} transparent onPress={this.onSubmit} light>
                                     <Text style={disabled ? {
                                         color: '#999999',
                                         fontSize: 16,

@@ -19,6 +19,8 @@ import {
     StyleSheet
 } from "react-native";
 
+const isAndroid = Platform.OS === "android";
+
 const computeStyles = (height) => {
     return StyleSheet.create({
 
@@ -66,7 +68,10 @@ const computeStyles = (height) => {
             height: 33,
         },
         footer_input: {
-            height: 33,
+            // height: 33,
+            // // textAlignVertical:'bottom'
+            // // fontSize:12,
+            // lineHeight:33
         },
         footer_col_label: {
             width: 36,
@@ -100,7 +105,7 @@ class FooterInput extends Component {
         if (!this.props.isModalVisible) {
             this.setState({
                 KeyboardShown: true,
-                footerHeight: event.endCoordinates.height + 70
+                footerHeight: isAndroid ? 49 : event.endCoordinates.height + 70
             });
         }
     }

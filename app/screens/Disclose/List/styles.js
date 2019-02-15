@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     //////////////////// header 部分
     title: {
         color: '#fff',
-        fontSize: 24
+        fontSize: 24,
     },
     writeDiscloseBtn: {
         width: 27,
