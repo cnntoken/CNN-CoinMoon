@@ -106,16 +106,20 @@ class Index extends PureComponent<Props, State> {
     }
 
     _onRefresh = ()=>{
-        // console.log('--------------  触发onRefresh --------------')
-        this.setState({
-            refreshing: true,
-            loadingText: this.props.refreshControlPrepareText
-        })
+        console.log('--------------  触发onRefresh --------------')
+        if(Platform.OS === 'ios'){
+            this.setState({
+                refreshing: true,
+                loadingText: this.props.refreshControlPrepareText
+            })
+        }else{
+            this.refreshData()
+        }
+        
     }
     _onScrollEndDrag = ()=>{
-        if(this.state.refreshing){
-           
-           this.refreshData();
+        if(Platform.OS === 'ios' && this.state.refreshing){
+            this.refreshData();
         }
     }
     refreshData = ()=>{

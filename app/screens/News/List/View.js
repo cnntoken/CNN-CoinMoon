@@ -179,6 +179,7 @@ class ViewControl extends Component {
                     }
 
                     return <RefreshListView
+                        keyExtractor={(item) => item._id}
                         key={index}
                         tabLabel={i18n.t(`page_main.category_${cate}`)}
                         data={filterFeedList || feedList}
