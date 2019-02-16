@@ -443,7 +443,6 @@ class Screen extends Component {
                                 textAlign: 'center'
                             }}>{i18n.t('firstEntryDisclose')}</Text>
                             <Image style={{
-                                color: '#030303',
                                 width: 50,
                                 height: 50,
                                 marginTop: 11,

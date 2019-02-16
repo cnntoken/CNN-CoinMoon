@@ -11,7 +11,6 @@ import {
     Textarea,
     Left, Body, Right,
 } from "native-base";
-
 import Spinner from 'react-native-loading-spinner-overlay';
 // import Permissions from 'react-native-permissions'
 
@@ -47,7 +46,7 @@ class Screen extends Component {
     }
 
     selectPhotoTapped = () => {
-
+        console.log(`selectPhotoTapped`)
         if (this.state.images.length > 9) {
             // todo 国际化
             $toast(i18n.t('tooimages'));
@@ -297,9 +296,10 @@ class Screen extends Component {
                 />
                 <Header style={styles.publish_header}>
                     <Left>
-                        <Button transparent onPress={this.cancelWriteDisclose}>
+                        <TouchableOpacity  onPress={this.cancelWriteDisclose}>
                             <Text style={styles.btnText}>{i18n.t('disclose.cancel')}</Text>
-                        </Button>
+                            
+                        </TouchableOpacity>
                     </Left>
                     <Body>
                     {/* 人物头像 */}
@@ -340,11 +340,12 @@ class Screen extends Component {
                         <View style={styles.items}>
                             {
                                 images.map((item, index) => {
-                                    return <View>
+                                    return <View key={index}>
                                         {
                                             index !== images.length - 1 ?
                                                 <View style={styles.item}>
                                                     <TouchableOpacity
+                                                        style={styles.itemImgBox}
                                                         onPress={this.previewImage.bind(this, item, index)}>
                                                         <Image style={styles.itemImg} source={{uri: item.dataurl}}/>
                                                     </TouchableOpacity>
@@ -356,8 +357,8 @@ class Screen extends Component {
                                                     </TouchableOpacity>
                                                 </View> :
                                                 <View style={styles.item}>
-                                                    <TouchableOpacity onPress={this.addImage.bind(this, item, index)}>
-                                                        <Image style={styles.itemImg} source={item.dataurl}/>
+                                                    <TouchableOpacity onPress={this.addImage}>
+                                                        <Image style={[styles.itemImg,{position:'relative'}]} source={item.dataurl}/>
                                                     </TouchableOpacity>
                                                 </View>
                                         }

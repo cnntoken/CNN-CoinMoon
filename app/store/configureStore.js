@@ -15,7 +15,7 @@ const config = {
     storage,
     // 黑名单数组，可以忽略一些 reducers 中的 key
     blacklist: ['nav', 'loadingReducer','feedReducer'],
-    debug: true //to get useful logging
+    // debug: true //to get useful logging
 };
 
 const middleware = [];

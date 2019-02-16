@@ -52,7 +52,10 @@ export default class Item extends PureComponent {
                                     <IconText type='time' normal={true} text={formatDate(info.updatedAt)}/>
                                 </View>
                                 <TouchableOpacity block transparent light style={styles.actionBtn}
-                                        onPress={this.showDislikeDialog}><Image
+                                        onPress={this.showDislikeDialog}>
+                                        <Image
+                                        resizeMode='center'
+                                        style={{paddingVertical:10,paddingHorizontal:15}}
                                     source={require('app/images/icon_more_black.png')}/></TouchableOpacity>
                             </Row>
                             <Row><Text numberOfLines={3} style={styles.title}>{info.title}</Text></Row>

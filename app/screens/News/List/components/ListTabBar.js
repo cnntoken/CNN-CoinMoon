@@ -1,13 +1,10 @@
 import React, {PureComponent} from 'react';
 import styles from './styles';
 import {
-    Container,
-    Header,
-    Text,
-    Button
+    Header
 } from "native-base";
-import {ScrollView,View,Animated,TouchableOpacity, Dimensions} from 'react-native';
-const WINDOW_WIDTH = Dimensions.get('window').width;
+import {ScrollView,View,Animated,TouchableOpacity} from 'react-native';
+// const WINDOW_WIDTH = Dimensions.get('window').width;
 
 
 class TabBar extends PureComponent{
@@ -60,31 +57,13 @@ class TabBar extends PureComponent{
 }
 
 class ListTabBar extends PureComponent {
-    renderTab2 = (name, page, isTabActive, onPressHandler)=>{
-        console.log('render tab', name, page,isTabActive)
-        const styleArr = [styles.text];
-        if(isTabActive){
-            styleArr.push(styles.active)
-        }
-
-        return <TouchableOpacity
-          key={`${name}_${page}`}
-          onPress={() => onPressHandler(page)}
-        >
-          <View style={styles.item}>
-            <Text style={styleArr}>
-              {name}
-            </Text>
-          </View>
-        </TouchableOpacity>;
-    };
     renderTab = (name, page, isActive)=>{
         return <TabBar key={`${name}_${page}`} name={name} page={page} isActive={isActive} onPress={this.props.goToPage}/>
     }
     render() {
         console.log(this.props)
         return (
-            <Header style={{paddingLeft: 0, paddingRight:0}} iosBarStyle='light-content'>
+            <Header style={{paddingLeft: 0, paddingRight:0, alignItems:'center'}} iosBarStyle='light-content'>
                     <ScrollView
                         style={styles.wrap}
                         horizontal={true}

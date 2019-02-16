@@ -472,7 +472,7 @@ class ViewControl extends Component {
                 <Header>
                     <Left>
                         <Button transparent onPress={this.goBack}>
-                            <Image source={require('app/images/icon_back_white.png')} style={{width: 10, height: 18}}/>
+                            <Image source={require('app/images/icon_back_white.png')}/>
                         </Button>
                     </Left>
                     <Body/>

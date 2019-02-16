@@ -17,8 +17,7 @@ const styles = StyleSheet.create({
     image: {
         width: img_width,
         height: img_width,
-        borderRadius: 8,
-        resizeMode: 'cover'
+        borderRadius: 8
     },
 
     avatar: {

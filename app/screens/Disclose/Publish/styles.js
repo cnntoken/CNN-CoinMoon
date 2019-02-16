@@ -81,25 +81,30 @@ export default StyleSheet.create({
         height: 75,
         position: 'relative',
     },
+    itemImgBox:{
+        width: 75,
+        height: 75,
+        position: 'absolute',
+        zIndex: 1,
+    },
     itemImg: {
         width: 75,
         height: 75,
         borderRadius: 8,
-        position: 'absolute',
-        zIndex: 1,
     },
     delBtn: {
         position: 'absolute',
-        top: -30,
-        right: 10,
+        right: 0,
+        top: 0,
+        width: 24,
+        height: 24,
+        marginTop: -12,
+        marginRight: -12,
         zIndex: 9,
     },
     delIcon: {
         width: 24,
-        height: 24,
-        // borderRadius: 30,
-        position: 'absolute',
-        zIndex: 19,
+        height: 24
     },
     btnText: {
         color: '#333333',

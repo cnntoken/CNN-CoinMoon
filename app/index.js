@@ -42,7 +42,6 @@ export default class Index extends Component {
             <Provider store={store}>
                 <PersistGate
                     loading={<ActivityIndicator/>}
-                    // loading={null}
                     persistor={persistor}
                 >
                     <StyleProvider style={getTheme(variables)}>

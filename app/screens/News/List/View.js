@@ -202,52 +202,6 @@ class ViewControl extends Component {
                         refreshControlLoadingText={i18n.t('disclose.refreshControlLoadingText')}
                     />
                 })}
-                {/* <RefreshListView
-                    tabLabel={i18n.t('page_main.category_news')}
-                    data={this.props.news}
-                    refreshState={this.state.news.refreshState}
-                    renderItem={(...args)=>this.renderItem('news',...args)}
-                    onHeaderRefresh={(...args) => {
-                        this.onRefresh('news', ...args)
-                    }}
-                    onFooterRefresh={(...args) => {
-                        this.onLoadMore('news', ...args)
-                    }}
-
-                    // 可选
-                    footerRefreshingText={i18n.t('disclose.footerRefreshingText')}
-                    footerFailureText={i18n.t('disclose.footerFailureText')}
-                    footerNoMoreDataText={i18n.t('disclose.footerNoMoreDataText')}
-                    footerEmptyDataText={i18n.t('disclose.footerEmptyDataText')}
-
-
-
-                    refreshControlNormalText={i18n.t('disclose.refreshControlNormalText')}
-                    refreshControlPrepareText={i18n.t('disclose.refreshControlPrepareText')}
-                    refreshControlLoadingText={i18n.t('disclose.refreshControlLoadingText')}
-                />
-                <RefreshListView
-                    tabLabel={i18n.t('page_main.category_info')}
-                    data={this.props.info}
-                    refreshState={this.state.info.refreshState}
-                    renderItem={(...args)=>this.renderItem('info',...args)}
-                    onHeaderRefresh={(...args) => {
-                        this.onRefresh('info', ...args)
-                    }}
-                    onFooterRefresh={(...args) => {
-                        this.onLoadMore('info', ...args)
-                    }}
-
-                    // 可选
-                    footerRefreshingText={i18n.t('disclose.footerRefreshingText')}
-                    footerFailureText={i18n.t('disclose.footerFailureText')}
-                    footerNoMoreDataText={i18n.t('disclose.footerNoMoreDataText')}
-                    footerEmptyDataText={i18n.t('disclose.footerEmptyDataText')}
-
-                    refreshControlNormalText={i18n.t('disclose.refreshControlNormalText')}
-                    refreshControlPrepareText={i18n.t('disclose.refreshControlPrepareText')}
-                    refreshControlLoadingText={i18n.t('disclose.refreshControlLoadingText')}
-                /> */}
             </ScrollableTabView>
         );
     }

@@ -6,9 +6,7 @@ import {
     Text,
     Button,
     Left,
-    Right,
     Body,
-    Title,
     Label
 } from "native-base";
 import {Image, View, TouchableOpacity} from 'react-native';
@@ -132,6 +130,7 @@ class ViewControl extends PureComponent {
                             <Image source={require('app/images/icon_back_black.png')} style={{width: 10, height: 18}}/>
                         </Button>
                     </Left>
+                    <Body/>
                 </Header>
                 <Content style={styles.content}>
                     <View style={styles.uploadbox}>
@@ -139,7 +138,7 @@ class ViewControl extends PureComponent {
                             <View style={styles.imgbox}>
                                 <Image
                                     source={image && image.dataUrl ? {uri: image.dataUrl} : (avatar ? {uri: avatar} : require('app/images/avatar_default.png'))}
-                                    style={{width: 80, height: 80}}/>
+                                    style={{width: 80, height: 80, borderRadius: 40}}/>
                                 <Image source={require('app/images/icon_camera.png')} style={styles.camera}/>
                             </View>
                         </TouchableOpacity>
