@@ -27,7 +27,8 @@ import FastImage from 'react-native-fast-image'
 
 const btn_img_soruce = {
     dataurl: require("app/images/btn_add.png"),
-    fileName: "btn_add.png"
+    fileName: "btn_add.png",
+    isPreview: 'no'
 };
 
 class Screen extends Component {
@@ -48,7 +49,6 @@ class Screen extends Component {
     selectPhotoTapped = () => {
         console.log(`selectPhotoTapped`)
         if (this.state.images.length > 9) {
-            // todo 国际化
             $toast(i18n.t('tooimages'));
             return;
         }
@@ -75,14 +75,16 @@ class Screen extends Component {
                 mediaType: 'photo',
                 maxFiles: 10 - length,
             }).then(images => {
-                console.log(images);
+                // console.log(images);
+                // 如果大于9张图片 为了适配 Android
+                if (images.length + this.state.images.length > 10) {
+                    $toast(i18n.t('tooimages'));
+                    return;
+                }
                 images.forEach((item) => {
                     item.dataurl = `data:${item.mime};base64,${item.data}`
                 });
-                this.state.images.splice(length - 2, 0, ...images);
-                // this.setState({
-                //     images: [...images, btn_img_soruce]
-                // });
+                this.state.images.splice(length - 1, 0, ...images);
                 this.setState({});
             }).catch((e) => {
                 if (e && e.code === 'E_PERMISSION_MISSING') {
@@ -96,8 +98,12 @@ class Screen extends Component {
 
     delImage = (item, index) => {
         // console.log(item, index);
-        this.state.images.splice(index, 1);
-        this.setState({});
+        if (this.state.images.length > 1) {
+            this.state.images.splice(index, 1);
+            this.setState({
+                images: [...this.state.images]
+            });
+        }
     };
 
     previewImage = (item, index) => {
@@ -160,6 +166,11 @@ class Screen extends Component {
         }
         // 发布图片和文字
         let images = this.state.images.slice(0, this.state.images.length - 1);
+        // 如果大于9张图片 (为了适配Android)
+        if (images.length > 9) {
+            $toast(i18n.t('tooimages'));
+            return;
+        }
         let datas = [];
         images.forEach((item) => {
             datas.push({
@@ -216,9 +227,20 @@ class Screen extends Component {
 
     // 预览页中删除
     previewDel = () => {
-        if (this.state.images.length > 1) {
-            this.state.images.splice(this.state.activeSlide, 1);
-            this.setState({});
+        let activeSlide = this.state.activeSlide;
+        console.log('*****', this.state.images, activeSlide, '*****');
+        if (this.state.images.length > 1 && this.state.images[activeSlide].isPreview !== 'no') {
+            this.state.images.splice(activeSlide, 1);
+            if (this.state.images[0].isPreview === 'no') {
+                this.preview2Publish();
+            } else {
+                this._carousel.snapToItem(activeSlide - 1 > 0 ? activeSlide - 1 : 0);
+            }
+            this.setState({
+                images: [...this.state.images],
+            }, () => {
+
+            });
         }
     };
 
@@ -276,9 +298,11 @@ class Screen extends Component {
                             console.log('onBeforeSnapToItem', index);
                             // this.setState({activeSlide: index})
                         }}
+                        enableMomentum={true}
                         onSnapToItem={(index) => {
                             console.log('onSnapToItem', index);
-                            this.setState({activeSlide: index})
+                            this.setState({activeSlide: index});
+
                         }}
                     />
                 </Content>
@@ -296,9 +320,9 @@ class Screen extends Component {
                 />
                 <Header style={styles.publish_header}>
                     <Left>
-                        <TouchableOpacity  onPress={this.cancelWriteDisclose}>
+                        <TouchableOpacity onPress={this.cancelWriteDisclose}>
                             <Text style={styles.btnText}>{i18n.t('disclose.cancel')}</Text>
-                            
+
                         </TouchableOpacity>
                     </Left>
                     <Body>
@@ -358,7 +382,8 @@ class Screen extends Component {
                                                 </View> :
                                                 <View style={styles.item}>
                                                     <TouchableOpacity onPress={this.addImage}>
-                                                        <Image style={[styles.itemImg,{position:'relative'}]} source={item.dataurl}/>
+                                                        <Image style={[styles.itemImg, {position: 'relative'}]}
+                                                               source={item.dataurl}/>
                                                     </TouchableOpacity>
                                                 </View>
                                         }
