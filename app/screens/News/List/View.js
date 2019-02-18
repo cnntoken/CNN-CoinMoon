@@ -147,7 +147,7 @@ class ViewControl extends Component {
             {
                 options: [i18n.t('cancel'), i18n.t('dislike')],
                 cancelButtonIndex: 0,
-                // destructiveButtonIndex: 1,
+                // destructiveButtonIndex: 1
             },
             buttonIndex => {
                 if (buttonIndex === 1) {

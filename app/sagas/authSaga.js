@@ -44,11 +44,11 @@ export function* login({payload, callback}) {
 }
 
 export function* register({payload, callback}) {
-    console.log(payload)
+    // console.log(payload)
     const {email, password} = payload;
     const essentialAttributes = userService.generateRandomAttributes();
     try {
-        const res = yield Auth.signUp({
+        yield Auth.signUp({
             username: email,
             password,
             attributes: {
@@ -59,7 +59,12 @@ export function* register({payload, callback}) {
         });
         callback && callback();
     } catch (e) {
-        $toast(`${i18n.t('page_register.reg_fail')}: ${e.message}`);
+        // console.log(e);
+        if(e.code === 'UsernameExistsException'){
+            $toast(`${i18n.t('page_register.reg_fail')}: ${i18n.t('page_register.username_exists')}`);
+        }else{
+            $toast(`${i18n.t('page_register.reg_fail')}: ${e.message}`);
+        }
     }
 }
 

@@ -104,15 +104,16 @@ class ViewControl extends PureComponent {
                 mediaType: 'photo',
                 maxFiles: 1,
             }).then(response => {
-                console.log(response);
+                // console.log(response);
                 let image = Object.assign(response, {dataUrl: `data:${response.mime};base64,${response.data}`});
                 this.setState({image: image, needupload: true});
+            }).catch((e) => {
+                if (e && e.code === 'E_PERMISSION_MISSING') {
+                    $toast(i18n.t('no_access_photo'));
+                }
             });
         } catch (e) {
-            // console.log(e);
-            if(e && e.code === 'E_PERMISSION_MISSING'){
-                $toast(i18n.t('no_access_photo'));
-            }
+            console.log(e);
         }
     };
 

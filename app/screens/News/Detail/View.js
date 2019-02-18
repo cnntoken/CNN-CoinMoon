@@ -13,13 +13,13 @@ import {
 import {Image, View, DeviceEventEmitter, Linking, TouchableOpacity} from 'react-native';
 import styles from './styles';
 import moment from 'moment';
-import WebContent from './components/WebContent';
+import WebContent from 'app/components/WebContent';
 import IconText from 'app/components/IconText';
 import FooterInput from 'app/components/FooterInput';
 import CommentList from 'app/components/CommentList';
 import {$toast, cloneByJson} from 'app/utils';
 import i18n from 'app/i18n';
-import {Col, Row, Grid} from "react-native-easy-grid";
+import {Col, Grid} from "react-native-easy-grid";
 import Report from 'app/components/Report';
 
 class ViewControl extends Component {

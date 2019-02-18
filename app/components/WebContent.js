@@ -1,13 +1,18 @@
 import React, {PureComponent} from 'react';
 import { WebView } from 'react-native-webview';
-
+import { Spinner } from 'native-base';
+import {Platform,ScrollView} from 'react-native';
 class WebContent extends PureComponent {
     constructor(props){
         super(props)
-        const {html} = props;
+        let {html, url} = props;
+        if(html){
+            html = this.generateDOM(html);
+        }
         this.state = {
             WebViewHeight: 0,
-            html: this.generateDOM(html)
+            url,
+            source: url ? {uri: url} :{html}
         }
     }
     generateDOM = (content)=>{
@@ -53,6 +58,9 @@ class WebContent extends PureComponent {
             this.props.onReady && this.props.onReady()
         }
     }
+    indicatorLoadingView = ()=>{
+        return <Spinner size={'small'} color={'#408EF5'}/>
+    }
     webViewLoaded = ()=>{
         this._webview.injectJavaScript(`
             var height = document.body.scrollHeight;
@@ -62,24 +70,32 @@ class WebContent extends PureComponent {
     }
     render() {
         const {style={}} = this.props;
-        const {html,WebViewHeight} = this.state;
+        const {WebViewHeight,source} = this.state;
         const newStyle = {...style}
         if(WebViewHeight){
             newStyle.height = WebViewHeight
         }
-        return (
-            <WebView
-                ref={(node)=>{this._webview = node}}
-                originWhitelist={['*']}
-                source={{ html }}
-                style={newStyle}
-                onLoad={this.webViewLoaded}
-                onMessage={this.handleMessage}
-                javaScriptEnabled={true}
-                injectedJavaScript='true'
-                mixedContentMode='compatibility'
-            />
-        );
+        const Web = <WebView
+                    // startInLoadingState={true}
+                    // renderLoading={this.indicatorLoadingView}
+                    ref={(node)=>{this._webview = node}}
+                    originWhitelist={['*']}
+                    source={source}
+                    style={newStyle}
+                    onLoad={this.webViewLoaded}
+                    onMessage={this.handleMessage}
+                    javaScriptEnabled={true}
+                    injectedJavaScript='true'
+                    mixedContentMode='compatibility'
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
+                />
+        if(Platform.OS === 'android'){
+            return <ScrollView showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
+                {Web}
+            </ScrollView>
+        }
+        return Web;
     }
 }
 

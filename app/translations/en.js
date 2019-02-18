@@ -38,7 +38,8 @@ export default {
 
         verifing: '인증중입니다~',
 
-        resend_tip: '인증코드를 재전송하였습니다. 메일을 확인하여 주세요'
+        resend_tip: '인증코드를 재전송하였습니다. 메일을 확인하여 주세요',
+        username_exists: '이미 가입된 이메일입니다'
 
 
     },

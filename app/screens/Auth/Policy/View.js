@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import styles from './styles';
-import {Container} from 'native-base';
+import {Container,Spinner} from 'native-base';
+import {View} from 'react-native';
 import PropTypes from 'prop-types'
 import CustomHeader from '../Components/Header'
-import { WebView } from 'react-native-webview';
-
+import WebContent from 'app/components/WebContent';
 class ViewControl extends Component {
     static propTypes = {
         navigation: PropTypes.object.isRequired
@@ -16,23 +16,28 @@ class ViewControl extends Component {
         const policy = navigation.getParam('policy');
         const url = policy === 'privacy' ? 'http://a.fslk.co/cnn/h5/personalInfoCollecttion.html' : 'http://a.fslk.co/cnn/h5/radius.html';
         this.state = {
-            url
+            url,
+            loading: true
         }
     }
 
     goBack = () => {
         this.props.navigation.pop()
     }
-
+    onReady = ()=>{
+        this.setState({
+            loading: false
+        })
+    }
     render() {
+        const {loading} = this.state;
         return (
             <Container>
                 <CustomHeader onCancel={this.goBack}/>
-                <WebView
-                    originWhitelist={['*']}
-                    source={{ uri: this.state.url }}
-                    style={styles.container}
-                />
+                <View style={styles.container}>
+                    {loading && <Spinner size={'small'} color={'#408EF5'}/>}
+                    <WebContent url={this.state.url} onReady={this.onReady}/>
+                </View>
             </Container>
         );
     }
