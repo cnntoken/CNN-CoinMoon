@@ -41,7 +41,6 @@ export function* upload({payload}) {
         });
         if (callback) callback(res);
     } catch (e) {
-        debugger;
         if (callback) callback({
             error: 'upload fail'
         });
@@ -57,8 +56,8 @@ export function* publish({payload}) {
         if (callback) callback(res);
     } catch (e) {
         console.log('publish fail');
-        $toast(`publish fail: ${e.message}`);
-
+        if (callback) callback({error: e.message});
+        // $toast(`publish fail: ${e.message}`);
     }
 }
 

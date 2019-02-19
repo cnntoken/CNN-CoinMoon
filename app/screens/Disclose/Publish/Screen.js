@@ -125,6 +125,13 @@ class Screen extends Component {
             userId: this.props.user.id || '',
             userName: this.props.user.name || '',
             callback: (data) => {
+                if (data.error) {
+                    $toast(i18n.t('publish_fail'));
+                    this.setState({
+                        publishing: false
+                    });
+                    return;
+                }
                 let images = this.state.images.slice(-1);
                 this.setState({
                     images: images,
@@ -137,6 +144,12 @@ class Screen extends Component {
                 navigationActions.navigateToDiscloseList();
             }
         });
+        // 最大15s后去掉遮罩
+        setTimeout(() => {
+            this.setState({
+                publishing: false
+            });
+        }, 15000);
     };
 
     // 发布爆料
@@ -198,6 +211,8 @@ class Screen extends Component {
                 this.handlePublish(title, uris);
             }
         });
+
+
     };
 
     textareaChange = (text) => {

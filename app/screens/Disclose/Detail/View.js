@@ -13,7 +13,15 @@ import {
     ListItem, ActionSheet
 } from "native-base";
 import {Col, Row, Grid} from "react-native-easy-grid";
-import {Image, Text, View, DeviceEventEmitter, TouchableWithoutFeedback, TouchableOpacity} from "react-native";
+import {
+    Image,
+    Text,
+    View,
+    DeviceEventEmitter,
+    TouchableWithoutFeedback,
+    TouchableOpacity,
+    Platform
+} from "react-native";
 import Carousel from "react-native-snap-carousel";
 import FooterInput from 'app/components/FooterInput';
 import CommentList from 'app/components/CommentList';
@@ -412,7 +420,18 @@ class Page extends Component {
 
         ActionSheet.show(
             {
-                options: [i18n.t('cancel'), i18n.t('delete')],
+                // options: [i18n.t('cancel'), i18n.t('delete')],
+                options: Platform.OS === 'ios' ? [i18n.t('cancel'), i18n.t('delete')] : [
+                    {
+                        text: i18n.t('cancel'),
+                        icon: "close",
+                        iconColor: "#333"
+                    }, {
+                        text: i18n.t('delete'),
+                        icon: "trash",
+                        iconColor: "#fa213b"
+                    },
+                ],
                 cancelButtonIndex: 0,
                 destructiveButtonIndex: 1,
                 // title: i18n.t('delete_disclose_confirm')
