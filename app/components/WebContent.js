@@ -38,21 +38,30 @@ class WebContent extends PureComponent {
             </head>
             <body>
                 ${content}
-
+                <div id="rn-webview-bottom-box-sign"></div>
                 <script>
-                    document.addEventListener("DOMContentLoaded", function(event) {
-                        var height = document.body.scrollHeight;
-                        window.ReactNativeWebView.postMessage(Math.ceil(height).toFixed(0))
-                    });
+                    var global_height = 0;
+                    var globalPostDocumentHeight = function(){
+                        var $signbox = document.getElementById('rn-webview-bottom-box-sign')
+                        var height = $signbox ? $signbox.offsetTop : document.body.scrollHeight;
+                        if(height !== global_height){
+                            global_height = height;
+                            window.ReactNativeWebView.postMessage(Math.ceil(height).toFixed(0));
+                        }
+                    };
+                    document.addEventListener("DOMContentLoaded", globalPostDocumentHeight);
+                    setTimeout(globalPostDocumentHeight,400);
                 </script>
             </body>
             </html>
         `
     }
     handleMessage = (event)=>{
+        console.log(`handelMessaeg`, parseInt(event.nativeEvent.data))
         this.setState({
-            WebViewHeight: parseInt(event.nativeEvent.data)
+            WebViewHeight: parseInt(event.nativeEvent.data,10)
         })
+        
         if(!this.isReady){
             this.isReady = true;
             this.props.onReady && this.props.onReady()
@@ -63,13 +72,16 @@ class WebContent extends PureComponent {
     }
     webViewLoaded = ()=>{
         this._webview.injectJavaScript(`
-            var height = document.body.scrollHeight;
-            
-            window.ReactNativeWebView.postMessage(Math.ceil(height).toFixed(0))
+            if(typeof globalPostDocumentHeight == 'function'){
+                globalPostDocumentHeight();
+            }else{
+                var height = document.body.scrollHeight;
+                window.ReactNativeWebView.postMessage(Math.ceil(height).toFixed(0));
+            }
         `)
     }
     render() {
-        const {style={}} = this.props;
+        const {style={},showVerticalIndictor=false} = this.props;
         const {WebViewHeight,source} = this.state;
         const newStyle = {...style}
         if(WebViewHeight){
@@ -91,7 +103,10 @@ class WebContent extends PureComponent {
                     showsHorizontalScrollIndicator={false}
                 />
         if(Platform.OS === 'android'){
-            return <ScrollView showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
+            return <ScrollView
+                showsHorizontalScrollIndicator={false} 
+                showsVerticalScrollIndicator={showVerticalIndictor} 
+                style={{flex:1}}>
                 {Web}
             </ScrollView>
         }
