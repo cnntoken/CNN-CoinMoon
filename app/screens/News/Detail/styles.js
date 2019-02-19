@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
     wrap:{
         // paddingTop: 20,
         // paddingBottom: 100,
+        flex: 1,
         paddingHorizontal: 20
     },
     content:{

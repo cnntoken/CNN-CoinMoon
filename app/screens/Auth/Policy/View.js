@@ -34,9 +34,9 @@ class ViewControl extends Component {
         return (
             <Container>
                 <CustomHeader onCancel={this.goBack}/>
-                <View style={styles.container}>
+                <View style={{flex:1}}>
                     {loading && <Spinner size={'small'} color={'#408EF5'}/>}
-                    <WebContent url={this.state.url} onReady={this.onReady}/>
+                    <WebContent url={this.state.url} onReady={this.onReady} showVerticalIndictor={true}/>
                 </View>
             </Container>
         );
