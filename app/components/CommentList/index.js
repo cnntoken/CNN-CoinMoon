@@ -14,7 +14,7 @@ import Modal from "react-native-modal";
 
 import {Col, Row, Grid} from "react-native-easy-grid";
 
-import {Image, Text, View, Keyboard} from "react-native";
+import {Image, Text, View, Keyboard, Platform} from "react-native";
 
 import {formatDate} from "app/utils";
 import FastImage from 'react-native-fast-image'
@@ -59,7 +59,18 @@ class CommentList extends Component {
         console.log(item);
         ActionSheet.show(
             {
-                options: [i18n.t('cancel'), i18n.t('delete')],
+                // options: [i18n.t('cancel'), i18n.t('delete')],
+                options: Platform.OS === 'ios' ? [i18n.t('cancel'), i18n.t('delete')] : [
+                    {
+                        text: i18n.t('cancel'),
+                        icon: "close",
+                        iconColor: "#333"
+                    }, {
+                        text: i18n.t('delete'),
+                        icon: "trash",
+                        iconColor: "#fa213b"
+                    },
+                ],
                 cancelButtonIndex: 0,
                 destructiveButtonIndex: 1,
                 title: i18n.t('delete_comment_confirm')
@@ -201,7 +212,8 @@ class CommentList extends Component {
                                                         source={require('app/images/icon_comment_small.png')}/>
                                                 </Col>
                                                 <Col>
-                                                    <Text style={styles.comments_btn_text}>{i18n.t('reply_comment')}</Text>
+                                                    <Text
+                                                        style={styles.comments_btn_text}>{i18n.t('reply_comment')}</Text>
                                                 </Col>
                                             </Grid>
                                         </Button>
@@ -216,7 +228,8 @@ class CommentList extends Component {
                                                     }
                                                 </Col>
                                                 <Col>
-                                                    <Text style={styles.comments_btn_text}>{i18n.t('like_comment')}</Text>
+                                                    <Text
+                                                        style={styles.comments_btn_text}>{i18n.t('like_comment')}</Text>
                                                 </Col>
                                             </Grid>
                                         </Button>
@@ -226,7 +239,8 @@ class CommentList extends Component {
                                                 onPress={this.deleteComment.bind(this, item)}>
                                             <Grid style={styles.comments_btn_comment}>
                                                 <Col>
-                                                    <Text style={styles.comments_btn_text}>{i18n.t('delete_comment')}</Text>
+                                                    <Text
+                                                        style={styles.comments_btn_text}>{i18n.t('delete_comment')}</Text>
                                                 </Col>
                                             </Grid>
                                         </Button>

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import DoubleClicker from 'app/components/DoubleClicker';
 import styles from './styles';
 import {Container, Header, Content, Text, Button, Left, Right, Body, Title, Spinner, ActionSheet} from "native-base";
-import {View, Image, DeviceEventEmitter} from 'react-native';
+import {View, Image, DeviceEventEmitter, Platform} from 'react-native';
 
 import {$toast, uniqueById, getSeconds, getNumByUserId} from 'app/utils';
 
@@ -125,7 +125,17 @@ class Screen extends Component {
 
         ActionSheet.show(
             {
-                options: [i18n.t('cancel'), i18n.t('delete')],
+                options: Platform.OS === 'ios' ? [i18n.t('cancel'), i18n.t('delete')] : [
+                    {
+                        text: i18n.t('cancel'),
+                        icon: "close",
+                        iconColor: "#333"
+                    },{
+                    text: i18n.t('delete'),
+                    icon: "trash",
+                    iconColor: "#fa213b"
+                },
+                ],
                 cancelButtonIndex: 0,
                 destructiveButtonIndex: 1,
                 // title: i18n.t('delete_disclose_confirm')
@@ -263,7 +273,7 @@ class Screen extends Component {
                     list = uniqueById(Items);
                 }
 
-                let filterList = list.filter((it)=>{
+                let filterList = list.filter((it) => {
                     return this.props.dislikeDiscloseList.indexOf(it._id) === -1;
                 });
                 this.setState({

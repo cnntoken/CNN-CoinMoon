@@ -8,7 +8,7 @@ import {
     StatusBar,
     Image,
     PixelRatio,
-    DeviceEventEmitter, ScrollView, Dimensions
+    DeviceEventEmitter, ScrollView, Dimensions, Platform
 } from 'react-native';
 
 import {
@@ -173,7 +173,18 @@ class ViewControl extends Component {
 
         ActionSheet.show(
             {
-                options: [i18n.t('cancel'), i18n.t('delete')],
+                // options: [i18n.t('cancel'), i18n.t('delete')],
+                options: Platform.OS === 'ios' ? [i18n.t('cancel'), i18n.t('delete')] : [
+                    {
+                        text: i18n.t('cancel'),
+                        icon: "close",
+                        iconColor: "#333"
+                    },{
+                    text: i18n.t('delete'),
+                    icon: "trash",
+                    iconColor: "#fa213b"
+                },
+                ],
                 cancelButtonIndex: 0,
                 destructiveButtonIndex: 1,
                 title: i18n.t('delete_disclose_confirm')
