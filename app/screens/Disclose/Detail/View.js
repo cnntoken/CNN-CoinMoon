@@ -403,8 +403,7 @@ class Page extends Component {
                     activeComment: null,
                 });
                 if (!LastEvaluatedKey && !initLoading) {
-                    // todo 国际化
-                    $toast('没有更多数据了!');
+                    $toast(i18n.t('disclose.list_nomore_tip'));
                 }
             }
         });

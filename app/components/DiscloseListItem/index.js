@@ -17,6 +17,7 @@ import {Col, Row, Grid} from "react-native-easy-grid";
 import {formatDate} from "../../utils";
 
 import FastImage from 'react-native-fast-image'
+import i18n from "../../i18n";
 
 
 export default class DiscloseListItem extends Component {
@@ -60,7 +61,8 @@ export default class DiscloseListItem extends Component {
     };
 
     render() {
-        const {item, userId} = this.props.opt;
+        const {item, userId,} = this.props.opt;
+        const {isMyHome} = this.props;
 
         // console.log(item);
 
@@ -77,11 +79,14 @@ export default class DiscloseListItem extends Component {
 
         let time = formatDate(item.updatedAt);
 
+
         return (
-            <ListItem style={[{
-                marginBottom: -15,
-                marginTop: -10,
-            }, this.props.separators]} avatar>
+            <ListItem
+                key={item._id}
+                style={[{
+                    marginBottom: -15,
+                    marginTop: -10,
+                }, this.props.separators]} avatar>
                 {/* 左侧图标 */}
                 <Left>
                     <Button transparent light onPress={this.clickAvatar.bind(this, item)}>
@@ -96,7 +101,8 @@ export default class DiscloseListItem extends Component {
                     <Row>
                         <Col size={5}>
                             <View style={styles.name}>
-                                <Text style={styles.userName}>{item.userName}</Text>
+                                <Text
+                                    style={styles.userName}>{isMyHome ? item.custormUserName || item.userName : item.discloseUserName || item.userName}</Text>
                                 <Text style={styles.time}>{time}</Text>
                             </View>
                         </Col>
@@ -108,8 +114,8 @@ export default class DiscloseListItem extends Component {
                                     isMine ? <Button block transparent light
                                                      onPress={this.showDeleteDialog.bind(this, item)}>
                                         <Image source={require('app/images/icon_more_black.png')}/>
-                                    </Button> :<Button block transparent light
-                                                       onPress={this.showDisLikeDialog.bind(this, item)}>
+                                    </Button> : <Button block transparent light
+                                                        onPress={this.showDisLikeDialog.bind(this, item)}>
                                         <Image source={require('app/images/icon_more_black.png')}/>
                                     </Button>
                                 }

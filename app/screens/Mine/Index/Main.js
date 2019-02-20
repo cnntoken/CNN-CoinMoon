@@ -16,7 +16,7 @@ import {
 } from "native-base";
 
 import Modal from "react-native-modal";
-import {$toast, getNumByUserId, uniqueById} from 'app/utils';
+import {$toast, cloneByJson, getNumByUserId, uniqueById} from 'app/utils';
 // import * as navigationActions from 'app/actions/navigationActions';
 import DiscloseListItem from 'app/components/DiscloseListItem';
 
@@ -169,7 +169,9 @@ class ViewControl extends Component {
     // 显示删除弹框
     showDeleteDialog = (item) => {
 
-        let index = this.state.Items.indexOf(item);
+        let index = this.state.Items.findIndex((i) => {
+            return i._id === item._id
+        });
 
         ActionSheet.show(
             {
@@ -179,15 +181,15 @@ class ViewControl extends Component {
                         text: i18n.t('cancel'),
                         icon: "close",
                         iconColor: "#333"
-                    },{
-                    text: i18n.t('delete'),
-                    icon: "trash",
-                    iconColor: "#fa213b"
-                },
+                    }, {
+                        text: i18n.t('delete'),
+                        icon: "trash",
+                        iconColor: "#fa213b"
+                    },
                 ],
                 cancelButtonIndex: 0,
                 destructiveButtonIndex: 1,
-                title: i18n.t('delete_disclose_confirm')
+                // title: i18n.t('delete_disclose_confirm')
             },
             buttonIndex => {
                 if (buttonIndex === 1) {
@@ -213,7 +215,9 @@ class ViewControl extends Component {
     renderListItem = ({item, index}) => {
         const {hasData, Items} = this.state;
         return <DiscloseListItem showDeleteDialog={this.showDeleteDialog}
+                                 isMyHome={true}
                                  like={this.like}
+                                 key={index + ''}
                                  opt={{item, index, hasData, Items, userId: this.props.user.id}}
                                  pressItem={this.pressItem}/>
     };
@@ -329,7 +333,7 @@ class ViewControl extends Component {
 
 
         this.setState({
-            Items: [...Items],
+            Items: cloneByJson(Items),
             refreshState: Items.length < 1 ? RefreshState.EmptyData : RefreshState.Idle,
         });
     };

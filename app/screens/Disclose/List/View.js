@@ -4,7 +4,7 @@ import styles from './styles';
 import {Container, Header, Content, Text, Button, Left, Right, Body, Title, Spinner, ActionSheet} from "native-base";
 import {View, Image, DeviceEventEmitter, Platform} from 'react-native';
 
-import {$toast, uniqueById, getSeconds, getNumByUserId} from 'app/utils';
+import {$toast, cloneByJson,uniqueById, getSeconds, getNumByUserId} from 'app/utils';
 
 import * as navigationActions from 'app/actions/navigationActions';
 import DiscloseListItem from 'app/components/DiscloseListItem';
@@ -121,7 +121,9 @@ class Screen extends Component {
     // 显示删除弹框
     showDeleteDialog = (item) => {
 
-        let index = this.state.Items.indexOf(item);
+        let index = this.state.Items.findIndex((i) => {
+            return i._id === item._id
+        });
 
         ActionSheet.show(
             {
@@ -313,14 +315,14 @@ class Screen extends Component {
                 Items.splice(index, 1);
                 break;
             case 'unshift':
-                data.userName = i18n.t('disclose.anonymous');
+                // data.userName = i18n.t('disclose.anonymous');
                 Items.unshift(data);
                 break;
             default:
                 break;
         }
         this.setState({
-            Items: [...Items],
+            Items: cloneByJson(Items),
             refreshState: Items.length < 1 ? RefreshState.EmptyData : RefreshState.Idle,
         });
     };

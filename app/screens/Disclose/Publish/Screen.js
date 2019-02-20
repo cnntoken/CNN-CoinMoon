@@ -140,6 +140,10 @@ class Screen extends Component {
                     activeSlide: 0,
                     publishing: false
                 });
+
+                data.discloseUserName = i18n.t('disclose.anonymous');
+                data.custormUserName = this.props.user.name;
+
                 DeviceEventEmitter.emit('updateDiscloseListData', 'unshift', data);
                 navigationActions.navigateToDiscloseList();
             }
