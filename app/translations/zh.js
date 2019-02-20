@@ -162,6 +162,8 @@ export default {
     report_ok: '제출하였습니다.',
 
 
-    publish_fail: '전송 실패, 다시 시도해 주세요~'
+    publish_fail: '전송 실패, 다시 시도해 주세요~',
+
+    user_feedback:'문의하기'
 
 }

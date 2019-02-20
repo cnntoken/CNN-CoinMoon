@@ -42,7 +42,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Access your camera permission when take photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>이미지를  업로드 하시려면 사진 접근 관한을 먼저  허용해 주세요.</string>
+	<string>원활한 앱 사용을 위하여 이미지 접근 권한이 필요합니다. ( 1. 글쓰기 이미지 첨부 시; 2. 프로필 사진 업로드 시 )</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>
