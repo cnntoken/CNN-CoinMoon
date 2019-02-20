@@ -3,7 +3,7 @@
  * Everthing starts from the entrypoint
  */
 import React, {Component} from 'react';
-import {ActivityIndicator,StatusBar} from 'react-native';
+import {ActivityIndicator} from 'react-native';
 import {StyleProvider, Root} from "native-base";
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
@@ -18,7 +18,6 @@ import variables from "./theme/variables/commonColor";
 import appServices from './services/app';
 
 
-
 const {persistor, store} = configureStore();
 
 export default class Index extends Component {
@@ -31,11 +30,10 @@ export default class Index extends Component {
     }
 
     async componentDidMount(){
-
+       
         RNLanguages.addEventListener('change', this._onLanguagesChange);
         SplashScreen.hide();
         appServices.prepare(store);
-
     }
     render() {
         return (
