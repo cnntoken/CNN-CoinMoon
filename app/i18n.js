@@ -5,7 +5,7 @@ import en from './translations/en';
 import zh from './translations/zh';
 import ko from './translations/ko';
 
-console.log(RNLanguages);
+
 i18n.locale = RNLanguages.language;
 i18n.fallbacks = true;
 i18n.translations = {ko, en, zh};
