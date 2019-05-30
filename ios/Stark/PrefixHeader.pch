@@ -1,0 +1,44 @@
+//
+//  PrefixHeader.pch
+//  Stark
+//
+//  Created by float.. on 2019/4/28.
+//  Copyright © 2019 Facebook. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#ifdef __OBJC__  /* __OBJC__ START */
+/*需要导入的常用工具头文件*/
+#import "UtilKits.h"
+/***********屏幕适配*************/
+#define CNNScreenW [UIScreen mainScreen].bounds.size.width
+#define CNNScreenH [UIScreen mainScreen].bounds.size.height
+
+/********国际化********/
+#define CNNLOCALIZE(str) NSLocalizedString(str, nil)
+
+
+/********调试 环境隔离*******/
+#ifdef DEBUG
+
+#define IS_CNN_MODULE_DEV (CNN_MODULE_DEV == YES)
+#define IS_CNN_JSBUNDLE (CNN_USE_JSBUNDLE == YES)
+#define CNNLog(...) NSLog(__VA_ARGS__)
+
+#else // 正式包
+
+#define CNNLog(...)
+
+#endif
+/********调试 环境隔离*******/
+
+
+/**其他**/
+#define CNNFunc CNNLog(@"%s",__func__)
+
+#endif /* __OBJC__ END */
+
+
+#endif /* PrefixHeader_pch */

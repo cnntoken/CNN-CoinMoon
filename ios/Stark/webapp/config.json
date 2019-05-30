@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "common": {
+    "bundleName": "platform.ios.bundle"
+  },
+  "bundles": [
+    {
+      "source": "Market",
+      "animate": true,
+      "statusBgColor": "#408EF5",
+      "type": "push",
+      "moduleName": "stark_market",
+      "bundleName": "stark_market.ios.bundle",
+      "bundleName_android": "stark_market.android.bundle"
+    },
+    {
+      "source": "Mine",
+      "animate": true,
+      "statusBgColor": "#408EF5",
+      "type": "push",
+      "moduleName": "stark_mine",
+      "bundleName": "stark_mine.ios.bundle",
+      "bundleName_android": "stark_mine.android.bundle"
+    },
+    {
+      "source": "MineEdit",
+      "animate": true,
+      "statusBgColor": "#fff",
+      "type": "push",
+      "moduleName": "stark_mine_edit",
+      "bundleName": "stark_mine_edit.ios.bundle",
+      "bundleName_android": "stark_mine_edit.android.bundle"
+    },
+    {
+      "source": "MineSetting",
+      "animate": true,
+      "statusBgColor": "#fff",
+      "type": "push",
+      "moduleName": "stark_mine_setting",
+      "bundleName": "stark_mine_setting.ios.bundle",
+      "bundleName_android": "stark_mine_setting.android.bundle"
+    },
+    {
+      "source": "DisclosePublish",
+      "animate": true,
+      "statusBgColor": "#fff",
+      "type": "push",
+      "moduleName": "stark_disclose_publish",
+      "bundleName": "stark_disclose_publish.ios.bundle",
+      "bundleName_android": "stark_disclose_publish.android.bundle"
+    },
+    {
+      "source": "NewsDetail",
+      "animate": true,
+      "statusBgColor": "#408EF5",
+      "type": "push",
+      "moduleName": "stark_news_detail",
+      "bundleName": "stark_news_detail.ios.bundle",
+      "bundleName_android": "stark_news_detail.android.bundle"
+    }
+  ]
+}

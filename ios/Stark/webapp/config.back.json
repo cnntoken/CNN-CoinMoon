@@ -1,0 +1,104 @@
+{
+  "version": 1,
+  "common": {
+    "bundleName": "platform.ios.bundle"
+  },
+  "bundles": [
+    {
+      "source": "Login",
+      "animate": true,
+      "statusBgColor": "#ffffff",
+      "type": "present",
+      "moduleName": "stark_login",
+      "bundleName": "stark_login.ios.bundle"
+    },
+    {
+      "source": "Wallet",
+      "animate": true,
+      "statusBgColor": "#408EF5",
+      "type": "push",
+      "moduleName": "stark_wallet",
+      "bundleName": "stark_wallet.ios.bundle"
+    },
+    {
+      "source": "Policy",
+      "animate": true,
+      "statusBgColor": "#ffffff",
+      "type": "push",
+      "moduleName": "stark_policy",
+      "bundleName": "stark_policy.ios.bundle"
+    },
+    {
+      "source": "Market",
+      "animate": true,
+      "statusBgColor": "#408EF5",
+      "type": "push",
+      "moduleName": "stark_market",
+      "bundleName": "stark_market.ios.bundle"
+    },
+    {
+      "source": "MarketDetail",
+      "animate": true,
+      "statusBgColor": "#408EF5",
+      "type": "push",
+      "moduleName": "stark_market_detail",
+      "bundleName": "stark_market_detail.ios.bundle"
+    },
+    {
+      "source": "NewsDetail",
+      "animate": true,
+      "statusBgColor": "#408EF5",
+      "type": "push",
+      "moduleName": "stark_news_detail",
+      "bundleName": "stark_news_detail.ios.bundle"
+    },
+    {
+      "source": "OthersHome",
+      "animate": true,
+      "statusBgColor": "#408EF5",
+      "type": "push",
+      "moduleName": "stark_others_home",
+      "bundleName": "stark_others_home.ios.bundle"
+    },
+    {
+      "source": "DisclosePublish",
+      "animate": true,
+      "statusBgColor": "#fff",
+      "type": "push",
+      "moduleName": "stark_disclose_publish",
+      "bundleName": "stark_disclose_publish.ios.bundle"
+    },
+    {
+      "source": "DiscloseDetail",
+      "animate": true,
+      "statusBgColor": "#408EF5",
+      "type": "push",
+      "moduleName": "stark_disclose_detail",
+      "bundleName": "stark_disclose_detail.ios.bundle"
+    },
+    {
+      "source": "Mine",
+      "animate": true,
+      "statusBgColor": "#408EF5",
+      "type": "push",
+      "moduleName": "stark_mine",
+      "bundleName": "stark_mine.ios.bundle"
+    },
+    {
+      "source": "MineEdit",
+      "animate": true,
+      "statusBgColor": "#fff",
+      "type": "push",
+      "moduleName": "stark_mine_edit",
+      "bundleName": "stark_mine_edit.ios.bundle"
+    },
+    {
+      "source": "MineSetting",
+      "animate": true,
+      "statusBgColor": "#fff",
+      "type": "push",
+      "moduleName": "stark_mine_setting",
+      "bundleName": "stark_mine_setting.ios.bundle"
+    }
+  ]
+}
