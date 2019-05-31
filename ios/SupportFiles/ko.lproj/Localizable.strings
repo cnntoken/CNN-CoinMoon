@@ -1,0 +1,40 @@
+/* 
+  Localizable.strings
+  Stark
+
+  Created by float.. on 2019/5/6.
+  Copyright © 2019 Facebook. All rights reserved.
+*/
+// tabbar
+"tabbar_feed" = "홈";
+"tabbar_disclose" = "풍문";
+"tabbar_mine" = "내 정보";
+"tabbar_market" = "시세";
+// category
+"category_info" = "정보";
+"category_news" = "뉴스";
+
+// disclose
+"disclose_title" = "풍문";
+"anonymous" =  "익명";
+
+// license
+"license_privicy" = "개인정보 처리방침";
+"license_userterms" = "이용약관";
+"license_agree_and_continue" = "전부 동의하고 시작";
+"license_view_detail" = "상세내용";
+
+// mjrefresh
+"refresh_normal_text" = "아래로 당기시면 새로고침"; // 正常状态
+"refresh_prepare_text" =  "손을 놓으시면 로딩"; // 达到临界值, 松开即可触发刷新
+"refresh_loading_text" = "로딩중"; // 加载中状态
+"footer_nomore_text" = "-구분선-";
+"footer_empty_text" = "-아무것도 없네요-";
+"footer_refreshing_text" = "로딩중...";
+"footer_failure_text" = "로딩중...";
+
+// dislike dialog
+"dislike" = "관심 없습니다";
+"dislike_user" = "블라인드";
+"cancel" = "취소";
+"delete" = "삭제";

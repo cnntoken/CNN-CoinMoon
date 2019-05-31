@@ -1,0 +1,1 @@
+export const AUTH_LOGOUT = 'AUTH/AUTH_LOGOUT';

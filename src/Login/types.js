@@ -1,0 +1,7 @@
+// USER AUTH 相关
+export const AUTH_LOGOUT = 'AUTH/LOGOUT';
+export const AUTH_UPDATE_USER = 'AUTH/AUTH_UPDATE_USER';
+export const AUTH_SEND_SMD = 'AUTH/AUTH_SEND_SMD';
+export const AUTH_LOGIN_OR_REG = 'AUTH/AUTH_LOGIN_OR_REG';
+export const AUTH_UPLOAD = 'AUTH/AUTH_UPLOAD';
+

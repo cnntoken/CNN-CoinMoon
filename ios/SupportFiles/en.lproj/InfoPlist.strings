@@ -1,0 +1,12 @@
+/* 
+  InfoPlist.strings
+  Stark
+
+  Created by float.. on 2019/5/6.
+  Copyright © 2019 Facebook. All rights reserved.
+*/
+"CFBundleDisplayName" = "CoinMoon";
+"NSCameraUsageDescription" = "Access your camera permission when take photos";
+"NSLocationAlwaysUsageDescription" = "위치 정보를 항상 사용";
+"NSLocationWhenInUseUsageDescription" = "위치 정보를 앱 사용 중에만 사용";
+"NSPhotoLibraryUsageDescription" = "원활한 앱 사용을 위하여 이미지 접근 권한이 필요합니다. ( 1. 글쓰기 이미지 첨부 시; 2. 프로필 사진 업로드 시 )";

@@ -4,7 +4,52 @@ platform :ios, '9.0'
 target 'Stark' do
   # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
   # use_frameworks!
-  
-  # Pods for Stark
+  pod 'Masonry', '~> 1.1.0'
+  pod 'AFNetworking', '~> 3.2.1'
+  pod 'MJExtension', '~> 3.0.16'
+  pod 'SDWebImage', '~> 5.0.0'
+  pod 'MJRefresh', '~> 3.1.16'
+
+
+  # Pods for RN
+  pod 'React', :path => '../node_modules/react-native', :subspecs => [
+    'Core',
+    'CxxBridge', # 如果RN版本 >= 0.47则加入此行
+    'DevSupport', # 如果RN版本 >= 0.43，则需要加入此行才能开启开发者菜单
+    'RCTText',
+    'RCTNetwork',
+    'RCTActionSheet',
+    'RCTWebSocket', # 调试功能需要此模块
+    'RCTAnimation', # FlatList和原生动画功能需要此模块
+    'RCTImage',
+    'RCTLinkingIOS', # React Navigation需要
+  ]
+  # 如果你的RN版本 >= 0.42.0，则加入下面这行
+  pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
+
+  # 如果RN版本 >= 0.45则加入下面三个第三方编译依赖
+  pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
+  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
+  pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
+
+
   pod 'Firebase/Core', '~> 5.15.0'
+  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+  pod 'Picker', :path => '../node_modules/react-native-picker'
+
+
+  pod 'RNLanguages', :path => '../node_modules/react-native-languages'
+
+
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
+  pod 'react-native-fast-image', :path => '../node_modules/react-native-fast-image'
+  pod 'SDWebImageWebPCoder'
+  pod 'RNImageCropPicker', :path => '../node_modules/react-native-image-crop-picker'
+
+
+  pod 'react-native-webview', :path => '../node_modules/react-native-webview'
+
+  pod 'RNSpringScrollView', :path => '../node_modules/react-native-spring-scrollview/ios'
+
 end

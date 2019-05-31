@@ -1,8 +1,41 @@
 {
-  "presets": ["module:metro-react-native-babel-preset"],
+  "presets": [
+    "module:metro-react-native-babel-preset"
+  ],
   "plugins": [
-    ["@babel/plugin-transform-flow-strip-types"],
-    ["@babel/plugin-proposal-decorators", { "legacy": true}],
-    ["@babel/plugin-proposal-class-properties", { "loose": true}]
+    [
+      "@babel/plugin-transform-flow-strip-types"
+    ],
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ],
+    [
+      "@babel/plugin-proposal-class-properties",
+      {
+        "loose": true
+      }
+    ],
+    [
+      "module-resolver",
+      {
+        "root": [
+          "./"
+        ],
+        "alias": {
+          "@src": "./src",
+          "@News": "./src/News",
+          "@data": "./src/data",
+          "@components": "./src/components",
+          "@images": "./src/images",
+          "@lib": "./src/lib",
+          "@i18n": "./src/i18n.js",
+          "@utils": "./src/utils",
+          "@services": "./src/services"
+        }
+      }
+    ]
   ]
 }

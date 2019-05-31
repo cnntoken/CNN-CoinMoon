@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>control</key>
+		<string>CNNFeedViewController</string>
+		<key>title</key>
+		<string>tabbar_feed</string>
+		<key>icon</key>
+		<string>icon_tabbar_news_normal</string>
+		<key>icon2</key>
+		<string>icon_tabbar_news_selected</string>
+	</dict>
+  <dict>
+    <key>control</key>
+    <string>CNNMarketViewController</string>
+    <key>title</key>
+    <string>tabbar_market</string>
+    <key>icon</key>
+    <string>icon_tabbar_market_normal</string>
+    <key>icon2</key>
+    <string>icon_tabbar_market_selected</string>
+  </dict>
+  <dict>
+    <key>control</key>
+    <string>CNNDiscloseViewController</string>
+    <key>title</key>
+    <string>tabbar_disclose</string>
+    <key>icon</key>
+    <string>icon_tabbar_reveal_normal</string>
+    <key>icon2</key>
+    <string>icon_tabbar_reveal_selected</string>
+  </dict>
+  <dict>
+    <key>control</key>
+    <string>CNNMineViewController</string>
+    <key>title</key>
+    <string>tabbar_mine</string>
+    <key>icon</key>
+    <string>icon_tabbar_me_normal</string>
+    <key>icon2</key>
+    <string>icon_tabbar_me_selected</string>
+  </dict>
+</array>
+</plist>
