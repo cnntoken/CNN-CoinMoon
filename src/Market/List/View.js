@@ -5,9 +5,11 @@ import MarketList from '../components/MarketList'
 import i18n from '@i18n';
 import {
     View,
-    DeviceEventEmitter
+    DeviceEventEmitter,
 } from 'react-native';
+import {Spinner} from "@components/NDLayout"
 import {goRNPage} from '@utils/CNNBridge'
+import styles from './styles';
 const LIMIT = 10
 
 class ViewControl extends Component {
@@ -48,6 +50,7 @@ class ViewControl extends Component {
     }
     componentWillUnmount(){
         this.listener.remove();
+        this.interval = null
     }
   
     handleSort = ({category,sort_by,count}) => {
@@ -103,15 +106,18 @@ class ViewControl extends Component {
 
     render() {
         return (
-            <View style={{flex: 1}}>
+            <View style={styles.wrap}>
                 <ScrollableTabView
-                    style={{flex: 1}}
+                    style={styles.wrap}
                     renderTabBar={() => <ListTabBar goSeach={this.goSeach}/>}
                 >
                     {['mine', 'all'].map((cate) => {
-                        return <MarketList
+                        // if(!this.props[cate].list) {
+                        //     return <Spinner/>
+                        // } else {
+                            return <MarketList
                                     key={cate}
-                                    data={[{items:this.props[cate].list}]}
+                                    data={this.props[cate].list}
                                     supportSort={cate==='all'?true: false} // 只有币种排行支持排序，自选列表不支持
                                     sort_by={this.props[cate].sort_by}
                                     type={cate}
@@ -124,7 +130,60 @@ class ViewControl extends Component {
                                     addCollection={this.addCollection}
                                     removeCollection={this.removeCollection}
                                     user={this.props.user}
-                        />
+                                    allLoaded={this.props[cate].no_more}
+                                />
+                        // } 
+                        // if(cate==='mine'){
+                        //     if(!this.props.mine.list){
+                        //         return <Spinner />
+                        //     } else if(this.props.mine.list&&!this.props.mine.list.length){
+                        //         return  <View style={styles.no_mine}>
+                        //                     <Text style={styles.no_mine_text}>{i18n.t('page_market_list.no_mine_text')}</Text>
+                        //                 </View>
+                        //     } else {
+                        //         return <MarketList
+                        //             key={cate}
+                        //             // data={[{items:this.props[cate].list}]}
+                        //             data={this.props[cate].list}
+                        //             supportSort={cate==='all'?true: false} // 只有币种排行支持排序，自选列表不支持
+                        //             sort_by={this.props[cate].sort_by}
+                        //             type={cate}
+                        //             showOrder={cate==='all'?true:false}
+                        //             tabLabel={i18n.t(`page_market_list.category_${cate}`)}
+                        //             handleSort={this.handleSort}
+                        //             handleRefresh={this.handleRefresh}
+                        //             handleLoadMore={this.handleLoadMore}
+                        //             goMarketDetail={this.goMarketDetail}
+                        //             addCollection={this.addCollection}
+                        //             removeCollection={this.removeCollection}
+                        //             user={this.props.user}
+                        //             allLoaded={this.props[cate].no_more}
+                        //         />
+                        //     }
+                        // } else if(cate==='all'){
+                        //     if(!this.props.all.list){
+                        //         return <Spinner />
+                        //     } else if(this.props.all.list && this.props.all.list.length){
+                                // return <MarketList
+                                //     key={cate}
+                                //     // data={[{items:this.props[cate].list}]}
+                                //     data={this.props[cate].list}
+                                //     supportSort={cate==='all'?true: false} // 只有币种排行支持排序，自选列表不支持
+                                //     sort_by={this.props[cate].sort_by}
+                                //     type={cate}
+                                //     showOrder={cate==='all'?true:false}
+                                //     tabLabel={i18n.t(`page_market_list.category_${cate}`)}
+                                //     handleSort={this.handleSort}
+                                //     handleRefresh={this.handleRefresh}
+                                //     handleLoadMore={this.handleLoadMore}
+                                //     goMarketDetail={this.goMarketDetail}
+                                //     addCollection={this.addCollection}
+                                //     removeCollection={this.removeCollection}
+                                //     user={this.props.user}
+                                //     allLoaded={this.props[cate].no_more}
+                                // />
+                            // }
+                        // }
                     })}
                 </ScrollableTabView>
             </View>

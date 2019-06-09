@@ -12,11 +12,8 @@ import {
     Header,
     Content,
     Button,
-    Spinner
+    Spinner,
 } from '@components/NDLayout';
-import {
-    debounce_next,
-} from "@utils/index";
 import MarketList from '../components/MarketList'
 import i18n from '@i18n';
 import styles from './styles'
@@ -35,7 +32,6 @@ export default class SearchControl extends PureComponent {
         }
     }
 
-    @debounce_next({delay:500})
     handleSearch = (value) => {
         this.setState({
             searching: true
@@ -46,6 +42,10 @@ export default class SearchControl extends PureComponent {
             inputVal: value
         })
         if(inputVal.trim() === value.trim() || !value.trim()){
+            this.props.initSearchList()
+            this.setState({
+                searching: false
+            })
             return false
         }
         this.getList({count: LIMIT,category:'search',key_word:value,read_tag:''},()=>{
@@ -59,15 +59,11 @@ export default class SearchControl extends PureComponent {
             callback && callback()
         })
     };
-
-    handleSort = ({category,sort_by,limit}) => {
-        this.props.getList({category,sort_by,limit})
-    }
     handleRefresh = (category,callback) => {
-        this.getList({category,key_word:this.state.inputVal,read_tag:''},callback)
+        this.getList({count:LIMIT,category,key_word:this.state.inputVal,read_tag:''},callback)
     }
     handleLoadMore = (category,callback) => {
-        this.getList({category,read_tag:this.props[category].read_tag,isLoadmore:true},callback)
+        this.getList({count:LIMIT,category,read_tag:this.props[category].read_tag,isLoadmore:true},callback)
     }
     goMarketDetail = (item) => {
         goRNPage({
@@ -99,10 +95,10 @@ export default class SearchControl extends PureComponent {
         } else if(data.list && data.list.length){
             return  <MarketList
                         user={this.props.user}
-                        data={[{items:data.list}]}
-                        supportSort={cate==='all'?true: false} // 只有币种排行支持排序，自选列表不支持
+                        data={data.list}
+                        supportSort={false} // 只有币种排行支持排序，自选列表不支持
                         type={cate}
-                        showOrder={cate==='all'?true:false}
+                        showOrder={false}
                         tabLabel={i18n.t(`page_market.category_${cate}`)}
                         handleRefresh={this.handleRefresh}
                         handleLoadMore={this.handleLoadMore}
@@ -110,16 +106,15 @@ export default class SearchControl extends PureComponent {
                         addCollection={this.addCollection}
                         removeCollection={this.removeCollection}
                         showAction={true}
+                        allLoaded={this.props.search.no_more}
                     />
         } else if(data.list && data.list.length === 0 && data.no_search_res){
-            return <View style={styles.no_result}><Text>no result</Text></View>
+            return <View style={styles.no_result}><Text>{i18n.t('page_market_search.no_search_res')}</Text></View>
         } else {
             return null
         }
     }
     render() {
-        // const {cate} = this.state;
-        // const data = this.props[cate];
         return (<Container>
             <Header 
                 leftView={null}
@@ -136,7 +131,7 @@ export default class SearchControl extends PureComponent {
                         <TextInput 
                             style={styles.input}
                             autoFocus={true}
-                            placeholder='请输入币种简称/名称'
+                            placeholder={i18n.t('page_market_search.search_placeholder')}
                             placeholderTextColor='#979797'
                             // value={inputVal}
                             onChangeText={this.handleSearch}
@@ -144,7 +139,7 @@ export default class SearchControl extends PureComponent {
                     </View>
                     <View style={styles.right}>
                         <Button transparent onPress={this.goBack}>
-                            <Text style={styles.cancel}>取消</Text>
+                            <Text style={styles.cancel}>{i18n.t('page_market_search.search_cancle')}</Text>
                         </Button>
                     </View>
                 </View>

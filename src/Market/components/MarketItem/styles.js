@@ -1,69 +1,82 @@
 import {StyleSheet,Dimensions} from 'react-native';
 const {width: viewportWidth} = Dimensions.get('window');
+import { calculateStyleVariable } from '@utils/index'
+const PX = calculateStyleVariable()
 
 const styles = StyleSheet.create({
     view_item: {
         flexDirection: 'row',
-        height: 65,
+        height: 65*PX,
         flex:1,
         alignItems: 'center',
         alignContent: 'center',
-        paddingLeft: 15,
-        paddingRight: 15,
+        paddingLeft: 15*PX,
+        paddingRight: 10*PX,
     },
     left_box: {
-        display: 'flex',
+        // flex: 1,
         flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginRight: 15*PX,
     },
     number_text: {
-        marginRight: 10
+        marginRight: 10*PX,
+        // flex:1
     },
     icon_image: {
-        height: 20,
-        marginRight: 10,
-        width: 20,
+        // flex:1,
+        height: 20*PX,
+        // marginLeft: 10*PX,
+        // marginRight: 10*PX,
+        width: 20*PX,
     },
     coin_icon: {
-        height: 20,
-        width: 20
+        height: 20*PX,
+        width: 20*PX
     },
     middle_box: {
         flex: 4,
+        // width: 195*PX,
         alignContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginRight: 15,
+        marginLeft: 10*PX,
+        // marginRight: 15*PX,
+    },
+    coin_name:{
+        // flex: 1,
+        width: 80*PX
+    },
+    current_price: {
+        // flex: 1,
+        width: 115*PX
     },
     pair_title: {
         flexDirection: 'row',
-        alignItems: 'flex-end',
-        flexShrink: 0
+        alignItems: 'flex-start',
+        // width: viewportWidth/4*PX,
+        width: 89.5*PX
+
     },
     pair_name: {
-        marginLeft: 5,
+        marginLeft: 5*PX,
         color: '#666666',
-        fontSize: 13,
-        width: viewportWidth/4,
-    },
-    coin_name:{
-        flex: 1,
+        fontSize: 13*PX,
     },
     exchange_name:{
         flexDirection: 'row',
-        width: viewportWidth/4,
+        width: 89.5*PX
     },
     exchange_name_text: {
-        marginLeft: 5,
+        // width: viewportWidth/5*PX,
+        // width: 89.5*PX,
+        // marginLeft: 5*PX,
     },
     symbol: {
         color: '#333',
-        fontSize: 16,
+        fontSize: 16*PX,
         fontWeight: '500',
-    },
-    current_price: {
-        flex: 1,
-        width: viewportWidth/3,
     },
     price_text: {
         color: 'red',
@@ -79,12 +92,14 @@ const styles = StyleSheet.create({
         color: '#00B7A0'
     },
     right_box: {
-        flex: 2,
+        // flex: 2,
         flexDirection: 'row',
-        justifyContent: 'flex-end'
+        justifyContent: 'flex-end',
+        marginLeft: 20*PX,
     },
     action_icon: {
-        marginLeft: 5,
+        // flex:1,
+        marginLeft: 5*PX,
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -94,23 +109,31 @@ const styles = StyleSheet.create({
     trending_down: {
         backgroundColor: '#FF7D40',
     },
-    trending_text: {
+    change_box: {
         alignContent: 'center',
+        height: 32*PX,
+        width: 80*PX,
+        borderRadius: 8*PX,
+    },
+    change_text: {
+        fontSize: 15*PX,
         color: '#fff',
         fontWeight: '500',
-        height: 34,
-        lineHeight: 34,
+        height: 32*PX,
+        lineHeight: 32*PX,
         textAlign: 'center',
-        width: 90,
-        borderRadius: 8,
     },
     item_bottom_border: {
         width: '100%',
         bottom: 0,
-        left: 20,
+        left: 20*PX,
         position: 'absolute',
         backgroundColor:'#E6E6E6',
-        height: 0.5,
+        height: 0.5*PX,
+    },
+    btn_icon:{
+        height: 22*PX,
+        width: 22*PX
     }
 
 });

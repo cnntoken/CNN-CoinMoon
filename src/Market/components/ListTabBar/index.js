@@ -9,7 +9,8 @@ import {
     Image
 } from 'react-native';
 // const WINDOW_WIDTH = Dimensions.get('window').width;
-
+import { calculateStyleVariable } from '@utils/index'
+const PX = calculateStyleVariable()
 class TabBar extends PureComponent{
     constructor(props){
         super(props)
@@ -62,7 +63,7 @@ class ListTabBar extends PureComponent {
     }
     render() {
         return (
-            <View style={{height: 56,flexDirection:'row'}}>
+            <View style={{height: 56*PX,flexDirection:'row'}}>
                     <ScrollView
                         style={styles.wrap}
                         contentContainerStyle={{alignItems:'center'}}

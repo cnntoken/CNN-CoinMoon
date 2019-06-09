@@ -9,9 +9,25 @@ import {
 } from "react-native";
 import FastImage from 'react-native-fast-image';
 
-import {formateNum} from "@utils/index";
 import { goRNPage } from '@utils/CNNBridge';
 
+const splitNum = (num) => {
+    let temp_num = Number(num)
+    if(!isNaN(temp_num)){
+        if(temp_num>=9999999999 ){
+            return temp_num
+        } else if(temp_num >0 && String(temp_num).includes('.')){
+            return Number(String(temp_num).slice(0,10))
+        } else if(temp_num < 0){
+            let reciprocal = -1 * temp_num
+            return -1 * splitNum(reciprocal)
+        } else {
+            return temp_num
+        }
+    } else {
+        return num
+    }
+}
 /**
  * showOrder 展示序列号
  * showAction 展示添加自选/移除自选icon  
@@ -80,7 +96,7 @@ class MarketList extends Component {
         const change_status = Number(change) > 0 ? 'go_up' : 'go_down'
         return  (
             <TouchableOpacity style={styles.view_item} onPress={()=>this.handleItemPress(item)}>
-                <View style={styles.left_box}>
+                {/* <View style={styles.left_box}> */}
                     {
                         this.props.showOrder
                         ?   <View>
@@ -93,7 +109,7 @@ class MarketList extends Component {
                             style={[styles.coin_icon]}
                             source={{uri:item.image}}/>
                     </View>
-                </View>
+                {/* </View> */}
                 <View style={styles.middle_box}>
                     <View styles={styles.coin_name}>
                         {
@@ -105,35 +121,36 @@ class MarketList extends Component {
                             :   <Text numberOfLines={1} style={styles.symbol}>{item.symbol}</Text>
                         }
                         <View style={styles.exchange_name}>
-                            <Text numberOfLines={1}>{item.name}</Text>
                             {
                                 item.is_pair
                                 ?   <Text style={styles.exchange_name_text} numberOfLines={1}>{item.exchange}</Text>
-                                :   null
+                                :   <Text numberOfLines={1}>{item.name}</Text>
                             }
                         </View>
                     </View>
                     <View style={styles.current_price}>
                         <View>
-                            <Text numberOfLines={1} style={[styles.price_text,price_status==='go_up'?styles.price_text_up:styles.price_text_down]}>{`$${formateNum(price_USD)}`}</Text>
-                            <Text numberOfLines={1} style={styles.price_trans}>≈₩{formateNum(price_KRW)}</Text>
+                            <Text numberOfLines={1} style={[styles.price_text,price_status==='go_up'?styles.price_text_up:styles.price_text_down]}>{`$${splitNum(price_USD)}`}</Text>
+                            <Text numberOfLines={1} style={styles.price_trans}>≈₩{splitNum(price_KRW)}</Text>
                         </View>
                     </View>
                 </View>
                 <View style={styles.right_box}>
-                    <Text style={[styles.trending_text,change_status==='go_up'?styles.trending_up:styles.trending_down]}>
-                        {(formateNum(change)+'%')}
-                    </Text>
+                    <View style={styles.change_box}>
+                        <Text style={[styles.change_text,change_status==='go_up'?styles.trending_up:styles.trending_down]}>
+                            {Number(change)>0?`+${Number(change).toFixed(2)}%`:`${Number(change).toFixed(2)}%`}
+                        </Text>
+                    </View>
                     {
                     this.props.showAction
                     ?   <View style={styles.action_icon}>
                             {
                                 !selected   
                                 ?   <TouchableOpacity onPress={()=>this.addCollection(item)}>
-                                        <Image style={{height:22,width:22}} source={require('@images/wallet_icon_add.png')} />
+                                        <Image style={styles.btn_icon} source={require('@images/wallet_icon_add.png')} />
                                     </TouchableOpacity>
                                 :   <TouchableOpacity onPress={()=>this.removeCollection(item)}>
-                                        <Image style={{height:22,width:22}} source={require('@images/wallet_icon_done.png')}/>
+                                        <Image style={styles.btn_icon} source={require('@images/wallet_icon_done.png')}/>
                                     </TouchableOpacity>
                             }
                         </View>
