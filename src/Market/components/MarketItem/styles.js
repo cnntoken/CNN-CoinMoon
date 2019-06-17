@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
         // flex: 2,
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        marginLeft: 20*PX,
+        marginLeft: 18*PX,
     },
     action_icon: {
         // flex:1,
@@ -132,8 +132,8 @@ const styles = StyleSheet.create({
         height: 0.5*PX,
     },
     btn_icon:{
-        height: 22*PX,
-        width: 22*PX
+        height: 25*PX,
+        width: 25*PX
     }
 
 });

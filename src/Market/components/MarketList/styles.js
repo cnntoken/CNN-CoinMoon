@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     },
 
     filter_item_1: {
-        flex: 1,
+        // flex: 1,
         height: 40*PX,
         lineHeight: 40*PX,
         alignContent: 'center',
@@ -52,11 +52,11 @@ const styles = StyleSheet.create({
         // flex: 1,
         height: 40*PX,
         lineHeight: 40*PX,
-        width: 100*PX,
-        alignContent: 'center',
+        // width: 100*PX,
+        // alignContent: 'center',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-end',  
+        // justifyContent: 'flex-end',  
     },
     filter_item_2: {
         // width: 4*viewportWidth/7,
@@ -70,7 +70,8 @@ const styles = StyleSheet.create({
     },
 
     filter_item_3: {
-        flex: 2,
+        // flex: 2,
+        marginLeft: 10*PX,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-end',
@@ -99,11 +100,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 10,
-        height: 44,
+        // paddingTop: 10*PX,
+        height: 60*PX,
     },
     footerText: {
-        fontSize: 14,
+        fontSize: 14*PX,
         color: '#555555'
     },
 });

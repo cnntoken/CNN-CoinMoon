@@ -6,6 +6,7 @@ import {
     Text,
     Image,
     TextInput,
+    DeviceEventEmitter
 } from "react-native";
 import {
     Container,
@@ -26,6 +27,7 @@ export default class SearchControl extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
+            user: props.state,
             inputVal: '',
             cate: 'search',
             searching: false
@@ -57,6 +59,8 @@ export default class SearchControl extends PureComponent {
     getList =  (obj, callback) => {
         this.props.getList(obj,()=>{
             callback && callback()
+        },()=>{
+            callback && callback()
         })
     };
     handleRefresh = (category,callback) => {
@@ -70,19 +74,35 @@ export default class SearchControl extends PureComponent {
             moduleName:'stark_market_detail',
             params: {
                 id: item.id,
-                is_pair: item.is_pair
+                is_pair: item.is_pair,
+                image: item.image,
+                symbol: item.symbol,
+                exchange: item.exchange
             }
         })
     }
-    addCollection = (id) => {
-        this.props.addCollection(id,()=>NoticeMarketUpdate('collectionAction',{id,action:'add'}))
+    addCollection = (id,index,type) => {
+        this.props.addCollection({id,index,type},()=>NoticeMarketUpdate('collectionAction',{id,action:'add'}))
     }
-    removeCollection = (id) => {
-        this.props.removeCollection(id,()=>NoticeMarketUpdate('collectionAction',{id,action:'remove'}))
+    removeCollection = (id,index,type) => {
+        this.props.removeCollection({id,index,type},()=>NoticeMarketUpdate('collectionAction',{id,action:'remove'}))
     }
     goBack = () => {
         // closeRNPage()
         this.props.navigation.pop()
+    }
+    componentDidMount = () => {
+        this.userStateListener = DeviceEventEmitter.addListener('userStateChange',async(data)=>{
+            this.setState({
+                user: data,
+                searching: true
+            })
+            this.getList({count: LIMIT,category:'search',key_word:this.state.inputVal,read_tag:''},()=>{
+                this.setState({
+                    searching: false
+                })
+            })
+        });
     }
     componentWillUnmount = () => {
         this.props.initSearchList()
@@ -94,7 +114,7 @@ export default class SearchControl extends PureComponent {
             return <Spinner />
         } else if(data.list && data.list.length){
             return  <MarketList
-                        user={this.props.user}
+                        user={this.state.user}
                         data={data.list}
                         supportSort={false} // 只有币种排行支持排序，自选列表不支持
                         type={cate}
@@ -115,7 +135,7 @@ export default class SearchControl extends PureComponent {
         }
     }
     render() {
-        return (<Container>
+        return (<Container style={styles.containerWrap}>
             <Header 
                 leftView={null}
                 rightView={null}

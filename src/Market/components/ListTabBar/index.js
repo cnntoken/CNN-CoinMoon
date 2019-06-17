@@ -14,7 +14,7 @@ const PX = calculateStyleVariable()
 class TabBar extends PureComponent{
     constructor(props){
         super(props)
-        const scale = props.isActive ? 24/16 : 1;
+        const scale = props.isActive ? 20/16 : 1;
         this.state = {
             scale: new Animated.Value(scale)
         }
@@ -24,7 +24,7 @@ class TabBar extends PureComponent{
         this.props.onPress(page);
     }
     scaleText = ()=>{
-        const scale = this.props.isActive ? 24/16 : 1;
+        const scale = this.props.isActive ? 20/16 : 1;
         Animated.timing(
             this.state.scale,
             {
@@ -63,7 +63,7 @@ class ListTabBar extends PureComponent {
     }
     render() {
         return (
-            <View style={{height: 56*PX,flexDirection:'row'}}>
+            <View style={{height: 44,flexDirection:'row'}}>
                     <ScrollView
                         style={styles.wrap}
                         contentContainerStyle={{alignItems:'center'}}

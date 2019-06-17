@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     },
     item: {
         marginRight: 13*PX,
-        marginLeft: 6*PX,
+        marginLeft: 13*PX,
         height: 42*PX,
         justifyContent: 'center',
         alignItems: 'center',

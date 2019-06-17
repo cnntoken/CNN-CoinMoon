@@ -26,11 +26,12 @@ class MarketList extends Component {
         this.state = {
             loadingMore: false,
             refreshing: false,
-            showFoot: 0
+            showFoot: 0,
+            lastTime: new Date().getTime(),
+            sorting: false
         }
     }
     componentDidMount = () => {
-        console.log('11111111111111',this.props.type)
         // if(this.props.data && this.props.){
         //     return false
         // }
@@ -41,14 +42,14 @@ class MarketList extends Component {
     }
 
     // 添加自选
-    addCollection = (id) => {
-        this.props.addCollection(id)
+    addCollection = (id,index,type) => {
+        this.props.addCollection(id,index,type)
 
     };
 
     // 取消自选
-    removeCollection= (id) => {
-        this.props.removeCollection(id)
+    removeCollection= (id,index,type) => {
+        this.props.removeCollection(id,index,type)
     };
     
     onError = () => {
@@ -63,7 +64,6 @@ class MarketList extends Component {
                 refreshing: true
             })
             this.props.handleRefresh(category,()=>{
-                // this._largeList.endRefresh();
                 this.setState({
                     refreshing: false
                 })
@@ -72,16 +72,24 @@ class MarketList extends Component {
     }
     //上拉加载更多
     _onLoading = (category) => {
+        let thisTime = new Date().getTime()
+        let {lastTime} = this.state
+        this.setState({
+            lastTime: new Date().getTime()
+        })
+        console.log('thisTime:',thisTime,'lastTime',lastTime)
+        // if(thisTime - lastTime < 500) return false
+
         // return false
         if(!this.props.handleLoadMore){
             return null
         }
-        // 不处于正在加载更多 && 有下拉刷新过 && 仍有数据可供刷新
+        // 不处于正在加载更多 && 有下拉刷新过 && 仍有数据可供刷新 && 网络正常
         if (!this.state.loadingMore 
             && this.props.data.length > 0
-            && this.state.showFoot !== 2
-            && !this.props.allLoaded) {
-                console.log('????????????????',this.state.showFoot,this.props.allLoaded)
+            && this.state.showFoot === 0
+            && !this.props.allLoaded
+            && !this.props.netError) {
                 this.setState({
                     loadingMore: true,
                     showFoot: 1,
@@ -98,7 +106,11 @@ class MarketList extends Component {
         this.props.goMarketDetail(item)
     }
     _renderItem = ({item,index}) => {
-        const {showAction,showOrder} = this.props
+        // net_error
+        if(item.netError){
+            return <Text style={{paddingTop: 10,textAlign:'center'}}>{i18n.t('net_error')}</Text>
+        }
+        const {showAction,showOrder,type} = this.props
         return  <MarketItem
                     handleItemPress={this.handleItemPress}
                     addCollection={this.addCollection}
@@ -107,6 +119,8 @@ class MarketList extends Component {
                     showOrder={showOrder}
                     item={item}
                     index={index}
+                    user={this.props.user}
+                    type={type}
                 />
     }
        // 空数据
@@ -123,7 +137,7 @@ class MarketList extends Component {
         if(!this.state.showFoot) return null
         return  <View style={styles.footerContainer}>
                     {
-                        this.state.showFoot === 1 ? 
+                        this.state.showFoot === 1 || this.state.loadingMore? 
                             <View>
                                 <ActivityIndicator size="small" color="#888888"/>
                                 <Text>{i18n.t('page_market_list.refreshControlLoadingText')}</Text>
@@ -133,18 +147,28 @@ class MarketList extends Component {
                 </View>
     }
 
-
     handleSort = (category,sort_by,count) => {
+        if(this.state.sorting){
+            return false
+        }
+        this.setState({
+            sorting: true
+        })
         let dir 
         if(sort_by === this.props.sort_by.replace(/-/g,'')){
             dir = this.props.sort_by.includes('-') ? sort_by : '-' + sort_by
         } else {
             dir = '-' + sort_by
         }
-        this.props.handleSort({category,sort_by:dir,count})
+        this.props.handleSort({category,sort_by:dir,count},()=>{
+            this.setState({
+                sorting: false
+            })
+        })
     }
     // 头部过滤条件
     ListHeaderComponent = (type) => {
+        if(this.props.data&&!this.props.data.length) return null
         const { sort_by } = this.props
         if(type === 'mine'||type==='coin_market_pair'||type==='search'){
             return  <View style={styles.filter_con}>
@@ -169,13 +193,13 @@ class MarketList extends Component {
         } else if(type === 'all'){
             return  <View style={styles.filter_con}>
                         <View style={styles.filter_item_1}>
-                            <TouchableOpacity onPress={()=>this.handleSort('all','market_cap',LIMIT)} style={styles.filter_item_left_btn}>
+                            <TouchableOpacity disabled={this.state.sorting} onPress={()=>this.handleSort('all','market_cap',LIMIT)} style={styles.filter_item_left_btn}>
                                 <Text style={styles.text}>{i18n.t('page_market_list.market_cap')}</Text>
                                 <TriangleIcon sort_dir={sort_by!=='-market_cap'?(sort_by==='market_cap'?'asc':''):'desc'}/>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.filter_item_2}>
-                            <TouchableOpacity onPress={()=>this.handleSort('all','price',LIMIT)} style={styles.filter_item_right_btn}>
+                            <TouchableOpacity disabled={this.state.sorting} onPress={()=>this.handleSort('all','price',LIMIT)} style={styles.filter_item_right_btn}>
                                 <Text style={styles.text}>
                                     {i18n.t('page_market_list.current_price')}
                                 </Text>
@@ -183,7 +207,7 @@ class MarketList extends Component {
                             </TouchableOpacity>
                         </View>
                         <View style={styles.filter_item_3}>
-                            <TouchableOpacity style={styles.filter_item_right_btn} onPress={()=>this.handleSort('all','change',LIMIT)}>
+                            <TouchableOpacity disabled={this.state.sorting} style={styles.filter_item_right_btn} onPress={()=>this.handleSort('all','change',LIMIT)}>
                                 <Text style={styles.text}>{i18n.t('page_market_list.change_24h')}</Text>
                                 <TriangleIcon sort_dir={sort_by!=='-change'?(sort_by==='change'?'asc':''):'desc'}/>
                             </TouchableOpacity>
@@ -192,7 +216,6 @@ class MarketList extends Component {
         }
     };
     getKey = (item,index) => {
-        console.log('>>>>>>>>>>>>>>>>>>>',item,index)
         return `${item.id}_${index}`
     }
 
@@ -224,13 +247,14 @@ class MarketList extends Component {
                                     tintColor="#555555"
                                     titleColor="#555555"
                                     colors={['#555555']}
-                                    progressBackgroundColor="#555555"
+                                    progressBackgroundColor="#ffffff"
                                 />
                             }
                             refreshing={this.state.refreshing}
                             ListFooterComponent={this._createListFooter}
                             onEndReached={() => this._onLoading(type)}
-                            onEndReachedThreshold={0.01}
+                            onEndReachedThreshold={0.1}
+                            extraData={this.state.lastTime}
                         />
                     </View>
                 }

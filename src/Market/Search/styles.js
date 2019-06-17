@@ -5,6 +5,9 @@ import { calculateStyleVariable } from '@utils/index'
 const PX = calculateStyleVariable()
 
 const styles = StyleSheet.create({
+    containerWrap: {
+        // width: '100%'  
+    },
     header: {
         backgroundColor: '#408EF5',
     },
@@ -30,6 +33,7 @@ const styles = StyleSheet.create({
         marginRight: 17*PX,
     },
     input: {
+        width: '100%',
         padding: 0,
         marginLeft: 14*PX,
     },
