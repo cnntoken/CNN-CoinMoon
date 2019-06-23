@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         marginLeft: 18,
         marginTop: 15,
+        marginBottom: 10,
     },
     bg_w: {
         backgroundColor: '#fff',
@@ -23,6 +24,7 @@ const styles = StyleSheet.create({
         height: 56,
         justifyContent: 'center',
         width: 176,
+        // marginTop: 10,
     },
     btn_g: {
         backgroundColor: '#29CCA7',
@@ -58,6 +60,7 @@ const styles = StyleSheet.create({
     list_item_left_t1: {
         color: '#333',
         fontSize: 14,
+        width: 130,
         marginBottom: 2,
         marginLeft: 10,
     },
@@ -83,7 +86,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#408EF5',
         borderRadius: 8,
         marginTop: 2,
-        width: 54,
+        // width: 54,
+        paddingLeft: 5,
+        paddingRight: 5,
         paddingTop: 2,
         paddingBottom: 2,
         alignItems: 'center',
@@ -98,12 +103,19 @@ const styles = StyleSheet.create({
         paddingLeft: 18,
         paddingRight: 18,
     },
+    no_data: {
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     text_w: {
         color: '#fff',
     },
     modal: {
         justifyContent:'flex-end',
         margin:0,
+        padding: 0,
     },
     modal_btn: {
         backgroundColor: '#408EF5',
@@ -114,6 +126,8 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 16,
         borderTopRightRadius: 16,
         flexDirection:'column',
+        margin:0,
+        overflow: 'hidden',
     },
     modal_footer: {
         marginBottom: 24,
@@ -136,6 +150,8 @@ const styles = StyleSheet.create({
     modal_info: {
         color: '#333',
         fontSize: 16,
+        paddingLeft: 10,
+        paddingRight: 10,
     },
     modal_label: {
         color: '#999',

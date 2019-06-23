@@ -85,6 +85,8 @@ const styles = StyleSheet.create({
     modal_pwd_box: {
         alignItems: 'center',
         flexDirection: 'column',
+        paddingLeft: 18,
+        paddingRight: 18,
     },
     modal_pwd: {
         backgroundColor: '#F5F5F5',
@@ -93,8 +95,9 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         padding: 15,
         marginTop: 20,
-        marginBottom: 100,
-        width: 327,
+        marginBottom: 20,
+        // flex: 1,
+        width: '100%',
     },
     radio_box: {
         marginTop: 20,

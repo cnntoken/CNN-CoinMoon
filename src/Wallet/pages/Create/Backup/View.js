@@ -22,15 +22,10 @@ import {
 import i18n from '@i18n';
 
 export default class ViewControl extends PureComponent {
-    state = {
-        mnemonic:
-            'pole kiwi ignore occur dolphin leisure sock aisle knock weapon book sand',
-    };
-    goBack = () => {
-        this.props.navigation.pop();
-    };
+    
+    // 进入确认助记词页面
     goWalletBackupDone = () => {
-        const { mnemonic } = this.state;
+        const {mnemonic} = this.props.navigation.state.params
         this.props.navigation.navigate('WalletCreateBackupDone', {
             prevState: this.props.navigation.state,
             mnemonic,
@@ -38,13 +33,14 @@ export default class ViewControl extends PureComponent {
     };
 
     render() {
-        const { mnemonic } = this.state;
+        const {mnemonic} = this.props.navigation.state.params
         return (
             <Container>
                 <Header
                     leftView={
                         <Image
                             source={require('@images/icon_back_black.png')}
+                            style={{ width: 12, height: 23 }}
                         />
                     }
                     title={() => (

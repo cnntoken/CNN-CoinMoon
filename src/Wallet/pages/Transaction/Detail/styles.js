@@ -35,6 +35,8 @@ const styles = StyleSheet.create({
     pending_t: {
         color: '#fff',
         fontSize: 18,
+        paddingLeft: 10,
+        paddingRight: 10,
     },
     copy: {
         flexDirection: 'row',
@@ -51,10 +53,12 @@ const styles = StyleSheet.create({
     },
     list: {
         flexDirection: 'column',
-        height: 78,
+        // height: 78,
         justifyContent: 'center',
         paddingLeft: 18,
         paddingRight: 18,
+        paddingTop: 15,
+        paddingBottom: 15,
     },
     underline:{
         backgroundColor: '#E6E6E6',

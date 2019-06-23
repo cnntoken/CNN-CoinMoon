@@ -18,14 +18,15 @@ import {
     Button,
     Title,
 } from '@components/NDLayout'
-import Toast from '@components/Toast/index'
 import i18n from '@i18n';
+import service from '@services/wallet/index';
+import {cnnLogger,$toast} from '@utils/index';
 
 const Shuffle = (mnemonic)=>{
     const arr = mnemonic.split(' ')
     let m = arr.length,i;
     while(m){
-        i = (Math.random() * m--) >>> 0;
+        i = (Math.random() * m--) >>> 0; // 取整
         [arr[m],arr[i]] = [arr[i],arr[m]]
     }
     return arr
@@ -37,39 +38,45 @@ export default class ViewControl extends PureComponent {
         mnemonic: this.props.navigation.state.params.mnemonic,
         candidate: Shuffle(this.props.navigation.state.params.mnemonic)
     }
-    goBack = () => {
-        this.props.navigation.pop();
-    };
+
     goWalletMain = ()=>{
         this.props.navigation.navigate('WalletMain', {
             prevState: this.props.navigation.state,
         });
     }
     
-    handleDone = ()=>{
+    handleDone = async()=>{
         const {words,mnemonic} = this.state
         const str = words.join(' ');
         if(str === mnemonic){
+            await service.backupMnemonic();
+            // 成功备份助记词
+            cnnLogger('backup_success')
             this.goWalletMain()
+
         }else{
-            Toast.show(i18n.t('page_verify.verify_fail'))
+            $toast(i18n.t('page_verify.verify_fail'))
         }
     }
     clickRemove = (index,item)=>{
         console.log('clickRemove: ',index,item)
-        const {words} = this.state
+        const {words,candidate} = this.state
         const newWords = words.filter((v,i)=>!(i===index&&v===item))
+        const newCandidate = [...candidate,item]
         console.log('newWords: ',newWords)
         this.setState({
             words: newWords,
+            candidate: newCandidate,
         })
     }
     cilckWord = (index,item)=>{
         console.log('cilckWord: ',index,item)
-        const {words} = this.state
+        const {words,candidate} = this.state
         const newWords = [...words,item]
+        const newCandidate = candidate.filter((v,i)=>!(i===index&&v===item))
         this.setState({
             words: newWords,
+            candidate: newCandidate,
         })
     }
     render() {
@@ -79,6 +86,7 @@ export default class ViewControl extends PureComponent {
                 <Header 
                     leftView={<Image 
                                 source={require('@images/icon_back_black.png')} 
+                                style={{ width: 12, height: 23 }}
                             />}
                     title={()=><Title txt={i18n.t('page_wallet.confirm_mnemonic')} />}
                 />

@@ -3,6 +3,7 @@ import NavigationService from '@services/NavigationService';
 import {
     createStackNavigator,
     createAppContainer,
+    // createSwitchNavigator,
     // createBottomTabNavigator
 } from 'react-navigation';
 // 钱包 Wallet
@@ -25,6 +26,7 @@ import WalletTransactionList from './pages/Transaction/List/index';
 import WalletTransactionTransfer from './pages/Transaction/Transfer/index';
 import WalletTransactionDetail from './pages/Transaction/Detail/index';
 
+import WalletDebug from './pages/Debug/index';
 
 const WalletStack = createStackNavigator({
     // 钱包资产（列表）
@@ -115,9 +117,16 @@ const WalletStack = createStackNavigator({
             gesturesEnabled: true
         }
     },
+    WalletDebug: {
+        screen: WalletDebug,
+        navigationOptions: {
+            header: null,
+            gesturesEnabled: true
+        }
+    },
 },{
     initialRouteName: 'WalletMain',
-    mode: 'modal',
+    // mode: 'modal',
     headerMode: 'none',
 })
 

@@ -17,20 +17,20 @@ const styles = StyleSheet.create({
         paddingLeft: 24,
         paddingRight: 24,
         paddingTop: 20,
+        // flex: 1,
     },
     form_item: {
         borderRadius: 8,
         marginBottom: 9,
-        ...Platform.select({
-            android: {
-                textAlignVertical: 'top'
-            }
-        })
     },
     form_textarea: {
+        height: 100,
         ...Platform.select({
-            ios: {
-                height: 100,
+            // ios: {
+            //     height: 100,
+            // },
+            android: {
+                textAlignVertical: 'top'
             }
         })
     },
@@ -49,14 +49,16 @@ const styles = StyleSheet.create({
     },
     suffix: {
         color: '#408EF5',
-        height:20,
-        marginBottom: 15,
-        marginTop: 15,
+        // height:20,
+        // marginBottom: 15,
+        // marginTop: 15,
         position: 'absolute',
         right: 15,
+        top: -40,
     },
     btn_box: {
         backgroundColor: '#408EF5',
+        marginTop: 30,
         height: 50,
     },
     btn_txt: {

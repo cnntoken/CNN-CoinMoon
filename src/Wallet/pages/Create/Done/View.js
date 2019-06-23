@@ -20,14 +20,19 @@ import {
 } from '@components/NDLayout'
 // import Toast from '@components/Toast/index'
 import i18n from '@i18n';
+import {cnnLogger} from '@utils/index';
 
 export default class ViewControl extends PureComponent {
-    goBack = () => {
-        this.props.navigation.pop();
-    };
+    
     goWalletBackup = ()=>{
+        // 点击备份助记词
+        cnnLogger('click_backup',{
+            page: 'create index'
+        })
+        const {mnemonic} = this.props.navigation.state.params
         this.props.navigation.navigate('WalletCreateBackup', {
             prevState: this.props.navigation.state,
+            mnemonic,
         });
     }
     handleLater = ()=>{
@@ -40,8 +45,10 @@ export default class ViewControl extends PureComponent {
         return (
             <Container>
                 <Header 
+                    leftClick={this.handleLater}
                     leftView={<Image 
                                 source={require('@images/icon_back_black.png')} 
+                                style={{ width: 12, height: 23 }}
                             />}
                     rightView={<Text style={styles.header_right}>{i18n.t('page_wallet.later_backup')}</Text>}
                     rightClick={this.handleLater}
@@ -59,13 +66,13 @@ export default class ViewControl extends PureComponent {
                 <Footer style={styles.footer}>
                     <View style={styles.notice}>
                         <Image 
-                            source={require('@images/icon_back_black.png')}
+                            source={require('@images/icon_tip.png')}
                         />
                         <Text style={styles.notice_t}>{i18n.t('page_wallet.backup_warn')}</Text>
                     </View>
                     <View style={styles.btn_view}>
                         <Button style={styles.btn} onPress={this.goWalletBackup}>
-                            <Text style={styles.color_w}>{i18n.t('page_wallet.confirm')}</Text>
+                            <Text style={styles.color_w}>{i18n.t('page_wallet.backup_mnemonic')}</Text>
                         </Button>
                     </View>
                 </Footer>

@@ -18,27 +18,31 @@ import {
     Title,
 } from '@components/NDLayout'
 import i18n from '@i18n';
+import FastImage from 'react-native-fast-image';
+import { cnnLogger } from '@utils/index';
 
 const MOCK_DATA = [
     {
         type: 'eth',
-        icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1.png',
+        icon: 'http://img1.newsdog.today/cnn/coin/ETH',
         name: 'ETH',
         total: 0.00,
     },
     {
         type: 'btc',
-        icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1.png',
+        icon: 'http://img1.newsdog.today/cnn/coin/BTC',
         name: 'BTC',
         total: 0.00,
     }
 ]
 
 export default class ViewControl extends PureComponent {
-    goBack = () => {
-        this.props.navigation.pop();
-    };
+    
     goWalletDetail = (type)=>{
+        // 选择导入钱包类型
+        cnnLogger('select_wallet_type',{
+            type,
+        })
         this.props.navigation.navigate('WalletImportDetail', {
             prevState: this.props.navigation.state,
             type
@@ -47,7 +51,7 @@ export default class ViewControl extends PureComponent {
     renderItem = (item)=>(<TouchableOpacity onPress={()=>this.goWalletDetail(item.type)}>
         <View style={styles.item}>
             <View style={styles.item_center}>
-                <Image 
+                <FastImage 
                     source={{uri: item.icon}}
                     style={styles.prefix_img}
                 />
@@ -56,7 +60,7 @@ export default class ViewControl extends PureComponent {
             <View>
                 <Image 
                     source={require('@images/wallet_icon_next.png')}
-                    style={{height: 10,width: 17}}
+                    style={{height: 18,width: 10}}
                 />
             </View>
         </View>
@@ -69,6 +73,7 @@ export default class ViewControl extends PureComponent {
                 <Header 
                     leftView={<Image 
                                 source={require('@images/icon_back_black.png')} 
+                                style={{ width: 12, height: 23 }}
                             />}
                     title={()=><Title txt={i18n.t('page_wallet.import_wallet')} />}
 
