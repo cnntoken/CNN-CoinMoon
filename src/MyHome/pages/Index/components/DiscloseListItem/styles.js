@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
         // width: '100%',
         width: img_width,
         height: img_width,
-        flex:1,
+        flex: 1,
         borderRadius: 8,
         backgroundColor: '#fafafa'
     },
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
         color: '#333333',
         fontSize: 14,
         lineHeight: 20,
-        marginRight:6,
+        marginRight: 6,
         fontWeight: 'bold'
     },
 
@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     edit: {
         textAlign: 'right'
     },
+
     interact: {
         flex: 1,
         flexDirection: 'row',
@@ -68,12 +69,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
 
     },
+
     number: {
         color: '#666',
         fontSize: 12,
         paddingLeft: 3,
         marginLeft: 0,
     },
+
     loadMore: {
         paddingTop: 10,
         paddingBottom: 10,

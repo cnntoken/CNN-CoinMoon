@@ -41,6 +41,9 @@ function mapDispatchToProps(dispatch) {
         },
         removeCollection: (...args) => {
             dispatch(marketDetailActions.removeCollection(...args))
+        },
+        updateDiscussList: (...args) => {
+            dispatch(marketDetailActions.updateDiscussList(...args))
         }
     };
 }

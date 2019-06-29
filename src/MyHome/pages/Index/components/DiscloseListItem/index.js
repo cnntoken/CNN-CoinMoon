@@ -11,6 +11,7 @@ import {Button} from '@components/NDLayout'
 
 import {Col, Row, Grid} from "react-native-easy-grid";
 import {cloneByJson, formatDate} from "@utils";
+import FastImage from "react-native-fast-image";
 
 
 export default class DiscloseListItem extends Component {
@@ -103,7 +104,7 @@ export default class DiscloseListItem extends Component {
                                         }
                                         return <Col style={styles.col_img} key={idx}>
                                             {
-                                                <Image style={styles.image}
+                                                <FastImage style={styles.image}
                                                        key={idx + 6 + ''}
                                                        source={{
                                                            uri: uri,
@@ -123,7 +124,7 @@ export default class DiscloseListItem extends Component {
                                             }
                                             return <Col style={styles.col_img} key={idx}>
                                                 {
-                                                    <Image style={styles.image}
+                                                    <FastImage style={styles.image}
                                                            key={idx + 6 + ''}
                                                            source={{
                                                                uri: uri,
@@ -142,7 +143,7 @@ export default class DiscloseListItem extends Component {
                                             }
                                             return <Col style={styles.col_img} key={idx + 6 + ''}>
                                                 {
-                                                    <Image style={styles.image}
+                                                    <FastImage style={styles.image}
                                                            key={idx + 6 + ''}
                                                            source={{
                                                                uri: uri,

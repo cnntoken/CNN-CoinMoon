@@ -39,7 +39,7 @@ const effects = {
             const res = yield call(services.getlist, params);
             callback && callback({data: res.data});
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             callback && callback({
                 error: e
             });

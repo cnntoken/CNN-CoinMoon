@@ -14,15 +14,13 @@ import {adaptUserInfo} from '@utils';
 export default class Index extends Component {
 
     render() {
-
-        let {baseInfo, params} = this.props;
+        let {baseInfo, params = {}} = this.props;
         let user = adaptUserInfo(baseInfo.currentUser || {});
         const store = configureStore({user}, reducers, sagas);
-        const initialRoute = params.initialRoute;
-        // console.log(params.user);
+        const initialRoute = params.initialRoute || '';
         return (
             <Provider store={store}>
-                <OthersHome initialRoute={initialRoute} userInfo={params.user}/>
+                <OthersHome initialRoute={initialRoute} userInfo={params.user || {}}/>
             </Provider>
         );
     }

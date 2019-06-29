@@ -5,7 +5,8 @@ import {
     StyleSheet,
     Image,
     ScrollView,
-    DeviceEventEmitter
+    DeviceEventEmitter,
+    PixelRatio
 } from 'react-native';
 
 import {
@@ -22,7 +23,7 @@ import RefreshListView, {RefreshState} from '@components/RefreshListView';
 import AnimatedHeader from '@components/Collapsible';
 import Item from "./components/feedItem/Item";
 import {closeRNPage, goRNPage} from "@utils/CNNBridge";
-import {cloneByJson} from "@src/utils";
+import {cloneByJson, cnnLogger} from "@src/utils";
 
 const styles = StyleSheet.create({
     content: {
@@ -51,6 +52,7 @@ const styles = StyleSheet.create({
     },
     userInfo_other: {
         justifyContent: 'center',
+        // marginTop: 8
     },
     userAvatar: {
         top: -40,
@@ -96,23 +98,27 @@ class ViewControl extends Component {
     // 点赞
     like = (item) => {
 
+        // debugger;
+
         // 必须登录，否则跳往登录页
         if (!this.props.user.isLogin) {
             goRNPage({
                 moduleName: 'stark_login',
+                params:{
+                    event:{
+                        from: 'othersHome',
+                        trigger: 'like',
+                    }
+                }
             });
             return;
         }
 
+        let Items = cloneByJson(this.state.Items);
         let actionValue = item.req_user_stats.like;
-        let like_count = item.feed_stats.like_count;
-
-        item.req_user_stats.like = !actionValue;
-        item.feed_stats.like_count = !actionValue ? like_count + 1 : like_count - 1;
-
 
         this.setState({
-            Items: [...this.state.Items]
+            Items
         }, () => {
             // 取消点赞
             if (actionValue) {
@@ -194,6 +200,9 @@ class ViewControl extends Component {
 
 
                 if (data && data.error) {
+                    this.setState({
+                        refreshState: RefreshState.Failure,
+                    });
                     return;
                 }
 
@@ -228,7 +237,7 @@ class ViewControl extends Component {
                     loadMoreing: false,
                     refreshing: false,
                     initLoading: false
-                }, (data) => {
+                }, () => {
 
                 });
             }
@@ -239,35 +248,35 @@ class ViewControl extends Component {
     eventList = [Events.feed_view_count_add, Events.feed_comment_count_add, Events.feed_comment_count_minus, Events.feed_like, Events.feed_cancel_like];
 
     listDataChangeCallback(type, e) {
-
         let Items = cloneByJson(this.state.Items);
         if (!Items) {
             return;
         }
-        const item = Items.find((i) => {
+        let index = Items.findIndex((i) => {
             return e.id === i.id
         });
-        const params = e.params || {};
+        if(index<0) return;
+        let newItem = Items[index]
         switch (type) {
             case  Events.feed_view_count_add:
-                item.feed_stats.view_count++;
+                newItem.feed_stats.view_count++;
                 break;
             case  Events.feed_comment_count_add:
-                item.feed_stats.comment_count++;
+                newItem.feed_stats.comment_count++;
                 break;
             case  Events.feed_comment_count_minus:
-                item.feed_stats.comment_count--;
+                newItem.feed_stats.comment_count--;
                 break;
             case  Events.feed_like:
-                item.feed_stats.like_count++;
-                item.req_user_stats.like = true;
+                newItem.feed_stats.like_count++;
+                newItem.req_user_stats.like = true;
                 break;
             case  Events.feed_cancel_like:
-                item.feed_stats.like_count--;
-                item.req_user_stats.like = false;
+                newItem.feed_stats.like_count--;
+                newItem.req_user_stats.like = false;
                 break;
         }
-
+        Items.splice(index,1,newItem)
         this.setState({
             Items: Items
         })
@@ -315,23 +324,30 @@ class ViewControl extends Component {
                     flex: 1,
                     marginTop: -40
                 }}
-                toolbarColor={'#408EF5'}
                 renderBack={() => {
-                    return <Button style={{
-                        backgroundColor: '#eee',
-                    }} transparent onPress={this.goBack.bind(this)}>
+                    return  <Button style={{
+                        paddingLeft: 16,
+                        paddingRight: 10,
+                        paddingTop: 8
+                    }}
+                    transparent
+                    onPress={this.goBack}>
                         <Image style={{
-                            width: 10,
-                            height: 18,
-                            marginRight: 8,
+                            width: 12,
+                            height: 23,
+
                         }} source={require('@images/icon_back_white.png')}/>
                     </Button>
                 }}
 
                 renderLeft={() => {
-                    return (<UserAvatar
-                        info={userInfo}
-                    />)
+                    return (<View style={{
+                        marginTop: 8
+                    }}>
+                        <UserAvatar
+                            info={userInfo}
+                        />
+                    </View>)
                 }}
 
                 title={() => (
@@ -355,6 +371,8 @@ class ViewControl extends Component {
                             refreshState={this.state.refreshState}
                             onHeaderRefresh={this.handleRefresh}
                             onFooterRefresh={this.handleLoadMore}
+                            ItemSeparatorComponent={() => <View
+                                style={{height: 1 / PixelRatio.getPixelSizeForLayoutSize(1), backgroundColor: '#E6E6E6'}}/>}
                             // 可选
                             footerRefreshingText={i18n.t('disclose.footerRefreshingText')}
                             footerFailureText={i18n.t('disclose.footerFailureText')}

@@ -9,7 +9,8 @@ const styles = StyleSheet.create({
         // paddingBottom: 100,
         flex: 1,
         paddingHorizontal: 20,
-        paddingBottom: 49
+        paddingBottom: 49,
+        // backgroundColor: '#eee'
     },
     content: {
         marginTop: 20,

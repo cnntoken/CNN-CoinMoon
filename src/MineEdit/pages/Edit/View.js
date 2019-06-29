@@ -2,15 +2,19 @@ import React, {PureComponent} from 'react';
 import {
     Container,
     Button,
+    KeyBoard,
+    InputFocus,
 } from "@components/NDLayout";
 import {Image, View, TouchableOpacity, Text} from 'react-native';
-import InputFocus from '@components/InputFocus';
+// import InputFocus from '@components/InputFocus';
+
 import styles from './styles';
 import {$toast} from '@utils';
 import i18n from '@i18n';
 import ImagePicker from 'react-native-image-crop-picker';
 import {Grid, Row, Col} from 'react-native-easy-grid'
 import FastImage from 'react-native-fast-image';
+import {ScrollView} from 'react-native';
 import {closeRNPage} from "@src/utils/CNNBridge";
 
 class ViewControl extends PureComponent {
@@ -23,8 +27,9 @@ class ViewControl extends PureComponent {
             avatar: user.picture,
             image: null
         }
+        this._allLayouts = {}
+        this.currentTarget = null
     }
-
     getFiles() {
         let files = {};
         this.props.images.map((image, idx) => {
@@ -65,13 +70,25 @@ class ViewControl extends PureComponent {
             formData.append('type', 'image');
         }
 
+        $toast(i18n.t('updating_user_info'));
+
         this.props.updateUserInfo({
             params: {
                 name: nick_name,
             },
             user_id: this.props.user.id,
             file: image ? formData : null,
-            callback: () => {
+            callback: (data) => {
+                if(data.error){
+                    setTimeout(()=>{
+                        $toast(i18n.t('updating_user_info_fail'));
+
+                    },1000);
+                    return;
+                }
+                setTimeout(()=>{
+                    $toast(i18n.t('updating_user_info_success'));
+                },1000);
                 closeRNPage();
             }
         })
@@ -130,62 +147,68 @@ class ViewControl extends PureComponent {
                     }}>
                         <Col>
                             <Button style={{
-                                width: 10
+                                paddingRight:20, 
+                                width: 10,
                             }} transparent onPress={this.goBack}>
-                                <Image source={require('@images/icon_back_black.png')} style={{width: 10, height: 18}}/>
+                                <Image source={require('@images/icon_back_black.png')} style={{width: 12, height: 23}}/>
                             </Button>
                         </Col>
 
                         <Col/>
                     </Row>
+                    <KeyBoard calcScroll2={()=>'bottom'}>
+                        <Row style={{
+                            marginHorizontal: 16,
+                            height: 140,
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
+                            <View style={styles.uploadbox}>
+                                <TouchableOpacity onPress={this.selectPhotoTapped}>
+                                    <View style={styles.imgbox}>
+                                        <FastImage
+                                            source={image && image.dataUrl ? {uri: image.dataUrl} : (avatar ? {uri: avatar} : require('@images/avatar_default.png'))}
+                                            style={{width: 80, height: 80, borderRadius: 40, backgroundColor: '#eee'}}/>
+                                        <Image source={require('@images/icon_camera.png')} style={styles.camera}/>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </Row>
 
-                    <Row style={{
-                        marginHorizontal: 16,
-                        height: 140,
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}>
-                        <View style={styles.uploadbox}>
-                            <TouchableOpacity onPress={this.selectPhotoTapped}>
-                                <View style={styles.imgbox}>
-                                    <FastImage
-                                        source={image && image.dataUrl ? {uri: image.dataUrl} : (avatar ? {uri: avatar} : require('@images/avatar_default.png'))}
-                                        style={{width: 80, height: 80, borderRadius: 40, backgroundColor: '#eee'}}/>
-                                    <Image source={require('@images/icon_camera.png')} style={styles.camera}/>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                    </Row>
+                        <Row style={{
+                            marginHorizontal: 24,
+                            height: 80,
 
-                    <Row style={{
-                        marginHorizontal: 24,
-                        height: 80,
+                        }}>
+                            <View style={styles.infobox}>
+                                <Text style={styles.label}>{i18n.t('username')}</Text>
+                                <InputFocus 
+                                    onChangeText={this.onChangeNickName} 
+                                    value={nick_name} style={styles.input}  
+                                />
+                            </View>
+                        </Row>
 
-                    }}>
-                        <View style={styles.infobox}>
-                            <Text style={styles.label}>{i18n.t('username')}</Text>
-                            <InputFocus onChangeText={this.onChangeNickName} value={nick_name} style={styles.input}/>
-                        </View>
-                    </Row>
-
-                    <Row style={{
-                        marginHorizontal: 24,
-                        // height: 56,
-                        marginTop: 32,
-                        // backgroundColor: '#333'
-                    }}>
-                        <Button style={styles.btn} onPress={this.onSubmit}>
-                            <Text style={{
-                                color: '#fff',
-                                fontSize: 18,
-                                // height: '100%',
-                                // backgroundColor: "#eee",
-                                // width: '100%'
-                            }}>{i18n.t('save')}
-                            </Text>
-                        </Button>
-                    </Row>
-                    <Row/>
+                        <Row style={{
+                            marginHorizontal: 24,
+                            // height: 56,
+                            marginTop: 32,
+                            marginBottom: 20,
+                            // backgroundColor: '#333'
+                        }}>
+                            <Button style={styles.btn} onPress={this.onSubmit}>
+                                <Text style={{
+                                    color: '#fff',
+                                    fontSize: 18,
+                                    // height: '100%',
+                                    // backgroundColor: "#eee",
+                                    // width: '100%'
+                                }}>{i18n.t('save')}
+                                </Text>
+                            </Button>
+                        </Row>
+                        <Row/>
+                    </KeyBoard>
                 </Grid>
             </Container>
         );

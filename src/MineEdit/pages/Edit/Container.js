@@ -4,6 +4,7 @@ import * as actions from "../../actions";
 import {Component} from "react";
 import React from "react";
 import NotLogin from "@components/NotLogin";
+import hocUserStateChange from "@src/components/HocUserStateChange";
 
 function mapStateToProps({user}) {
     return {
@@ -41,4 +42,4 @@ class Container extends Component {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Container);
+)(hocUserStateChange(Container));

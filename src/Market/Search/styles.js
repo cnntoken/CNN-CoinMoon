@@ -5,9 +5,6 @@ import { calculateStyleVariable } from '@utils/index'
 const PX = calculateStyleVariable()
 
 const styles = StyleSheet.create({
-    containerWrap: {
-        // width: '100%'  
-    },
     header: {
         backgroundColor: '#408EF5',
     },
@@ -34,8 +31,12 @@ const styles = StyleSheet.create({
     },
     input: {
         width: '100%',
-        padding: 0,
+        paddingTop: 0,
+        paddingRight: 25*PX,
+        paddingBottom: 0,
+        paddingLeft: 0,
         marginLeft: 14*PX,
+        overflow: 'hidden'
     },
     cancel: {
         color: '#fff',

@@ -8,7 +8,7 @@ import {
     ScrollView,
     TouchableOpacity,
     DeviceEventEmitter,
-    ActionSheetIOS
+    PixelRatio
 } from 'react-native';
 
 import {
@@ -17,13 +17,13 @@ import {
 
 import DiscloseListItem from './components/DiscloseListItem';
 import PropTypes from 'prop-types';
-import UserAvatar from './components/UserAvatar';
+import UserAvatar from '@components/UserAvatar';
 import i18n from '@i18n';
 import RefreshListView, {RefreshState} from '@components/RefreshListView';
 import AnimatedHeader from '@components/Collapsible';
 import {closeRNPage, goRNPage} from "@utils/CNNBridge";
 import * as Events from "@src/data/ListChangeEvent";
-import {cloneByJson} from "@src/utils";
+import {cloneByJson, ActionSheet, cnnLogger} from "@src/utils";
 
 
 const styles = StyleSheet.create({
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         justifyContent: 'space-between',
         // paddingBottom: 20
+        marginLeft: 10
     },
     userInfo_other: {
         justifyContent: 'center',
@@ -125,13 +126,20 @@ class ViewControl extends Component {
     // 进入具体详情页面
     pressItem = (item) => {
 
+        cnnLogger('enter_detail', {
+            from: 'me_diclose',
+            type: 'disclose',
+            feed_id: item.id,
+            user_id: item.user.id,
+        });
+
         goRNPage({
             moduleName: 'stark_disclose_detail',
             params: {
                 id: item.id,
                 data: item
             }
-        })
+        });
     };
 
     // 点赞
@@ -140,6 +148,12 @@ class ViewControl extends Component {
         if (!this.props.user.isLogin) {
             goRNPage({
                 moduleName: 'stark_login',
+                params:{
+                    event:{
+                        from: 'myHome',
+                        trigger: 'like',
+                    }
+                }
             });
             return;
         }
@@ -156,11 +170,31 @@ class ViewControl extends Component {
         // });
 
         if (!actionValue) {
+
+
+            cnnLogger('like_feed', {
+                from: 'me_diclose',
+                type: 'disclose',
+                feed_id: item.id,
+                user_id: item.user.id,
+
+            });
+
             this.props.like({
                 params: item,
                 id: item.id
             })
         } else {
+
+            cnnLogger('cancel_like_feed', {
+                from: 'me_diclose',
+                type: 'disclose',
+                feed_id: item.id,
+                user_id: item.user.id,
+
+            });
+
+
             this.props.cancel_like({
                 params: item,
                 id: item.id
@@ -177,15 +211,22 @@ class ViewControl extends Component {
         if (!this.props.user.isLogin) {
             goRNPage({
                 moduleName: 'stark_login',
+                params:{
+                    event:{
+                        from: 'myHome',
+                        trigger: 'delete',
+                    }
+                }
             });
             return;
         }
 
-        ActionSheetIOS.showActionSheetWithOptions(
+        ActionSheet(
             {
                 options: [i18n.t('cancel'), i18n.t('delete')],
                 cancelButtonIndex: 0,
                 destructiveButtonIndex: 1,
+                colors: ['#007AFF', '#FF3B30'],
             },
             buttonIndex => {
                 if (buttonIndex === 1) {
@@ -241,6 +282,19 @@ class ViewControl extends Component {
      * @param loadmore     加载更多
      * */
     getList = (limit, LastEvaluatedKey, refresh) => {
+
+        if (refresh) {
+            cnnLogger('refresh_request', {
+                pos: 'me_diclose',
+                action: 'prev'
+            });
+        } else {
+            cnnLogger('refresh_request', {
+                pos: 'me_diclose',
+                action: 'next'
+            });
+        }
+
         this.props.getList({
             params: {
                 count: limit || 10,
@@ -250,12 +304,22 @@ class ViewControl extends Component {
             },
             onSuccess: (data) => {
                 if (refresh) {
+                    cnnLogger('refresh_response', {
+                        pos: 'me_diclose',
+                        action: 'prev',
+                        count: 10
+                    });
                     this.setState({
                         Mine_Items: [...data.list],
                         LastEvaluatedKey: data.read_tag,
                         refreshState: !data.hasMore ? RefreshState.NoMoreData : RefreshState.Idle
                     });
                 } else {
+                    cnnLogger('refresh_response', {
+                        pos: 'me_diclose',
+                        action: 'next',
+                        count: 10
+                    });
                     this.setState({
                         Mine_Items: [...(this.state.Mine_Items || []), ...data.list],
                         LastEvaluatedKey: data.read_tag,
@@ -344,6 +408,8 @@ class ViewControl extends Component {
                     item && item.disclose_stats.comment_count--;
                     break;
             }
+
+
             this.setState({
                 Mine_Items: [...Items]
             })
@@ -356,6 +422,10 @@ class ViewControl extends Component {
 
     componentDidMount() {
         this.getList(10, null, false);
+
+        // this.userStateListener = DeviceEventEmitter.addListener('userStateChange',(data)=>{
+        //     debugger;
+        // });
 
         try {
 
@@ -370,6 +440,9 @@ class ViewControl extends Component {
     }
 
     componentWillUnmount() {
+
+        // this.userStateListener.remove();
+
         try {
             this.eventList.forEach((item) => {
                 this[item].remove()
@@ -392,6 +465,7 @@ class ViewControl extends Component {
 
         const {Mine_Items} = this.state;
 
+
         return (
             <AnimatedHeader
                 style={{
@@ -399,25 +473,29 @@ class ViewControl extends Component {
                     marginTop: -30
                 }}
                 toolbarColor={'#408EF5'}
-                // renderBack={() => {
-                //     return <Button transparent onPress={this.goBack.bind(this)}>
-                //         <Image style={{
-                //             width: 10,
-                //             height: 18,
-                //             marginRight: 8,
-                //         }} source={require('@images/icon_back_white.png')}/>
-                //     </Button>
-                // }}
+                renderBack={() => {
+                    return <Button transparent style={{
+                        paddingLeft: 16,
+                        paddingRight: 10
+                    }} onPress={this.goBack.bind(this)}>
+                        <Image style={{
+                            width: 12,
+                            height: 23,
+                            marginRight: 8,
+                        }} source={require('@images/icon_back_white.png')}/>
+                    </Button>
+                }}
 
                 renderLeft={() => {
                     return (<UserAvatar
-                        info={{avatar: user.avatar, nickname: user.name}}
+                        info={{avatar: user.avatar || user.picture, nickname: user.name}}
                     />)
                 }}
+
                 title={() => (
                     <View style={[styles.userInfo]}>
                         <UserAvatar style={styles.userAvatar} info={{
-                            avatar: user.avatar,
+                            avatar: user.avatar || user.picture,
                             nickname: user.name
                         }} big/>
                         <TouchableOpacity onPress={this.goEdit}>
@@ -431,13 +509,9 @@ class ViewControl extends Component {
                         </TouchableOpacity>
                     </View>
                 )}
-                renderRight={() => (<TouchableOpacity style={{
-                    marginRight: 16,
-                    marginTop: 26,
-
-                }} onPress={this.goSettings}>
-                    <Image source={require('@images/icon_settings.png')}/>
-                </TouchableOpacity>)}
+                renderRight={
+                    () => (null)
+                }
                 noBorder={true}
                 disabled={false}
             >
@@ -453,9 +527,13 @@ class ViewControl extends Component {
                         refreshState={this.state.refreshState}
                         onHeaderRefresh={this.handleRefresh}
                         onFooterRefresh={this.handleLoadMore}
+                        ItemSeparatorComponent={() => <View
+                            style={{height: 1 / PixelRatio.getPixelSizeForLayoutSize(1), backgroundColor: '#E6E6E6'}}/>}
                         // 可选
                         footerRefreshingText={i18n.t('disclose.footerRefreshingText')}
                         footerFailureText={i18n.t('disclose.footerFailureText')}
+                        refreshControlPrepareText={i18n.t('disclose.refreshControlPrepareText')}
+                        refreshControlNormalText={i18n.t('disclose.refreshControlNormalText')}
                         footerNoMoreDataText={i18n.t('disclose.footerNoMoreDataText')}
                         footerEmptyDataText={i18n.t('disclose.footerEmptyDataText')}
                     /> : <ScrollView><Spinner/></ScrollView>

@@ -13,7 +13,8 @@ import Container from './Container';
 
 export default class Page extends PureComponent{
     render(){
-        const store = configureStore({},reducer,sagas);
+        const {params = {}} = this.props;
+        const store = configureStore({event: params.event || {} },reducer,sagas);
        return (<Provider store={store}>
         <Container/>
        </Provider>)

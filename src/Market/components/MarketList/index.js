@@ -2,22 +2,22 @@ import React, {Component} from 'react';
 import styles from './styles';
 import i18n from '@i18n';
 import {
-    // Image, 
-    Text, 
-    View, 
+    // Image,
+    Text,
+    View,
     TouchableOpacity,
-    FlatList,
-    ActivityIndicator,
-    RefreshControl
+    Image
 } from "react-native";
 
 import TriangleIcon from '../TriangleIcon/index'
 import MarketItem from '../MarketItem/index'
-import Spinner from '@components/NDLayout/Spinner';
-const LIMIT = 10
+const LIMIT = 20
+
+import RefreshListView, {RefreshState} from '@components/RefreshListView';
+
 /**
  * showOrder 展示序列号
- * showAction 展示添加自选/移除自选icon  
+ * showAction 展示添加自选/移除自选icon
  */
 class MarketList extends Component {
 
@@ -27,8 +27,10 @@ class MarketList extends Component {
             loadingMore: false,
             refreshing: false,
             showFoot: 0,
-            lastTime: new Date().getTime(),
-            sorting: false
+            sorting: false,
+            // refreshing: false,
+            loadMoreing: false,
+            refreshState: RefreshState.Idle
         }
     }
     componentDidMount = () => {
@@ -42,66 +44,85 @@ class MarketList extends Component {
     }
 
     // 添加自选
-    addCollection = (id,index,type) => {
-        this.props.addCollection(id,index,type)
+    addCollection = ({id,index,type,info},successCallback) => {
+        this.props.addCollection({id,index,type,info},successCallback)
 
     };
 
     // 取消自选
-    removeCollection= (id,index,type) => {
-        this.props.removeCollection(id,index,type)
+    removeCollection= ({id,index,type,info},successCallback) => {
+        this.props.removeCollection({id,index,type,info},successCallback)
     };
-    
+
     onError = () => {
         console.log('image load fail');
     }
 
     // 下拉刷新
-    _onRefresh = (category) => {
-        if(!this.props.handleRefresh) return false
-        if(!this.state.refreshing){
-            this.setState({
-                refreshing: true
-            })
-            this.props.handleRefresh(category,()=>{
-                this.setState({
-                    refreshing: false
-                })
-            })
-        }
-    }
-    //上拉加载更多
-    _onLoading = (category) => {
-        let thisTime = new Date().getTime()
-        let {lastTime} = this.state
+    // _onRefresh = (category) => {
+    //     if(!this.props.handleRefresh) return false
+    //     if(!this.state.refreshing){
+    //         this.setState({
+    //             refreshing: true
+    //         })
+    //         this.props.handleRefresh(category,()=>{
+    //             this.setState({
+    //                 refreshing: false
+    //             })
+    //         })
+    //     }
+    // }
+    //  下滑刷新
+    handleRefresh = (category) => {
         this.setState({
-            lastTime: new Date().getTime()
-        })
-        console.log('thisTime:',thisTime,'lastTime',lastTime)
-        // if(thisTime - lastTime < 500) return false
-
-        // return false
-        if(!this.props.handleLoadMore){
-            return null
-        }
-        // 不处于正在加载更多 && 有下拉刷新过 && 仍有数据可供刷新 && 网络正常
-        if (!this.state.loadingMore 
-            && this.props.data.length > 0
-            && this.state.showFoot === 0
-            && !this.props.allLoaded
-            && !this.props.netError) {
+            refreshState: RefreshState.HeaderRefreshing
+        },()=>{
+            this.props.handleRefresh(category,()=>{
+                let refreshState = RefreshState.Idle;
                 this.setState({
-                    loadingMore: true,
-                    showFoot: 1,
+                    loadMoreing: false,
+                    refreshing: false,
+                    refreshState
                 })
-                this.props.handleLoadMore(category,(nomore)=>{
-                    this.setState({
-                        showFoot: nomore ? 2 : 0,
-                        loadingMore: false
-                    })
-                })
+            })
+        });
+       
+    };
+    handleLoadMore = (category) => {
+        if (this.state.loadMoreing||this.props.netError) {
+            return false;
         }
-    }
+        if(this.props.data.length<LIMIT){
+            this.setState({
+                refreshState: RefreshState.NoMoreData
+            })
+            return false
+        }
+        this.setState({
+            loadMoreing: true,
+            refreshState: RefreshState.FooterRefreshing
+        },()=>{
+            this.props.handleLoadMore(category,(nomore)=>{
+                let refreshState = RefreshState.Idle;
+                if(nomore){
+                    refreshState = RefreshState.NoMoreData;
+                }
+                this.setState({
+                    loadMoreing: false,
+                    refreshing: false,
+                    refreshState
+                })
+            },()=>{
+                let refreshState = RefreshState.Idle;
+                this.setState({
+                    loadMoreing: false,
+                    refreshing: false,
+                    refreshState
+                })
+            })
+        });
+       
+    };
     handleItemPress = (item) => {
         this.props.goMarketDetail(item)
     }
@@ -110,8 +131,9 @@ class MarketList extends Component {
         if(item.netError){
             return <Text style={{paddingTop: 10,textAlign:'center'}}>{i18n.t('net_error')}</Text>
         }
-        const {showAction,showOrder,type} = this.props
+        const {showAction,showOrder,type} = this.props;
         return  <MarketItem
+                    key={item.id}
                     handleItemPress={this.handleItemPress}
                     addCollection={this.addCollection}
                     removeCollection={this.removeCollection}
@@ -122,29 +144,6 @@ class MarketList extends Component {
                     user={this.props.user}
                     type={type}
                 />
-    }
-       // 空数据
-    // _createEmptyView() {
-    //     return (
-    //         <View style={{height: '100%', alignItems: 'center', justifyContent: 'center'}}>
-    //             <Text style={{fontSize: 16}}>
-    //                 暂无数据
-    //             </Text>
-    //         </View>
-    //     );
-    // }
-    _createListFooter = () => {
-        if(!this.state.showFoot) return null
-        return  <View style={styles.footerContainer}>
-                    {
-                        this.state.showFoot === 1 || this.state.loadingMore? 
-                            <View>
-                                <ActivityIndicator size="small" color="#888888"/>
-                                <Text>{i18n.t('page_market_list.refreshControlLoadingText')}</Text>
-                            </View>
-                        :   null
-                    }
-                </View>
     }
 
     handleSort = (category,sort_by,count) => {
@@ -161,8 +160,12 @@ class MarketList extends Component {
             dir = '-' + sort_by
         }
         this.props.handleSort({category,sort_by:dir,count},()=>{
+            let refreshState = RefreshState.Idle;
             this.setState({
-                sorting: false
+                sorting: false,
+                loadMoreing: false,
+                refreshing: false,
+                refreshState
             })
         })
     }
@@ -173,6 +176,7 @@ class MarketList extends Component {
         if(type === 'mine'||type==='coin_market_pair'||type==='search'){
             return  <View style={styles.filter_con}>
                         <View style={styles.filter_item_1}>
+                            <Image  style={styles.pair_icon}source={require('@images/market_pair.png')}/>
                             <Text style={styles.text}>{i18n.t('page_market_list.market_pair_title')}</Text>
                         </View>
                         <View style={styles.filter_item_2}>
@@ -215,50 +219,42 @@ class MarketList extends Component {
                     </View>
         }
     };
+    renderEmptyView = (type) => {
+        if(type == 'mine'&&this.state.refreshState!==RefreshState.HeaderRefreshing){
+            return <View style={styles.no_mine}><Text style={styles.no_mine_text}>{i18n.t('page_market_list.no_mine_text')}</Text></View>
+        } else {
+            return <View />
+        }
+    }
     getKey = (item,index) => {
-        return `${item.id}_${index}`
+        return index.toString()
     }
 
     render() {
         let {data, type} = this.props;
-        if(!this.props.data) return <Spinner/>
         return (
-            <View style={{flex:1}}>
-                {
-                    type === 'mine' && !data.length
-                    ?   <View style={styles.no_mine}>
-                            <Text style={styles.no_mine_text}>{i18n.t('page_market_list.no_mine_text')}</Text>
-                        </View>
-                    :   
-                    <View style={{flex:1}}>
-                        {this.ListHeaderComponent(type)}
-                        <FlatList 
-                            // keyExtractor={(item,index)=>`${item.id}_${index}`}
-                            keyExtractor={(item,index)=>this.getKey(item,index)}
-                            data={data}
-                            renderItem={this._renderItem}
-                            refreshControl={
-                                <RefreshControl
-                                    title={i18n.t('page_market_list.refreshControlLoadingText')}
-                                    refreshing={this.state.refreshing}
-                                    onRefresh={() => {
-                                        this._onRefresh(type);
-                                    }}
-                                    tintColor="#555555"
-                                    titleColor="#555555"
-                                    colors={['#555555']}
-                                    progressBackgroundColor="#ffffff"
-                                />
-                            }
-                            refreshing={this.state.refreshing}
-                            ListFooterComponent={this._createListFooter}
-                            onEndReached={() => this._onLoading(type)}
-                            onEndReachedThreshold={0.1}
-                            extraData={this.state.lastTime}
-                        />
+            <View style={{flex:1}} onLayout={this.props.onLayout}>
+                     <View style={{flex:1}}>
+                            {this.ListHeaderComponent(type)}
+                            <RefreshListView
+                                // initialNumToRender={20}
+                                getItemLayout={(data, index) => ( {length: 65, offset: 65 * index, index} )}
+                                data={data}
+                                keyExtractor={this.getKey}
+                                renderItem={this._renderItem}
+                                refreshState={this.state.refreshState}
+                                onHeaderRefresh={()=>this.handleRefresh(type)}
+                                onFooterRefresh={()=>this.handleLoadMore(type)}
+                                ListEmptyComponent={()=>this.renderEmptyView(type)}
+                                // 可选
+                                footerRefreshingText={i18n.t('page_market_list.footerRefreshingText')}
+                                footerFailureText={i18n.t('page_market_list.footerFailureText')}
+                                footerNoMoreDataText={(type==='mine'&&!data.length)?'':i18n.t('page_market_list.footerNoMoreDataText')}
+                                footerEmptyDataText={i18n.t('page_market_list.footerEmptyDataText')}
+                            />
                     </View>
-                }
-            </View>)
+                </View>
+            )
     }
 }
 

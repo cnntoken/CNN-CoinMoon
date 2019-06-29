@@ -5,25 +5,45 @@ import {
 
 import * as types from './types';
 
-import {setUserInfo} from '@utils/CNNBridge';
-import {DeviceEventEmitter} from "react-native";
+import {deviceInfo, getCurrentUser, setUserInfo} from '@utils/CNNBridge';
+import {DeviceEventEmitter, Platform} from "react-native";
+import * as userService from "@src/services/user";
+import i18n from "@src/i18n";
+import {$toast} from '@utils';
 
 
 const effects = {
 
-
-    // 登出 , 将用户信息清空即可
-    * logout({payload}) {
+    // 登出
+   * logout({payload}) {
+        let {callback} = payload;
         try {
-            let {callback} = payload;
-            yield setUserInfo({});
-            if (callback) callback();
-            DeviceEventEmitter.emit('userStateChange', {});
+            // 注册登录设备用户
+            let res = yield userService.register({
+                "source": Platform.OS,
+                "source_uid": deviceInfo.android_id
+            });
+
+            let info = res.data;
+
+            let currentUser = yield getCurrentUser();
+
+            let data = Object.assign(currentUser, info);
+
+            yield setUserInfo(data);
+
+            DeviceEventEmitter.emit('userStateChange', data);
+
+            $toast(i18n.t('page_login.loginout_ok'));
+
+            callback && callback(info);
 
         } catch (e) {
-            console.log(e);
+
+            // $toast(i18n.t('page_login.loginout_fail:', e));
+
         }
-    },
+    }
 
 
 };

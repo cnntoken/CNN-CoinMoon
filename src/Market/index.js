@@ -12,7 +12,7 @@ import configureStore from '@lib/configureStore';
 import sagas from '../sagas/Market/index';
 import {initialState,createMarketReducer} from '../reducers/marketReducer';
 import Navigator from './navigator';
-import {adaptUserInfo} from '@src/utils';
+import {adaptUserInfo} from '@src/utils/index';
 import {
     Text,
     TextInput
@@ -23,9 +23,9 @@ Text.defaultProps = Object.assign({}, Text.defaultProps, {allowFontScaling: fals
 
 export default class Page extends PureComponent{
     render(){
-        let {baseInfo} = this.props;
+        let {baseInfo, params = {}} = this.props;
         let user = adaptUserInfo(baseInfo.currentUser || {});
-        const store = configureStore({user,...initialState}, createMarketReducer, sagas);
+        const store = configureStore({user, params, ...initialState}, createMarketReducer, sagas);
         return (
         <Provider store={store}>
             <Navigator />

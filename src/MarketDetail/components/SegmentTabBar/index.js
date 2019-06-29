@@ -6,6 +6,8 @@ import {
     TouchableOpacity,
     Dimensions,
 } from 'react-native';
+import { calculateStyleVariable } from '@utils/index'
+const PX = calculateStyleVariable()
 const PhoneWidth = Dimensions.get('window').width;
 const Button = (props) => {
     return (
@@ -23,9 +25,9 @@ export default class SegmentTabBar extends Component {
     }
     renderTab(name, page, isTabActive, onPressHandler) {
         const textColor = isTabActive ? '#408EF5' : '#333';
-        const borderStyle = isTabActive ? {borderBottomColor:'#408EF5',borderBottomWidth:3} : {}
+        const borderStyle = isTabActive ? {borderBottomColor:'#408EF5',borderBottomWidth:3*PX} : {}
         return <Button
-            style={{flex: 1, height: 50,...borderStyle}}
+            style={{flex: 1, height: 50*PX,...borderStyle}}
             key={name}
             accessible={true}
             accessibilityLabel={name}
@@ -33,7 +35,7 @@ export default class SegmentTabBar extends Component {
             onPress={() => onPressHandler(page)}
         >
             <View style={[styles.tab]}>
-                <Text style={[{color: textColor,fontSize: 18}]}>
+                <Text style={[{color: textColor,fontSize: 18*PX}]}>
                     {name}
                 </Text>
             </View>
@@ -59,13 +61,13 @@ export default class SegmentTabBar extends Component {
 }
 const styles = StyleSheet.create({
     tabWrap: {
-        paddingLeft: 15,
+        paddingLeft: 15*PX,
         width: PhoneWidth,
-        borderBottomWidth: 1,
+        borderBottomWidth: 1*PX,
         borderBottomColor: '#E6E6E6'
     },
     tabBarBox: {
-        height: 50,
+        height: 50*PX,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',

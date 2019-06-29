@@ -7,6 +7,8 @@ import {
 
 import * as services from './services'
 import * as types from './types';
+import {$toast} from "@src/utils";
+import i18n from "@src/i18n";
 
 
 
@@ -50,8 +52,10 @@ const effects = {
             if (callback) {
                 callback(res);
             }
+            $toast(i18n.t('report_ok'));
         } catch (e) {
             console.log(e);
+            $toast(i18n.t('report_fail'));
         }
     },
 

@@ -9,6 +9,7 @@ import * as services from './services';
 import * as types from './types';
 
 import {setUserInfo, getCurrentUser} from '@utils/CNNBridge';
+// import {adaptUserInfo} from '@utils';
 
 
 const effects = {
@@ -24,7 +25,9 @@ const effects = {
             }
             let currentUser = yield getCurrentUser();
             const res = yield services.update_profile(user_id, params);
+
             let data = Object.assign(currentUser, res.data);
+
             yield setUserInfo(data);
             DeviceEventEmitter.emit('userStateChange', data);
             callback && callback(data);

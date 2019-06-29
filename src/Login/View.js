@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import styles from './styles';
-import {Image, TouchableOpacity, DeviceEventEmitter, View, Text} from 'react-native';
+import {Image, TouchableOpacity, DeviceEventEmitter, View, Text, ScrollView} from 'react-native';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 import areas from '../data/phone_area';
-import CustomHeader from '../components/Header'
+import Header from '@components/NDLayout/Header'
 import FocusInput from '../components/InputFocus'
-import {$toast} from '../utils'
+import {$toast, cnnLogger} from '../utils'
 import i18n from '../i18n';
 import Picker from 'react-native-picker';
 import {closeRNPage, goRNPage, setUserInfo} from '../utils/CNNBridge'
@@ -16,6 +17,7 @@ class ViewControl extends Component {
         super(props);
         this.interval = null;
         this.state = {
+            event: props.event || {},
             info: {},
             isAgree: true,
             phone: '',
@@ -36,9 +38,11 @@ class ViewControl extends Component {
     };
 
     toggleLincense = () => {
-        this.setState(({isAgree}) => ({
-            isAgree: !isAgree
-        }))
+        const {isAgree} = this.state;
+        if(!isAgree){
+            cnnLogger('click_agree_btn')
+        }
+        this.setState({isAgree: !isAgree});
     };
 
 
@@ -91,6 +95,8 @@ class ViewControl extends Component {
     // 发送验证码
     seedSMS = () => {
 
+        cnnLogger('click_get_code',this.state.event);
+
         const {phone, selectedArea} = this.state;
 
         if (!this.checkPhone()) {
@@ -117,11 +123,13 @@ class ViewControl extends Component {
 
     goBack = () => {
         Picker.hide();
+        cnnLogger('click_back_on_login',this.state.event);
         closeRNPage();
     };
 
     // 手机号注册登录
     onLogin = () => {
+
 
         if (this.isBtnDisabled()) {
             return false;
@@ -129,6 +137,7 @@ class ViewControl extends Component {
         if (!this.checkPhone() || !this.checkCode()) {
             return;
         }
+        cnnLogger('click_login',this.state.event);
         const {phone, code, selectedArea} = this.state;
         $toast(i18n.t('page_login.loging'));
         this.props.onLogin({
@@ -141,8 +150,22 @@ class ViewControl extends Component {
             callback: (data) => {
                 // 登录成功
                 if (!data.error) {
+                    cnnLogger('login_success',this.state.event);
                     $toast(i18n.t('page_login.login_success'));
                     setUserInfo(data).then(() => {
+                        //
+                        // let {from, data} = this.props;
+                        // if (from) {
+                        //     goRNPage({
+                        //         moduleName: from,
+                        //         params: {
+                        //             data: data
+                        //         }
+                        //     });
+                        // } else {
+                        //     this.goBack();
+                        // }
+
                         this.goBack();
                         // 重新登陆后更新各频道列表中的数据
                         DeviceEventEmitter.emit('userStateChange', data);
@@ -150,7 +173,10 @@ class ViewControl extends Component {
                 }
                 // 登录失败
                 else {
-                    $toast(i18n.t('page_login.login_fail'));
+                    cnnLogger('login_failed',this.state.event);
+                    setTimeout(() => {
+                        $toast(i18n.t('page_login.login_fail'));
+                    }, 2000);
                 }
             }
         });
@@ -191,9 +217,13 @@ class ViewControl extends Component {
         const {isAgree, phone, code} = this.state;
 
         return (!(phone && code && isAgree));
-    }
 
+    }
+    componentDidMount(){
+        cnnLogger('show_login_page',this.state.event)
+    }
     componentWillUnmount() {
+
         this.interval && clearInterval(this.interval);
     }
 
@@ -201,16 +231,20 @@ class ViewControl extends Component {
         const {isAgree, phone, code, countdown} = this.state;
 
         return (
-            <View>
-                <CustomHeader
-                    onLeftClick={this.goBack}
+            <ScrollView>
+                <Header
+                    leftClick={this.goBack}
                     style={{backgroundColor: '#fff'}}
                     leftView={<Text style={styles.cancel}>{i18n.t('label_cancel')}</Text>}
-                    titleView={<Image source={require('../images/logo_small.png')} style={{width: 74, height: 40}}/>}
+                    title={<Image source={require('../images/logo_small.png')} style={{width: 74, height: 40}}/>}
                 />
+
                 <View style={styles.container}>
+
                     <Text style={styles.label}>{i18n.t('label_please_login')}</Text>
+
                     <View style={styles.form}>
+
                         <FocusInput
                             style={[styles.item, styles.item_phone]}
                             value={phone}
@@ -220,6 +254,7 @@ class ViewControl extends Component {
                             textContentType='telephoneNumber'
                             clearButtonMode='while-editing'
                         />
+
                         <FocusInput
                             style={styles.item}
                             value={code}
@@ -228,6 +263,7 @@ class ViewControl extends Component {
                             keyboardType='numeric'
                             textContentType='telephoneNumber'
                         />
+
                         <View style={styles.picker_con}>
                             <TouchableOpacity style={styles.picker_btn} onPress={this.pickerArea} title>
                                 <Text style={styles.picker_text}>{'+' + this.state.selectedArea}</Text>
@@ -273,30 +309,12 @@ class ViewControl extends Component {
                         <Text style={styles.loginText}>{i18n.t('label_login')}</Text>
                     </TouchableOpacity>
 
-                    {/* 其他登录方式 */}
-                    {/*<View style={styles.loginByOthers}>*/}
-                    {/*<Text style={styles.line}/>*/}
-                    {/*<Text style={styles.line_text}>Sign in with</Text>*/}
-                    {/*<Text style={styles.line}/>*/}
-                    {/*</View>*/}
-
-                    {/*<View style={styles.loginByOthersBtns}>*/}
-                    {/*<TouchableOpacity>*/}
-                    {/*<Image style={styles.fb}*/}
-                    {/*source={require('app/images/icon_fb.png')}/>*/}
-                    {/*</TouchableOpacity>*/}
-                    {/*<TouchableOpacity>*/}
-                    {/*<Image style={styles.googlePlus}*/}
-                    {/*source={require('app/images/icon_google+.png')}/>*/}
-                    {/*</TouchableOpacity>*/}
-                    {/*</View>*/}
-
+                    <KeyboardSpacer topSpacing={30}/>
 
                 </View>
-            </View>
+            </ScrollView>
         );
     }
-
 }
 
 export default ViewControl;

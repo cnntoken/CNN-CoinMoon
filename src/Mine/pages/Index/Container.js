@@ -1,15 +1,14 @@
 import React, {Component} from 'react';
 import NotLogin from '@components/NotLogin';
-import Main from './Main';
+import Mine from '@components/Mine';
 import {connect} from 'react-redux';
-import * as disCloseActions from "../../actions";
-import {cloneByJson, NoticeUpdateNativeList} from '@utils';
-import * as Events from '@data/ListChangeEvent';
-import {getCurrentUser} from "@src/utils/CNNBridge";
+import {adaptUserInfo, cloneByJson} from '@utils';
 
 import {
     DeviceEventEmitter
 } from 'react-native';
+import hocUserStateChange from "@src/components/HocUserStateChange";
+// import View from "react-native";
 
 
 function mapStateToProps({user}) {
@@ -19,32 +18,7 @@ function mapStateToProps({user}) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return {
-
-        getList: (...args) => {
-            dispatch(disCloseActions.getList(...args))
-        },
-
-        // 点赞
-        like: (...args) => {
-            dispatch(disCloseActions.like(...args));
-            NoticeUpdateNativeList(Events.disclose_like, ...args);
-
-        },
-
-        // 取消点赞
-        cancel_like: (...args) => {
-            dispatch(disCloseActions.cancel_like(...args));
-            NoticeUpdateNativeList(Events.disclose_cancel_like, ...args);
-
-        },
-
-        deleteDisclose: (...args) => {
-            dispatch(disCloseActions.deleteDisclose(...args));
-            NoticeUpdateNativeList(Events.disclose_delete, ...args);
-        },
-
-    };
+    return {};
 }
 
 class Container extends Component {
@@ -56,15 +30,11 @@ class Container extends Component {
         }
     }
 
-    async componentDidMount() {
-        let user = await getCurrentUser();
-        this.setState({
-            user: cloneByJson(user)
-        });
+    componentDidMount() {
 
         this.observer = DeviceEventEmitter.addListener('userStateChange', (e) => {
             this.setState({
-                user: e
+                user: adaptUserInfo({...cloneByJson(e)})
             });
         })
 
@@ -79,14 +49,15 @@ class Container extends Component {
         let {user = {}} = this.state;
         // 设备用户展示没有登录
         if (user && user.isLogin) {
-            return <Main {...this.props} user={user}/>
+            return <Mine user={user}/>
         } else {
             return <NotLogin {...this.props}/>
         }
     }
 }
 
+
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Container);
+)(hocUserStateChange(Container));

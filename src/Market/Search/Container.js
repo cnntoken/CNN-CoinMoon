@@ -9,8 +9,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getList: (...args) => {
-            dispatch(marketActions.getList(...args))
+        searchCoin: (...args) => {
+            dispatch(marketActions.searchCoin(...args))
         },
         initSearchList: () => {
             dispatch({type:Types.MARKET_INIT_SEARCH_LIST})

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {Container} from '@components/NDLayout';
 import {Image, TouchableOpacity, StyleSheet, ImageBackground, Text, View} from 'react-native';
 import {Row, Grid, Col} from 'react-native-easy-grid';
@@ -8,7 +8,7 @@ import styles from './item-styles'
 import {formatDate, cloneByJson} from "@utils";
 
 
-export default class Item extends Component {
+export default class Item extends PureComponent {
 
     constructor(props) {
         super(props);
@@ -93,10 +93,8 @@ export default class Item extends Component {
 
         const {info, isShowDislikeDialog} = this.props;
         const {width, height, loaded} = this.state;
-
         // 容错
         info.req_user_stats = info.req_user_stats || {};
-
         return (
 
             <Grid style={{

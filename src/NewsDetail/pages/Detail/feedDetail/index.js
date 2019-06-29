@@ -3,6 +3,7 @@ import {
     Text,
     Image,
     View,
+    TouchableWithoutFeedback
 } from "react-native";
 
 import FitImage from 'react-native-fit-image';
@@ -11,6 +12,11 @@ import block_tags from "@data/html_block_tag";
 
 
 import styles from './styles';
+// import {Container, Content} from "@src/components/NDLayout";
+import ImageViewer from 'react-native-image-zoom-viewer';
+import FastImage from 'react-native-fast-image';
+import Modal from "react-native-modal";
+
 
 const Entities = require('html-entities').XmlEntities;
 
@@ -23,7 +29,10 @@ class FeedDetail extends Component {
         super(props);
 
         this.state = {
-            img: this.initImgState()
+            img: this.initImgState(),
+            previewImgs: this.handlePreviewImages(),
+            preview: false,
+            previewIdx: 0
         }
     }
 
@@ -46,6 +55,33 @@ class FeedDetail extends Component {
 
         return img;
 
+    };
+
+    handlePreviewImages = () => {
+
+        let {images, cover} = this.props;
+
+        let imgs = [];
+        let imgArr = [...images];
+
+        if (imgArr.length === 0 && cover) {
+            imgArr.push(cover)
+        }
+
+        (imgArr || []).forEach((item, index) => {
+            imgs.push({
+                // Simplest usage.
+                url: item,
+                // Optional, if you know the image size, you can set the optimization performance
+                // You can pass props to <Image />.
+                props: {
+                    index: index
+                    // headers: ...
+                }
+            })
+        });
+
+        return imgs;
     };
 
 
@@ -98,44 +134,76 @@ class FeedDetail extends Component {
         arr.forEach((item, index) => {
             arr[index] = item.trim();
         });
+
         return arr;
 
     };
 
 
     componentDidMount() {
-
-        Object.keys(this.state.img).forEach((item) => {
-            Image.getSize(item, (width, height) => {
-                this.state.img[item] = {
-                    width: width,
-                    height: height,
-                };
-                this.setState({});
-
-            }, (error) => {
-                this.state.img[item] = {
-                    width: 0,
-                    height: 0,
-                };
-                this.setState({});
-            })
-        });
+        //
+        // Object.keys(this.state.img).forEach((item) => {
+        //     Image.getSize(item, (width, height) => {
+        //         this.state.img[item] = {
+        //             width: width,
+        //             height: height,
+        //         };
+        //         this.setState({});
+        //
+        //     }, (error) => {
+        //         this.state.img[item] = {
+        //             width: 0,
+        //             height: 0,
+        //         };
+        //         this.setState({});
+        //     })
+        // });
 
     }
+
+    preview = (idx) => {
+        this.setState({
+            preview: true,
+            previewIdx: idx
+        });
+    };
 
 
     render() {
 
-        let {html, cover} = this.props;
-        let img = this.state.img;
+        let {html} = this.props;
+        let {preview, previewImgs, img, previewIdx} = this.state;
 
         let images = Object.keys(img);
 
         let data = this.transformHtmlContent(html);
 
-
         return (<View>
+
+            <Modal
+                animationIn={'fadeIn'}
+                animationOut={'fadeOut'}
+                style={styles.modal} isVisible={preview}>
+                <ImageViewer
+                    renderImage={(props) => {
+                        return <FastImage
+                            {...props}
+                            resizeMode={FastImage.resizeMode.contain}/>
+                    }}
+                    renderIndicator={()=>{
+                        return null;
+                    }}
+                    onClick={(onCancel) => {
+                        onCancel();
+                        this.setState({
+                            preview: false
+                        })
+                    }}
+                    index={previewIdx}
+                    enablePreload={true}
+                    imageUrls={previewImgs}/>
+            </Modal>
+
             {
                 data.map((item, index) => {
 
@@ -149,22 +217,25 @@ class FeedDetail extends Component {
                         if (images.length > 0) {
 
                             let uri = images.shift();
+                            let idx = previewImgs.length - images.length - 1;
 
                             img[uri] = img[uri] || {
                                 width: "100%",
                                 height: 100
                             };
 
-                            return <FitImage
-                                key={index.toString()}
-                                indicator={true}
-                                indicatorColor="#408EF5"
-                                indicatorSize="small"
-                                // originalWidth={img[uri].width}
-                                // originalHeight={img[uri].height}
-                                resizeMode={'contain'}
-                                style={styles.fitImage}
-                                source={{uri: uri}}/>
+                            return <TouchableWithoutFeedback onPress={this.preview.bind(this, idx)} key={index}>
+                                <FitImage
+                                    indicator={true}
+                                    indicatorColor="#408EF5"
+                                    indicatorSize="small"
+                                    // originalWidth={img[uri].width}
+                                    // originalHeight={img[uri].height}
+                                    resizeMode={'contain'}
+                                    style={styles.fitImage}
+                                    source={{uri: uri}}/>
+                            </TouchableWithoutFeedback>
+
                         }
                     } else {
                         return <Text

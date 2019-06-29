@@ -37,6 +37,17 @@ const styles = StyleSheet.create({
         fontSize: 14,
         marginTop: 11,
         lineHeight: 17,
+    },
+    modal: {
+        width: width,
+        position: 'absolute',
+        // left: -20,
+        top: 0,
+        height: "100%",
+        margin: 0,
+        // paddingLeft: 0,
+        // marginLeft: -20,
+        // marginRight: -20,
     }
 
 });

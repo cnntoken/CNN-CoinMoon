@@ -6,7 +6,7 @@ import {
 } from 'react-navigation';
 
 import MarketDetail from './Detail'
-import DiscussDetail from './DiscussDetail'
+// import DiscussDetail from './DiscussDetail'
 
 const MarketDetailStack = createStackNavigator({
   
@@ -19,13 +19,13 @@ const MarketDetailStack = createStackNavigator({
         }
     },
     //讨论详情
-    DiscussDetail: {
-        screen: DiscussDetail,
-        navigationOptions: {
-            header: null,
-            gesturesEnabled: true
-        }
-    },
+    // DiscussDetail: {
+    //     screen: DiscussDetail,
+    //     navigationOptions: {
+    //         header: null,
+    //         gesturesEnabled: true
+    //     }
+    // },
 },{
     initialRouteName: 'MarketDetail',
     mode: 'modal',

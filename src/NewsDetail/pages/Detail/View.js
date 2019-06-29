@@ -13,7 +13,7 @@ import FeedDetail from './feedDetail';
 import IconText from '@components/IconText';
 import FooterInput from '@components/FooterInput';
 import CommentList from '@components/CommentList';
-import {$toast, cloneByJson} from '@utils';
+import {$toast, cloneByJson, cnnLogger} from '@utils';
 import {closeRNPage, goRNPage} from '@utils/CNNBridge';
 import i18n from '@i18n';
 import {Col, Grid, Row} from "react-native-easy-grid";
@@ -52,6 +52,12 @@ class ViewControl extends Component {
         if (!this.props.user.isLogin) {
             goRNPage({
                 moduleName: 'stark_login',
+                params:{
+                    event:{
+                        from: 'newsDetail',
+                        trigger: 'comment',
+                    }
+                }
             });
             return;
         }
@@ -83,11 +89,14 @@ class ViewControl extends Component {
 
     // 评论
     onComment = (item, text, completeCallback, failCallback) => {
-
         if (!this.props.user.isLogin) {
 
             goRNPage({
                 moduleName: 'stark_login',
+                event:{
+                    from: 'newsDetail',
+                    trigger: 'comment',
+                }
             });
 
             // this.setState({
@@ -116,10 +125,17 @@ class ViewControl extends Component {
         const {info} = this.state;
 
         let isReply = item && !item.images;
+
+        cnnLogger('submit_comment', {
+            feed_type: info.category ? info.category : 'disclose',
+            feed_id: info.id,
+            user_id: info.user.user_id||info.user.id
+        });
+
         this.props.comment({
             params: info,
             data: {
-                "to_user_id": isReply ? item.user.id : info.user.id,
+                "to_user_id": isReply ? item.user.id : info.user.user_id || info.user.id,
                 // 如果是回复，会带上所回复评论的id
                 "reply_to": isReply ? item.id : '', // 如果是回复有值，如果是评论传空字符串
                 "content": text
@@ -198,7 +214,12 @@ class ViewControl extends Component {
         if (!this.props.user.isLogin) {
             goRNPage({
                 moduleName: 'stark_login',
+                event:{
+                    from: 'newsDetail',
+                    trigger: 'reply_comment',
+                }
             });
+
             return;
         }
 
@@ -225,14 +246,23 @@ class ViewControl extends Component {
 
         this.state.comments.splice(idx, 1);
 
+
+        cnnLogger('submit_delete_comment', {
+            feed_type: info.category ? info.category : 'disclose',
+            feed_id: info.id,
+            user_id: info.user.id
+        });
+
+
         this.setState({
             info: {...info},
             activeComment: null,
             comments: this.state.comments.map(obj => ({...obj}))
         }, () => {
             this.props.deleteComment({
+                id: info.id,
                 params: item,
-                callback: (data) => {
+                callback: () => {
 
                 }
             });
@@ -262,6 +292,10 @@ class ViewControl extends Component {
         if (!this.props.user.isLogin) {
             goRNPage({
                 moduleName: 'stark_login',
+                event:{
+                    from: 'newsDetail',
+                    trigger: 'like_comment',
+                }
             });
             return;
         }
@@ -275,10 +309,22 @@ class ViewControl extends Component {
             comments: comments.map(obj => ({...obj}))
         }, () => {
             if (!actionValue) {
+                cnnLogger('like_comment', {
+                    feed_type: '',
+                    feed_id: '',
+                    user_id: '',
+                    comment_id: '',
+                });
                 this.props.likeComment({
                     params: item
                 })
             } else {
+                cnnLogger('cancel_like_comment', {
+                    feed_type: '',
+                    feed_id: '',
+                    user_id: '',
+                    comment_id: '',
+                });
                 this.props.cancel_likeComment({
                     params: item
                 })
@@ -293,6 +339,12 @@ class ViewControl extends Component {
         if (!this.props.user.isLogin) {
             goRNPage({
                 moduleName: 'stark_login',
+                params:{
+                    event:{
+                        from: 'newsDetail',
+                        trigger: 'like_artical',
+                    }
+                }
             });
             return;
         }
@@ -341,9 +393,21 @@ class ViewControl extends Component {
     // 展示举报dialog
     showReportDialog = (item) => {
 
+        cnnLogger('click_report_feed', {
+            type: this.state.info.category
+        });
+
+
         if (!this.props.user.isLogin) {
+
             goRNPage({
                 moduleName: 'stark_login',
+                params:{
+                    event:{
+                        from: 'newsDetail',
+                        trigger: 'report',
+                    }
+                }
             });
             return;
         }
@@ -376,7 +440,20 @@ class ViewControl extends Component {
 
 
     onSubmit = (text, fn) => {
+
+
         let reasons = this.state.reasons;
+
+
+        let info = this.state.info;
+        cnnLogger('submit_report_feed', {
+            type: 'disclose',
+            feed_id: info.id,
+            user_id: info.user.id,
+            reason: reasons,
+        });
+
+
         this.props.report({
             params: this.state.info,
             data: {
@@ -384,7 +461,6 @@ class ViewControl extends Component {
                 reasons: reasons
             },
             callback: (data) => {
-                $toast(i18n.t('report_ok'));
             }
         });
 
@@ -415,11 +491,13 @@ class ViewControl extends Component {
 
         const {user} = this.props;
 
+
         // 容错
         if (info) info.req_user_stats = info.req_user_stats || {};
 
         // 图标
         const source = info.user && info.user.avatar ? {uri: info.user.avatar} : require('@images/avatar_default.png');
+
 
         if (!info.content) {
             return null;

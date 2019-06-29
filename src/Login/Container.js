@@ -2,8 +2,8 @@ import View from './View';
 import {connect} from 'react-redux';
 import * as  authActions from '../actions/authActions';
 
-function mapStateToProps() {
-    return {};
+function mapStateToProps(state) {
+    return {...state};
 }
 
 function mapDispatchToProps(dispatch) {

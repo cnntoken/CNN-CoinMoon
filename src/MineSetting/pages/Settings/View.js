@@ -3,6 +3,7 @@ import React, {PureComponent} from 'react';
 import {
     Container,
     Button,
+    Header
 } from "@components/NDLayout";
 
 
@@ -11,17 +12,21 @@ import styles from './styles';
 import i18n from '@i18n';
 import {Grid, Col, Row} from 'react-native-easy-grid'
 import {closeRNPage} from "@src/utils/CNNBridge";
+import {ActionSheet, cnnLogger} from "@utils";
 
 class ViewControl extends PureComponent {
+
     onLogout = () => {
-        ActionSheetIOS.showActionSheetWithOptions(
+        ActionSheet(
             {
                 options: [i18n.t('exit'), i18n.t('cancel')],
                 cancelButtonIndex: 1,
                 destructiveButtonIndex: 0,
-                title: i18n.t('confirm_logout')
+                title: i18n.t('confirm_logout'),
+                colors: ['#FF3B30', '#007AFF']
             },
             buttonIndex => {
+
                 if (buttonIndex === 0) {
                     this.props.onLogout({
                         callback: () => {
@@ -57,28 +62,8 @@ class ViewControl extends PureComponent {
 
         return (
             <Container>
-
+                <Header title={i18n.t('settting')} style={{backgroundColor: '#fff'}} leftClick={this.goBack} leftView={ <Image source={require('@images/icon_back_black.png')} style={{width: 12, height: 23}}/>}/>
                 <Grid>
-
-                    <Row style={{
-                        marginHorizontal: 16,
-                        height: 50,
-                        alignItems: 'center'
-                    }}>
-                        <Col style={{
-                            width: 12
-                        }}>
-                            <Button transparent onPress={this.goBack}>
-                                <Image source={require('@images/icon_back_black.png')} style={{width: 12, height: 23}}/>
-                            </Button>
-                        </Col>
-                        <Col>
-                            <Text style={{
-                                textAlign: 'center'
-                            }}>{i18n.t('settting')}</Text>
-                        </Col>
-                    </Row>
-
                     <Row style={{
                         height: 10,
                         backgroundColor: '#F5F5F5'
@@ -106,6 +91,33 @@ class ViewControl extends PureComponent {
                         </Col>
                     </Row>
 
+                    {/*用户信息*/}
+                    {
+                        userInfo && userInfo.name ? <Row style={{
+                            height: 56,
+                            paddingHorizontal: 24,
+                            alignItems: 'center',
+                            borderBottomColor: 'rgba(245,245,245,1)',
+                            borderBottomWidth: 1
+                        }}>
+                            <Col>
+                                <Text style={styles.l_left}>{i18n.t('account')}: {userInfo && userInfo.name}</Text>
+                            </Col>
+                            <Col style={{
+                                width: 80
+                            }}>
+                                <TouchableOpacity onPress={this.onLogout}>
+                                    <Text style={[styles.l_right, {
+                                        textAlign: 'right'
+                                    }]}>{i18n.t('logout')}</Text>
+                                </TouchableOpacity>
+                            </Col>
+                        </Row> : null
+
+                    }
+
+
+                    {/*版本信息*/}
                     <Row style={{
                         height: 56,
                         paddingHorizontal: 24,
@@ -114,16 +126,14 @@ class ViewControl extends PureComponent {
                         borderBottomWidth: 1
                     }}>
                         <Col>
-                            <Text style={styles.l_left}>{i18n.t('account')}: {userInfo && userInfo.name}</Text>
+                            <Text style={styles.l_left}>{i18n.t('version')}: 2.0</Text>
                         </Col>
                         <Col style={{
                             width: 80
                         }}>
-                            <TouchableOpacity onPress={this.onLogout}>
-                                <Text style={[styles.l_right, {
-                                    textAlign: 'right'
-                                }]}>{i18n.t('logout')}</Text>
-                            </TouchableOpacity>
+                            {/*<Text style={[styles.l_right, {*/}
+                            {/*textAlign: 'right'*/}
+                            {/*}]}>1.2</Text>*/}
                         </Col>
                     </Row>
 

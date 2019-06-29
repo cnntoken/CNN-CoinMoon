@@ -5,6 +5,7 @@ import * as feedActions from "../../actions";
 
 import {NoticeUpdateNativeList} from '@utils';
 import * as Events from '@data/ListChangeEvent';
+import hocUserStateChange from "@src/components/HocUserStateChange";
 
 function mapStateToProps(state) {
     return {
@@ -35,6 +36,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 class Container extends Component {
+
     constructor(props) {
         super(props);
     }
@@ -48,4 +50,4 @@ class Container extends Component {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Container);
+)(hocUserStateChange(Container));
