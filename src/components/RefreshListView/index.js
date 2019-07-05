@@ -1,4 +1,5 @@
 import React, {PureComponent} from 'react'
+import i118 from '@i18n';
 import {
     View,
     Text,
@@ -59,14 +60,15 @@ class Index extends PureComponent<Props, State> {
     }
 
     static defaultProps = {
+        
         footerRefreshingText: '数据加载中…',
         footerFailureText: '点击重新加载',
         footerNoMoreDataText: '已加载全部数据',
         footerEmptyDataText: '暂时没有相关数据',
 
-        refreshControlNormalText: '下拉刷新', // 正常状态
-        refreshControlPrepareText: '松开加载', // 达到临界值, 松开即可触发刷新
-        refreshControlLoadingText: '正在加载中...', // 加载中状态
+        refreshControlNormalText: '아래로 당기시면 새로고침', // 正常状态
+        refreshControlPrepareText: '손을 놓으시면 로딩', // 达到临界值, 松开即可触发刷新
+        refreshControlLoadingText: '로딩중', // 加载中状态
     };
 
     onHeaderRefresh = () => {
@@ -193,8 +195,6 @@ class Index extends PureComponent<Props, State> {
                 onScrollEndDrag={this._onScrollEndDrag}
                 ListFooterComponent={this.renderFooter}
                 onEndReachedThreshold={0.1}
-                ItemSeparatorComponent={() => <View
-                    style={{height: 1 / PixelRatio.getPixelSizeForLayoutSize(1), backgroundColor: '#E6E6E6'}}/>}
                 renderItem={renderItem}
                 {...rest}
             />

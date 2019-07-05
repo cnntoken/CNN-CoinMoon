@@ -5,6 +5,7 @@ import {
     View,
     ViewPropTypes,
     StyleSheet,
+    Platform,
  } from "react-native";
 
 export default class Footer extends PureComponent {
@@ -24,14 +25,19 @@ export default class Footer extends PureComponent {
     }
 }
 
+const obj = {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingLeft: 24,
+    paddingRight: 24,
+    paddingBottom: 20,
+}
+if(Platform.OS !== 'ios'){
+    // obj.minHeight = 80
+}
 const styles = StyleSheet.create({
     footerBox: {
-        // height: 60,
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        // marginBottom: 24,
-        paddingLeft: 24,
-        paddingRight: 24,
+        ...obj,
     }
 })

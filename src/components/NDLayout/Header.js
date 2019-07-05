@@ -18,7 +18,7 @@ export default class Header extends PureComponent {
         styleBar: ViewPropTypes.style,
         leftView: PropTypes.element,
         leftClick: PropTypes.func,
-        title: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+        title: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.element]),
         rightView: PropTypes.element,
         rightClick: PropTypes.func,
     };
@@ -32,6 +32,7 @@ export default class Header extends PureComponent {
             />
         ),
         leftClick: () => {
+            // console.log('leftclick')
             NavigationService.goBack();
         },
         title: '',
@@ -52,16 +53,16 @@ export default class Header extends PureComponent {
             <View style={[styles.headerBox, style]}>
                 <View style={[styles.headerBar, styleBar]}>
                     <TouchableOpacity
-                        style={styles.leftView}
+                        style={[styles.btnView,styles.leftView]}
                         onPress={leftClick}
                     >
                         {leftView}
                     </TouchableOpacity>
-                    {(title && typeof title === 'function' && title()) || (
-                        <Text style={styles.title}>{title}</Text>
-                    )}
+                    <View style={styles.titleView}>
+                        {typeof title === 'string' ? <Text style={styles.title}>{title}</Text> : typeof title === 'function'?title():title}
+                    </View>
                     <TouchableOpacity
-                        style={styles.rightView}
+                        style={[styles.btnView, styles.rightView]}
                         onPress={rightClick}
                     >
                         {rightView}
@@ -78,44 +79,12 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        // paddingTop: 10,
-        paddingBottom: 10,
+        minHeight: 44
     },
-    headerBar: {
-        width: '100%',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingLeft: 16,
-        paddingRight: 16,
-        // backgroundColor: '#ccc',
-        ...Platform.select({
-            ios: {
-                // paddingTop: 45,
-                // height: 64,
-            },
-            android: {
-                // height: 56,
-            },
-        }),
-    },
-    leftView: {
-        // width: 30,
-        // paddingVertical: 8,
-        // height: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
-        // backgroundColor: '#eee',
-    },
-    rightView: {
-        // width: 30,
-        // height: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    title: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
+    btnView: {minWidth:50,alignSelf:'stretch',alignItems:'center',display:'flex',justifyContent:'center'},
+    headerBar: {minHeight: Platform.OS === 'ios' ? 44 : 56, flexDirection: 'row', alignItems: 'center',width:'100%'},
+    leftView: {paddingLeft:16,alignItems:'flex-start'},
+    rightView: {paddingRight:16,alignItems:'flex-end'},
+    titleView:{flex:1, alignItems:'center', justifyContent:'center'},
+    title: { fontWeight: '500',color: '#000',fontSize: 18},
 });

@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 
-import {$toast} from "@utils";
+import {$toast, isIphoneX, cnnLogger} from "@utils";
 import i18n from "@i18n";
 import {Col, Row, Grid} from "react-native-easy-grid";
-import {View, TextInput, TouchableOpacity, PixelRatio} from "react-native";
+import {View, TextInput, TouchableOpacity, PixelRatio, Platform} from "react-native";
 import {Container} from '@components/NDLayout';
 import FastImage from 'react-native-fast-image';
 import {
@@ -12,6 +12,8 @@ import {
     Image,
     StyleSheet
 } from "react-native";
+
+const isAndroid = Platform.OS === "android";
 
 const computeStyles = (height) => {
     console.log(height);
@@ -35,7 +37,7 @@ const computeStyles = (height) => {
             // display: 'flex',
             alignItems: 'flex-start',
             // height: height,
-            bottom: height - 34,
+            bottom: Platform.OS === 'ios' ? height - 34 : 0,
             backgroundColor: '#fff',
             height: 75,
             // maxHeight: 75,
@@ -109,7 +111,7 @@ class FooterInput extends Component {
         this.keyboardDidShowListener = null;
         this.keyboardDidHideListener = null;
         this.state = {
-            activeComment: null,
+            // activeComment: null,
             KeyboardShown: false,
             footerHeight: 49,
             text: '',
@@ -118,17 +120,27 @@ class FooterInput extends Component {
     }
 
     // 键盘弹出事件响应
-    keyboardDidShowHandler(event) {
+    keyboardShowHandler(event) {
+
+        let activeComment = this.props.activeComment;
+
+        cnnLogger('open_comment_input', {
+            feed_type: activeComment && activeComment.category ? activeComment.category : 'disclose',
+            pos: activeComment && activeComment.images ? 'input' : 'reply',
+        });
+
+        let height = event.endCoordinates.height;
         if (!this.props.isModalVisible) {
             this.setState({
                 KeyboardShown: true,
-                footerHeight: event.endCoordinates.height
+                footerHeight: isIphoneX() ? height : height + 34
+                // footerHeight: isIphoneX() ? height : height + 34
             });
         }
     }
 
     //键盘隐藏事件响应
-    keyboardDidHideHandler(event) {
+    keyboardHideHandler(event) {
         if (!this.props.isModalVisible) {
             this.setState({
                 KeyboardShown: false,
@@ -175,6 +187,12 @@ class FooterInput extends Component {
 
         if (this.props.onComment) {
 
+            // cnnLogger('submit_comment', {
+            //     feed_type: item && item.category ? item.category : 'disclose',
+            //     feed_id: item.id,
+            //     user_id: item.user.id,
+            // });
+
             this.setState({
                 commenting: true
             });
@@ -194,20 +212,27 @@ class FooterInput extends Component {
     };
 
     componentDidMount() {
-        //监听键盘弹出事件
-        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShowHandler.bind(this));
-        //监听键盘隐藏事件
-        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHideHandler.bind(this));
+        if(isAndroid){
+            //监听键盘弹出事件
+            this.keyboardShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardShowHandler.bind(this));
+            //监听键盘隐藏事件
+            this.keyboardHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardHideHandler.bind(this));
+        } else {
+            //监听键盘弹出事件
+            this.keyboardShowListener = Keyboard.addListener('keyboardWillShow', this.keyboardShowHandler.bind(this));
+            //监听键盘隐藏事件
+            this.keyboardHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardHideHandler.bind(this));
+        }
     }
 
     componentWillUnmount() {
         //卸载键盘弹出事件监听
-        if (this.keyboardDidShowListener !== null) {
-            this.keyboardDidShowListener.remove();
+        if (this.keyboardShowListener !== null) {
+            this.keyboardShowListener.remove();
         }
         //卸载键盘隐藏事件监听
-        if (this.keyboardDidHideListener !== null) {
-            this.keyboardDidHideListener.remove();
+        if (this.keyboardHideListener !== null) {
+            this.keyboardHideListener.remove();
         }
     }
 
@@ -218,7 +243,6 @@ class FooterInput extends Component {
             this.dissmissKeyboard();
         }
     }
-
 
     render() {
         let {KeyboardShown, footerHeight, text} = this.state;
@@ -234,8 +258,6 @@ class FooterInput extends Component {
         if (!isAnonymity && user && user.picture) {
             source = user.icon
         }
-
-
 
         return <Container style={{
             position: 'relative'
@@ -257,18 +279,18 @@ class FooterInput extends Component {
                                 fontSize: 12,
                                 color: '#999999',
                                 lineHeight: 16,
-                            }}>{!isAnonymity ? user.nickname : user.discloseName}</Text>
+                            }}>{!isAnonymity ? user.name||user.nickname : user.discloseName}</Text>
                         </Col>
                     </Grid> : null
                 }
                 <Grid style={styles.footer_grid}>
+
                     <Col>
                         <TextInput
                             ref={(c) => this._input = c}
                             value={text}
                             onFocus={this.onFocus.bind(this)}
                             onBlur={this.onBlur.bind(this)}
-
                             onChangeText={this.onChangeText.bind(this)}
                             style={styles.footer_input}
                             placeholder={placeholder}/>

@@ -10,6 +10,8 @@ import {
     StyleSheet,
     Text
 } from "react-native";
+import i18n from '@i18n';
+
 
 // "waiting": 准备状态：视图还没有碰边
 // "dragging": 上拉状态：视图已经碰到边缘，但是还没有达到组件的高度，此时松手不具备加载的条件
@@ -20,7 +22,7 @@ import {
 // "allLoaded": 数据加载完成态，此状态下不会触发刷新，该状态由allLoaded属性控制
 
 export default class NormalFooter extends LoadingFooter {
-    static height = 80;
+    static height = 60;
 
     static style = "stickyContent";
 
@@ -59,18 +61,23 @@ export default class NormalFooter extends LoadingFooter {
 
     getTitle() {
         const s = this.state.status;
-        if (s === "dragging" || s === "waiting") {
-            return "Drag up to load";
-        } else if (s === "draggingEnough") {
-            return "Release to load";
-        } else if (s === "loading") {
-            return "Loading ...";
-        } else if (s === "draggingCancel") {
-            return "Give up loading";
-        } else if (s === "rebound") {
-            return "Load completed";
-        } else if (s === "allLoaded") {
-            return "No more data";
+        // if (s === "dragging" || s === "waiting") {
+        //     return "Drag up to load";
+        // } else if (s === "draggingEnough") {
+        //     return "Release to load";
+        // } else if (s === "loading") {
+        //     return "Loading ...";
+        // } else if (s === "draggingCancel") {
+        //     return "Give up loading";
+        // } else if (s === "rebound") {
+        //     return "Load completed";
+        // } else if (s === "allLoaded") {
+        //     return "No more data";
+        // }
+        if(s === 'loading'){
+            return i18n.t('disclose.refreshControlLoadingText')
+        } else if(s === 'allLoaded'){
+            return i18n.t('disclose.list_nomore_tip')
         }
     }
     render() {

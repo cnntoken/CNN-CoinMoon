@@ -18,33 +18,29 @@ import {
 export default class NdRadioGroup extends PureComponent{
 
     static propTypes = {
-        value: PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.number,
-            PropTypes.bool
-        ]),
+        checked: PropTypes.object,
         options: PropTypes.arrayOf(PropTypes.object),
         onChange: PropTypes.func,
         renderChild: PropTypes.func,
     }
     static defaultProps = {
-        value: '',
+        checked: {key:0,value:''},
         options: [],
         onChange: ()=>{},
         renderChild: null,
     }
-    onChange = (value)=>{
-        // console.log(value)
-        this.props.onChange(value)
+    onChange = (checked)=>{
+        console.log(checked)
+        this.props.onChange(checked)
     }
     render(){
-        const {value,options,renderChild} = this.props
-        return (<View value={value||''} style={styles.box}>
-            {options.map((item,index)=>(<TouchableOpacity style={{flex:1}} key={index} onPress={()=>this.onChange(item.value)}>
-                {renderChild&&typeof renderChild === 'function'?renderChild(item,value):
-                <View style={[styles.item,item.value === value&&styles.item_active]} >
-                    <Text style={[styles.name_main,item.value === value&&styles.name_active]}>{item.name.main}</Text>
-                    <Text style={[styles.name_sub,item.value === value&&styles.name_active]}>{item.name.sub}</Text>
+        const {checked,options,renderChild} = this.props
+        return (<View style={styles.box}>
+            {options.map((item,index)=>(<TouchableOpacity style={{flex:1}} key={item.key||index} onPress={()=>this.onChange(item)}>
+                {renderChild&&typeof renderChild === 'function'?renderChild(item,checked):
+                <View style={[styles.item,item.key === checked.key&&styles.item_active]} >
+                    <Text style={[styles.name_main,item.key === checked.key&&styles.name_active]}>{item.name.main}</Text>
+                    <Text style={[styles.name_sub,item.key === checked.key&&styles.name_active]}>{item.name.sub}</Text>
                 </View>}
             </TouchableOpacity>))}
         </View>)

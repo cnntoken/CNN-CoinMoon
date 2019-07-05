@@ -7,7 +7,8 @@ export default class FocusInput extends Component {
     static propTypes = {
         ...TextInput.propTypes,
         value: PropTypes.any,
-        onChangeText: PropTypes.func.isRequired
+        onChangeText: PropTypes.func,
+        handleFocus: PropTypes.func,
     }
 
     state = {
@@ -15,7 +16,9 @@ export default class FocusInput extends Component {
     }
     inputRef = null;
     
-    onFocus = () => {
+    onFocus = (e) => {
+        const {handleFocus} = this.props
+        typeof handleFocus === 'function' &&  handleFocus(e)
         this.setState({
             isFocus: true
         })

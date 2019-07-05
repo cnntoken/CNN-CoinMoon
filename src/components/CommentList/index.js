@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import styles from './styles';
-import i18n from '@i18n'
+import i18n from '@i18n';
 import discloseName from '@services/discloseName';
 import {Col, Grid, Row} from "react-native-easy-grid";
 import {Spinner, Button} from "@components/NDLayout";
 import {Image, Text, View, ActionSheetIOS} from "react-native";
-import {formatDate} from "@utils";
+import {formatDate, ActionSheet, cnnLogger} from "@utils";
 import FastImage from 'react-native-fast-image';
 
 
@@ -35,6 +35,7 @@ class CommentList extends Component {
     // 给评论点赞
     likeComment = (item) => {
         if (this.props.likeComment) {
+
             this.props.likeComment(item);
         }
     };
@@ -42,10 +43,17 @@ class CommentList extends Component {
 
     // 删除评论
     deleteComment = (item, index) => {
-        ActionSheetIOS.showActionSheetWithOptions({
+
+
+        cnnLogger('click_delete_comment', {
+            feed_type: this.props.data.category ? this.props.data.category : 'disclose',
+        });
+
+        ActionSheet({
             options: [i18n.t('cancel'), i18n.t('delete')],
             cancelButtonIndex: 0,
             destructiveButtonIndex: 1,
+            colors: ['#007AFF', '#FF3B30'],
             title: i18n.t('delete_comment_confirm')
         }, (buttonIndex) => {
             if (buttonIndex === 1) {
@@ -89,8 +97,8 @@ class CommentList extends Component {
 
     render() {
 
-        let {data, comments, loadMoreing, loadedAllData, user, showNickName} = this.props;
 
+        let {data, comments, loadMoreing, loadedAllData, user, showNickName} = this.props;
 
         // 加载更多按钮
         let loadMoreBtn = !loadedAllData ?
@@ -124,6 +132,7 @@ class CommentList extends Component {
 
                         comments.map((item, idx) => {
 
+                            
                             const isMyComment = user.id === item.user.id;
 
                             item.req_user_stats = item.req_user_stats || {};
@@ -168,7 +177,7 @@ class CommentList extends Component {
                                             item.reply_to ? <Row>
                                                 <View style={styles.comments_at}>
                                                     <Text
-                                                        style={styles.comments_at_content}>@{item.reply_to.user.name}: {item.reply_to.content}</Text>
+                                                        style={styles.comments_at_content}>@{item.reply_to.user&&item.reply_to.user.name}: {item.reply_to.content}</Text>
                                                     <Text
                                                         style={styles.comments_at_time}>{formatDate(item.reply_to.created_at)}</Text>
                                                 </View>

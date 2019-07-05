@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react'
 // import PropTypes from 'prop-types'
 import {
-    SafeAreaView,
     ViewPropTypes,
     StyleSheet,
     Dimensions,
+    SafeAreaView,
+    // Platform,
 } from "react-native";
 const {height: viewHeight,width: viewWidth} = Dimensions.get('window')
 
@@ -26,12 +27,21 @@ export default class Container extends PureComponent {
     }
 }
 
+
+const obj = {
+    width: viewWidth,
+    flex: 1,
+    height: viewHeight,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    position: 'relative'
+}
+
+// if(Platform.OS !== 'ios'){
+//     obj.height = viewHeight;
+//     // obj.flex = 0
+// }
+
 const styles = StyleSheet.create({
-    containerBox: {
-        height: viewHeight,
-        width: viewWidth,
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-    }
+    containerBox: obj
 })

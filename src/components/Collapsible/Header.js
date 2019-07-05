@@ -5,14 +5,14 @@ import {Animated, Platform, StyleSheet, View, TouchableOpacity, Dimensions} from
 const ios = Platform.OS === 'ios';
 const {width, height} = Dimensions.get('window');
 // from native-base
-const isIphoneX = ios && (height === 812 || width === 812);
-const iphoneXTopInset = 24;
-const initToolbarHeight = ios ? 46 : 56;
+// const isIphoneX = ios && (height === 812 || width === 812);
+// const iphoneXTopInset = 0;
+const initToolbarHeight = 46
 
-const paddingTop = ios ? 18 : 0;
-const topInset = isIphoneX ? iphoneXTopInset : 0;
+const paddingTop = 18;
+const topInset = 0;
 
-const toolbarHeight = initToolbarHeight + topInset + paddingTop + 30;
+const toolbarHeight = initToolbarHeight + paddingTop + 20;
 
 export default class Header extends React.PureComponent {
 
@@ -160,7 +160,6 @@ export default class Header extends React.PureComponent {
                     <View style={styles.toolbar}>
 
                         <View style={{
-                            marginLeft: 16,
                             marginTop: 16
                         }}>
                             {this.props.renderBack && this.props.renderBack()}
@@ -168,14 +167,7 @@ export default class Header extends React.PureComponent {
 
                         <Animated.View style={{
                             opacity: display,
-                            // marginLeft: 16,
-                            marginTop: 16,
-                            // position: 'absolute',
-                            // top: 15,
-                            // left: 0,
-                            // right: 0,
-                            // zIndex: 3456
-                            // backgroundColor:'#fff'
+                            marginTop: 16
                         }}>
                             {this.props.renderLeft && this.props.renderLeft()}
                         </Animated.View>
@@ -195,7 +187,8 @@ export default class Header extends React.PureComponent {
                     // left: 0,
                     // right: 0,
                     // zIndex: 3456
-                    backgroundColor: '#408EF5'
+                    // backgroundColor: '#408EF5'
+                    backgroundColor: '#48EF5'
                 }}/>
 
                 <Animated.View style={{
