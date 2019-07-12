@@ -30,23 +30,20 @@ class TrendingWebView extends Component {
 
     }
 
-    // componentDidMount = () => {
-    //     // debugger;
-    //     this.setState({
-    //         init: false
-    //     })
-    // };
+    onLoadStart = () => {
+        // let now = new Date().getTime()
+        // this.setState({
+        //     startTime: now
+        // })
+        // this.props.onLoadStart(now);
 
+    }
     onLoadEnd = (e) => {
         this.props.onLoadEnd(this.trendingviewWeb, e);
+        // console.log('%c +++++++++++++webview加载完成的时间++++++++++++++','color:red',new Date().getTime()- this.state.startTime)
     };
 
     onMessage = (e) => {
-        // setTimeout(() => {
-        //     this.setState({
-        //         loaded: true,
-        //     });
-        // }, 1000);
         this.setState({
             loaded: true,
         });
@@ -57,7 +54,7 @@ class TrendingWebView extends Component {
         this.trendingviewWeb = null;
     };
     loadingSpinner = () => {
-        return <Spinner/>
+        return <View style={{height:'100%',backgroundColor:'rgba(24,59,96,1)'}}><Spinner/></View>
     }
     _onShouldStartLoadWithRequest = (e) => {
         if(e.url.includes('www.tradingview.com')){
@@ -79,6 +76,7 @@ class TrendingWebView extends Component {
                 // automaticallyAdjustContentInsets={true}
                 originWhitelist={Platform.OS === 'ios'?['*']:['','https://a.fslk.co/test/.*']}
                 // originWhitelist={['http://', 'https://a.fslk.*']}
+                onLoadStart={this.onLoadStart}
                 onLoadEnd={this.onLoadEnd}// 加载成功或者失败都会回调
                 onMessage={this.onMessage}
                 injectedJavaScript='true'

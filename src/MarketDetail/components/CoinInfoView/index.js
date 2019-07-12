@@ -28,7 +28,7 @@ export default class Item extends Component {
         return (
             <View style={styles.info_box}>
                 <View style={styles.left_column}>
-                    <View style={last_price}><Text style={styles.last_price_text} >{`$ ${splitNum(last_price)}`}</Text></View>
+                    <View style={last_price}><Text style={styles.last_price_text} >{is_pair?`${splitNum(last_price)}`:`$ ${splitNum(last_price)}`}</Text></View>
                     <View style={change}><Text numberOfLines={1} style={styles.change_text}>{change>0?`+${Number(change).toFixed(2)}%`:`${Number(change).toFixed(2)}%`}</Text></View>
                     {/* <View style={{}}><Text style={styles.update_text}>更新于 12:00</Text></View> */}
                 </View>
@@ -36,17 +36,17 @@ export default class Item extends Component {
                     <View style={styles.item_box}>
                         <View style={styles.item}>
                             <Text numberOfLines={1} style={styles.title}>{i18n.t('page_market_detail.high_price_24h')}</Text>
-                            <Text numberOfLines={1} style={styles.num}>{'$ '+splitNum(high_price_24h)}</Text>
+                            <Text numberOfLines={1} style={styles.num}>{splitNum(high_price_24h)}</Text>
                         </View>
                         <View style={styles.item}>
                             <Text numberOfLines={1} style={styles.title}>{i18n.t('page_market_detail.volume_24h')}</Text>
-                            <Text numberOfLines={1} style={styles.num}>{'$ '+numWithUnit(volume)}</Text>
+                            <Text numberOfLines={1} style={styles.num}>{numWithUnit(volume)}</Text>
                         </View>
                         {
                             !is_pair ?
                                 <View style={styles.item}>
                                     <Text numberOfLines={1} style={styles.title}>{i18n.t('page_market_detail.market_cap')}</Text>
-                                    <Text numberOfLines={1} style={styles.num}>{'$ '+numWithUnit(market)}</Text>
+                                    <Text numberOfLines={1} style={styles.num}>{numWithUnit(market)}</Text>
                                 </View>
                             :   null
                         }
@@ -54,7 +54,7 @@ export default class Item extends Component {
                     <View style={styles.item_box}>
                         <View style={styles.item}>
                             <Text numberOfLines={1} style={styles.title}>{i18n.t('page_market_detail.low_price_24h')}</Text>
-                            <Text numberOfLines={1} style={styles.num}>{'$ '+splitNum(low_price_24h)}</Text>
+                            <Text numberOfLines={1} style={styles.num}>{splitNum(low_price_24h)}</Text>
                         </View>
                         {/* <View style={styles.item}>
                             <Text style={styles.title}>换手率</Text>

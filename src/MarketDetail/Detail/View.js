@@ -64,6 +64,7 @@ class ViewControl extends Component {
             coin_id: props.nativeInfo.id,
             base_coin_id: props.nativeInfo.base_coin_id,
             is_pair: props.nativeInfo.is_pair,
+            last_price: props.nativeInfo.last_price,
             info: props.nativeInfo,
 
         }
@@ -76,16 +77,11 @@ class ViewControl extends Component {
             pairs,  
             mode: 'auto'
         })
-        // if (!is_pair) {
+        this.fetchWebviewInitialData()
         //如果详情为交易对，用base_coin_id请求讨论列表、交易对列表,否则用coin_id
         //正常币种信息没有base_coin_id
         this.getMarketPairList({coin_id: base_coin_id||coin_id, read_tag: '', count: LIMIT})
         this.getDiscussList({coin_id: base_coin_id||coin_id, read_tag: '', count: LIMIT});
-        // } else {
-        //     //如果详情为交易对，用base_coin_id请求讨论列表、交易对列表
-        //     this.getMarketPairList({coin_id: info.base_coin_id, read_tag: '', count: LIMIT})
-        //     this.getDiscussList({coin_id: base_coin_id, read_tag: '', count: LIMIT});
-        // }
         this.getCoinDetail(coin_id)
         cnnLogger('discussion_refresh',{
             pairs,  
@@ -123,6 +119,34 @@ class ViewControl extends Component {
     componentWillUnmount = () => {
         this.userStateListener.remove()
         this.discussDetailListener.remove()
+    }
+
+    fetchWebviewInitialData = () => {
+        const { coin_id, is_pair, info } = this.state
+        const base =  info.symbol.toLowerCase()
+        const quote = (info.pair_name || 'global').replace(/\//g, '')
+        let initialUrl 
+        if(!is_pair){
+            initialUrl = `https://app.cnntoken.io/v1/coins/${coin_id}/graph/?type=day`
+        } else {
+            let today = new Date().getTime()
+            let yesterday = today - 24 * 60 * 60 * 1000
+            let before = (today/1000).toFixed(0)
+            let after = (yesterday/1000).toFixed(0)
+            initialUrl = `https://api.cryptowat.ch/markets/${info.exchange}/${base}${quote}/ohlc?after=${after}&before=${before}&periods=900`
+        }
+
+        let initialDataForWebView =  new Promise(function(resolve,reject){
+            $get(initialUrl).then((res)=>{
+                resolve(res)
+            }).catch((e)=>{
+                reject(e)
+            })
+        }) 
+        this.setState({
+            initialDataForWebView,
+            fetchCount: 0
+        })
     }
 
     _onRefresh = () => {
@@ -181,7 +205,8 @@ class ViewControl extends Component {
                 symbol: item.symbol,
                 exchange: item.exchange,
                 pair_name: item.pair_name,
-                base_coin_id: item.base_coin_id
+                base_coin_id: item.base_coin_id,
+                last_price: item.is_pair ? item.CNNOWN_price_USD : item.price_USD
             }
         })
     }
@@ -366,37 +391,68 @@ class ViewControl extends Component {
         this.setState({
             showDeleteModal: false
         })
-
     }
-    onMessage = async (ref, e) => {
-        const {coin_id, is_pair} = this.state
-        let url = e.nativeEvent.data;
-        let data;
-        try{
-            if (!is_pair) {
+    /*
+    * 全球均价初始化时，trendingview会发送两次请求之后再画图，所以缓存需要被命中两次
+    * 交易对则只需一次即可
+    */
+    checkCacheIsValid = (url) => {
+        const { is_pair, fetchCount } = this.state
+        const cacheExpiredCount = is_pair ? 1 : 2
+        let type = url.replace('CNN_','')
+        if(is_pair && fetchCount < cacheExpiredCount){
+            return true
+        } else {
+            if(type === 'day' && fetchCount < cacheExpiredCount){
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+    fetchDateForWebview = async (url) => {
+        const { is_pair, coin_id } = this.state
+        let data
+        if(!is_pair){
             let type = url.replace('CNN_','')
             await $get(`https://app.cnntoken.io/v1/coins/${coin_id}/graph/?type=${type}`)
-                .then(res => {
-                    console.log(`rn get data: from${url}`, res)
-                    data = res
-                });
+                    .then(res => {data = res})
         } else {
-            await fetch(url).then(response => response.json()).then((res) => {
-                console.log(`rn get data: from${url}`, res);
-                data = res
-            });
+            await fetch(url).then(response => response.json()).then((res) => {data = res})
         }
-        // this.trendingviewWeb && this.trendingviewWeb.postMessage(JSON.stringify(data));
-        ref && ref.postMessage(JSON.stringify(data));
+        return data
+    }
+    onMessage = async (ref, e) => {
+        let {fetchCount} = this.state
+        let url = e.nativeEvent.data;
+        let data;
+        const isCacheValid = this.checkCacheIsValid(url)
+        try{
+            if (isCacheValid) {
+                await this.state.initialDataForWebView.then((res)=>{
+                    data = res
+                    this.setState({
+                        fetchCount: fetchCount + 1
+                    })
+                })
+            } else {
+                data = await this.fetchDateForWebview(url)
+            }
+            ref && ref.postMessage(JSON.stringify(data));
         } catch(e){
             console.log(e)
         }
 
     };
-
+    onLoadStart = (time) => {
+        // console.log('%c ++++++++++++++进入页面到开始加载webview的时间+++++++++++','color:purple',time - this.state.enterTime)
+    }
     onLoadEnd = async (ref, e) => {
         // ref && ref.postMessage('ready')
         // alert('newnewnewn')
+        // this.setState({
+        //     webviewLoadEndTime: new Date().getTime()
+        // })
     };
     netErrorPage = () => {
         return <Container style={styles.container}>
@@ -417,9 +473,8 @@ class ViewControl extends Component {
                     </Animated.ScrollView>
             </Container>
     }
-
     render() {
-        let {tabPage, showDeleteModal, toDelDiscussID, netError} = this.state
+        let {tabPage, showDeleteModal, toDelDiscussID, netError, last_price} = this.state
         const {discussList, coinDetail, coin_market_pair_list,nativeInfo} = this.props
         const lang = deviceInfo.lang || 'ko'
         if(netError)return (this.netErrorPage())
@@ -432,8 +487,6 @@ class ViewControl extends Component {
             <View key={this.state.coin_id} style={{flex:1}}>
                 {this.renderHead(nativeInfo)}
                 {
-                    !coinDetail ? 
-                        <View style={styles.loading}><Spinner/></View> :
                         <View style={{flex:1}}>
                             <Content>
                                 <Animated.ScrollView
@@ -450,28 +503,27 @@ class ViewControl extends Component {
                                             progressBackgroundColor={"#ffffff"}
                                         />}
                                 >
-                                <CoinInfoView info={this.props.coinDetail}/>
+                                {
+                                    !coinDetail
+                                    ?   <View style={{height:100*PX,backgroundColor:'rgba(24,59,96,1)'}}></View>
+                                    :   <CoinInfoView info={this.props.coinDetail}/>
+                                }
                                 <View style={styles.trending_view}>
                                     <TrendingWebView
-                                        uri={`https://a.fslk.co/test/cnn_charting/index.html`
+                                        uri={
+                                            // `https://a.fslk.co/test/cnn_charting/index.html`
+                                            `http://a.fslk.co/cnn_charting_library/index.html`
+                                            // `http://10.0.2.165:9051`
                                             +`?base=${symbol}`
                                             +`&quote=${quote}`
                                             +`&exchange=${exchange}`
                                             +`&chart_type=${chart_type}`
                                             +`&lang=${lang}`
                                             // last_price传入webview用以计算tradingview的价格精度
-                                            +`&last_price=${nativeInfo.is_pair ? (coinDetail.CNNOWN_price_USD) : coinDetail.price_USD} 
+                                            +`&last_price=${last_price} 
                                         `}
-                                        // uri={`http://10.0.2.165:9144/index.html`
-                                        //         +`?base=${symbol}`
-                                        //         +`&quote=${quote}`
-                                        //         +`&exchange=${exchange}`
-                                        //         +`&chart_type=${chart_type}`
-                                        //         +`&lang=${lang}`
-                                        //         // last_price传入webview用以计算tradingview的价格精度
-                                        //         +`&last_price=${nativeInfo.is_pair ? (coinDetail.CNNOWN_price_USD) : coinDetail.price_USD}
-                                        //     `}
                                         init={this.state.init}
+                                        onLoadStart={this.onLoadStart}
                                         onLoadEnd={this.onLoadEnd}
                                         onMessage={this.onMessage}/>
                                 </View>
@@ -494,44 +546,50 @@ class ViewControl extends Component {
                                 </StickyWrap>
                                 <View style={{backgroundColor: '#fff',flex:1}}>
                                     {
-                                        tabPage === 0
-                                        ?   <View style={styles.discuss_scroll_height}>
-                                                {
-                                                    discussList.list 
-                                                    ?   <View style={{flex:1}}>
-                                                            <DiscussList
-                                                                user={this.state.user}
-                                                                dataSource={discussList.list}
-                                                                like_discuss={this.like_discuss}
-                                                                cancel_like_discuss={this.cancel_like_discuss}
-                                                                deleteDiscuss={this.deleteDiscuss}
-                                                                clickComment={this.clickComment}
-                                                                // navigation={this.props.navigation}
-                                                                showViewAll={true}
-                                                                handleLoadMore={this.handleLoadMoreDiscuss}
-                                                                // key={this.state.user.id}
-                                                                showLoadMoreBtn={true}
-                                                                pairs={''+coinDetail.symbol + (coinDetail.pair_name||'')}
-                                                                hideDiscussDetail={false}
-                                                            />
-                                                        </View>
-                                                    :   <View><Spinner style={styles.loading}/></View>
-                                                }
-                                            </View> 
-                                        :   <View style={styles.market_scroll_height}>
-                                                <MarketList
-                                                    user={this.state.user}
-                                                    data={marketPairList}
-                                                    type='coin_market_pair'
-                                                    supportSort={false}
-                                                    goMarketDetail={this.goMarketDetail}
-                                                    addCollection={({id,index,type},successCallback)=>this.addCollection({id,index,type,tab:'coin_pair_list'},successCallback)}
-                                                    removeCollection={({id,index,type},successCallback)=>this.removeCollection({id,index,type,tab:'coin_pair_list'},successCallback)}
-                                                    handleRefresh={this.handleRefresh}
-                                                    handleLoadMore={this.handleLoadMore}
-                                                    showAction={true}
-                                                    showLoadMoreBtn={true}
-                                                    key={this.state.user.id}/>
+                                        !coinDetail
+                                        ?   <View></View>
+                                        :   <View>
+                                            {
+                                                tabPage === 0
+                                                ?   <View style={styles.discuss_scroll_height}>
+                                                        {
+                                                            discussList.list 
+                                                            ?   <View style={{flex:1}}>
+                                                                    <DiscussList
+                                                                        user={this.state.user}
+                                                                        dataSource={discussList.list}
+                                                                        like_discuss={this.like_discuss}
+                                                                        cancel_like_discuss={this.cancel_like_discuss}
+                                                                        deleteDiscuss={this.deleteDiscuss}
+                                                                        clickComment={this.clickComment}
+                                                                        // navigation={this.props.navigation}
+                                                                        showViewAll={true}
+                                                                        handleLoadMore={this.handleLoadMoreDiscuss}
+                                                                        // key={this.state.user.id}
+                                                                        showLoadMoreBtn={true}
+                                                                        pairs={''+coinDetail.symbol + (coinDetail.pair_name||'')}
+                                                                        hideDiscussDetail={false}
+                                                                    />
+                                                                </View>
+                                                            :   <View><Spinner style={styles.loading}/></View>
+                                                        }
+                                                    </View> 
+                                                :   <View style={styles.market_scroll_height}>
+                                                        <MarketList
+                                                            user={this.state.user}
+                                                            data={marketPairList}
+                                                            type='coin_market_pair'
+                                                            supportSort={false}
+                                                            goMarketDetail={this.goMarketDetail}
+                                                            addCollection={({id,index,type},successCallback)=>this.addCollection({id,index,type,tab:'coin_pair_list'},successCallback)}
+                                                            removeCollection={({id,index,type},successCallback)=>this.removeCollection({id,index,type,tab:'coin_pair_list'},successCallback)}
+                                                            handleRefresh={this.handleRefresh}
+                                                            handleLoadMore={this.handleLoadMore}
+                                                            showAction={true}
+                                                            showLoadMoreBtn={true}
+                                                            key={this.state.user.id}/>
+                                                    </View>
+                                            }
                                             </View>
                                     }
                                 </View>
@@ -544,19 +602,23 @@ class ViewControl extends Component {
                             />
                         {
                             tabPage === 0 
-                            ?   <FooterInput
-                                    type={'coinDetail'} // 用于更新自选状态type
-                                    coin_id={this.state.coin_id}
-                                    addCollection={(id,index,type)=>this.addCollection({id,index,type,tab:'coin_detail'})}
-                                    removeCollection={(id,index,type)=>this.removeCollection({id,index,type,tab:'coin_detail'})}
-                                    selected={coinDetail.selected}
-                                    activeComment={this.state.activeComment}
-                                    onComment={this.onComment}
-                                    showSelectAction={true}
-                                    placeholder={this.state.placeholder}
-                                    resetActivecomment={this.resetActivecomment}
-                                    onFocus={this.inputOnFocus}
-                                    user={this.state.user}/>
+                            ?   <View>{
+                                !coinDetail
+                                ?   <View style={{backgroundColor:'#fff'}}></View>
+                                :    <FooterInput
+                                        type={'coinDetail'} // 用于更新自选状态type
+                                        coin_id={this.state.coin_id}
+                                        addCollection={(id,index,type)=>this.addCollection({id,index,type,tab:'coin_detail'})}
+                                        removeCollection={(id,index,type)=>this.removeCollection({id,index,type,tab:'coin_detail'})}
+                                        selected={coinDetail.selected}
+                                        activeComment={this.state.activeComment}
+                                        onComment={this.onComment}
+                                        showSelectAction={true}
+                                        placeholder={this.state.placeholder}
+                                        resetActivecomment={this.resetActivecomment}
+                                        onFocus={this.inputOnFocus}
+                                        user={this.state.user}/>
+                                }</View>
                             :   null
                         }
                         </View>                    
