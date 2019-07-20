@@ -2,6 +2,8 @@ import {put, call, select} from 'redux-saga/effects';
 import * as Types from '../../actions/types';
 import * as services from '../../services/market';
 import { adapterResponse } from '@utils/adapterResponse'
+import {$toast} from '@utils/index'
+import i18n from '@i18n';
 
 //获取详情
 export function* getCoinDetail({payload, onSuccess, onFail}){
@@ -18,6 +20,7 @@ export function* getCoinDetail({payload, onSuccess, onFail}){
     }catch(e){
         onFail && onFail(e)
         console.log(e)
+        $toast(i18n.t('net_error'));
     }
 }
 
@@ -67,16 +70,16 @@ export function* getList({payload, onSuccess, onFail}) {
         console.log(e);
     }
 }
-export function* getDatabyMineID({payload, onSuccess, onFail}) {
-    try{
-        const res = yield call(services.getDatabyMineID, payload)
-        yield put({type: Types.MARKET_UPDATE_MINE_DATA,data: res})
-        onSuccess && onSuccess()
-    }catch(e){
-        onFail && onFail()
-        console.log(e)
-    }
-}
+// export function* getDatabyMineID({payload, onSuccess, onFail}) {
+//     try{
+//         const res = yield call(services.getDatabyMineID, payload)
+//         yield put({type: Types.MARKET_UPDATE_MINE_DATA,data: res})
+//         onSuccess && onSuccess()
+//     }catch(e){
+//         onFail && onFail()
+//         console.log(e)
+//     }
+// }
 export function* getDiscussList({payload, onSuccess, onFail}) {
     try{
         const { isLoadmore } = payload
@@ -118,12 +121,18 @@ export function* cancelLikeDiscuss({payload, onSuccess, onFail}) {
 export function* deleteDiscuss({payload, onSuccess, onFail}){
     try{
         yield call(services.deleteDiscuss,payload)
-        onSuccess && onSuccess()
-        let list = yield select((state)=>{
-            return state.discussList.list
+        let discussList = yield select((state)=>{
+            return state.discussList
         })
+        let list = discussList.list
+        let read_tag = discussList.read_tag || ''
+        // 如果是最后一条discuss，重置read_tag
+        if(payload.index == discussList.list[discussList.list.length-1] ){
+            read_tag = discussList.list[payload.index-1].id || ''
+        }
         list.splice(payload.index,1)
-        yield put({type: Types.MARKET_SET_DISCUSS_LIST,list:list})
+        yield put({type: Types.MARKET_SET_DISCUSS_LIST,list:list,read_tag})
+        onSuccess && onSuccess()
     }catch(e){
         onFail && onFail(e)
         console.log(e)
@@ -143,7 +152,14 @@ export function* getDiscussDetail({payload, onSuccess, onFail}) {
 //针对货币发布讨论
 export function* discussCoin({payload, onSuccess, onFail}) {
     try{
-        yield call(services.discussCoin,payload)
+        const res = yield call(services.discussCoin,payload)
+        const discussList = yield select((state)=>{
+            return state.discussList
+        })
+        let list = discussList.list
+        let read_tag = discussList.read_tag
+        list.unshift(res)
+        yield put({type: Types.MARKET_SET_DISCUSS_LIST,list:list,read_tag})
         onSuccess && onSuccess()
     }catch(e){
         onFail && onFail(e)
@@ -153,7 +169,22 @@ export function* discussCoin({payload, onSuccess, onFail}) {
 //回复某条讨论
 export function* discussReply({payload, onSuccess, onFail}) {
     try{
-        yield call(services.discussReply,payload)
+        const res = yield call(services.discussReply,payload)
+        const discussList = yield select((state)=>{
+            return state.discussList
+        })
+        let list = discussList.list
+        let newItem = list[payload.discussIndex]
+        newItem = {
+            ...newItem,
+            replies:[
+                res,
+                ...newItem.replies
+            ],
+            reply_count: newItem.reply_count + 1
+        }
+        list.splice(payload.discussIndex,1,newItem)
+        yield put({type: Types.MARKET_UPDATE_DISCUSS_LIST,payload:{list:list}})
         onSuccess && onSuccess()
     }catch(e){
         onFail && onFail(e)
@@ -175,7 +206,9 @@ export function* getMarketPairByCoinID({payload,onSuccess,onFail}) {
         } else {
             yield put({type: Types.MARKET_SET_MARKET_PAIR_LIST_BY_COINID,read_tag,list:data})
         }
-        onSuccess && onSuccess()
+        let total = data.length||0
+        let no_more = total < payload.count ? true : false
+        onSuccess && onSuccess(no_more)
     }catch(e){
         onFail && onFail(e)
         console.log(e)
@@ -194,6 +227,22 @@ export function* getAvgPriceData({payload,onSuccess,onFail}){
 export function* addCollection({payload,onSuccess,onFail}){
     try{
         yield call(services.addCollection,payload)
+        if(payload.type == 'coin_market_pair'){
+            let list = yield select((state)=>{
+                return state.coin_market_pair_list.list
+            })
+            let newItem = list[payload.index]
+            newItem.selected = true
+            list.splice(payload.index,1,newItem)
+            yield put({type: Types.MARKET_UPDATE_MARKET_LIST,list})
+        } else if(payload.type == 'coinDetail'){
+            let detail = yield select((state)=>{
+                return state.coinDetail
+            })
+            let newDetail = detail
+            newDetail.selected = true
+            yield put({type: Types.MARKET_SET_COIN_DETAIL,res: newDetail})
+        }
         onSuccess && onSuccess()
     }catch(e){
         onFail && onFail(e)
@@ -203,12 +252,29 @@ export function* addCollection({payload,onSuccess,onFail}){
 export function* removeCollection({payload,onSuccess,onFail}){
     try{
         yield call(services.removeCollection,payload)
+        if(payload.type == 'coin_market_pair'){
+            let list = yield select((state)=>{
+                return state.coin_market_pair_list.list
+            })
+            let newItem = list[payload.index]
+            newItem.selected = false
+            list.splice(payload.index,1,newItem)
+            yield put({type: Types.MARKET_UPDATE_MARKET_LIST,list})
+        } else if(payload.type == 'coinDetail'){
+            let detail = yield select((state)=>{
+                return state.coinDetail
+            })
+            let newDetail = detail
+            newDetail.selected = false
+            yield put({type: Types.MARKET_SET_COIN_DETAIL,res: newDetail})
+        }
         onSuccess && onSuccess()
     }catch(e){
         onFail && onFail(e)
         console.log(e)
     }
 }
+
 
 
 

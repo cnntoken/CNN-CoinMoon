@@ -1,6 +1,3 @@
-/**
- *  Redux saga class init
- */
 import {takeEvery, all} from 'redux-saga/effects';
 import * as types from '../../actions/types';
 import * as marketDetailSaga from './marketDetailSaga'
@@ -9,8 +6,6 @@ export default function* watch() {
     yield all([
         // 行情
         takeEvery(types.MARKET_GET_COIN_DETAIL,marketDetailSaga.getCoinDetail),
-        // takeEvery(types.MARKET_GET_LIST,marketDetailSaga.getList),
-        // takeEvery(types.MARKET_GET_LIST_BY_MINE_ID,marketDetailSaga.getDatabyMineID),
         takeEvery(types.MARKET_GET_DISCUSS_LIST,marketDetailSaga.getDiscussList),
         
         takeEvery(types.MARKET_GET_MARKET_PAIR_LIST_BY_COINID,marketDetailSaga.getMarketPairByCoinID),
