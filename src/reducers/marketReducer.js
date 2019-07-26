@@ -6,7 +6,7 @@ import * as types from '../actions/types';
 export const initialState ={
     // 自选列表
     mine: {
-        list: null,
+        list: [],
     },
     // 我的自选ID集合
     mineID: [],
@@ -14,44 +14,47 @@ export const initialState ={
     is_pairID: [],
     // 所有币种
     all: {
-        list: null,
+        list: [],
         sort_by: '-market_cap',
     },
     // 搜索列表数据
     search: {
         list: [],
-        read_tag: ''
+        read_tag: '',
+        page: 0
     },
-    // discussList: {
-    //     list: null,
-    //     read_tag: ''
-    // },
-    // discussDetail:{
-    //     id: '',
-    //     info:{},
-    // },
-    // coin_market_pair_list:{
-    //     list:null,
-    //     read_tag: ''
-    // },
-    // // coin详情
-    // coinDetail: {}
 };
 
-export const createMarketReducer = createReducer({}, {
+export const createMarketReducer = createReducer(initialState, {
+
+    // set rank list
+    [types.MARKET_SET_RANKLIST](state=initialState,{list,sort_by}){
+        // 需要排序
+        let all = {
+            list,
+            sort_by
+        }
+        state.all = all
+        return {...state}
+    },
 
     // set list
-    [types.MARKET_SET_LIST](state, {category, list, read_tag='',sort_by}) {
-        state[category] = {
-            ...state[category],
-            list: list,
-        };
+    [types.MARKET_SET_LIST](state=initialState, {category, list, read_tag='',sort_by,no_more}) {
+        // let categoryObj = {
+        //     [category]:{
+        //         ...state[category],
+        //         list,
+        //         no_more
+        //     }
+        // }
+        let newObj = Object.assign({},{list,no_more})
+        let categoryObj = Object.assign({},{[category]:newObj})
+        let mineObj = {}
         if(list.length&&read_tag){
-            state[category].read_tag = read_tag
-            state[category].no_more = true
+            categoryObj[category].read_tag = read_tag
         }
         if(category === 'all'){
-            state[category].sort_by = sort_by
+            categoryObj[category].sort_by = sort_by
         } else if(category === 'mine'){
             let new_mineID = [], new_is_pairID = [], new_not_pairID = []
             list.forEach((item)=>{
@@ -62,20 +65,21 @@ export const createMarketReducer = createReducer({}, {
                     new_not_pairID.push(item.id)
                 }
             })
-            state.mineID = new_mineID
-            state.is_pairID = new_is_pairID
-            state.not_pairID = new_not_pairID
+            mineObj.mineID = new_mineID
+            mineObj.is_pairID = new_is_pairID
+            mineObj.not_pairID = new_not_pairID
         } else if(category==='search'){
             if(list.length===0){
-                state.search.no_search_res = true
+                categoryObj.search.no_search_res = true
             } else {
-                state.search.no_search_res = false
+                categoryObj.search.no_search_res = false
             }
         }
-        return {...state};
+        let stateObj = Object.assign({},state,categoryObj,mineObj)
+        return stateObj
     },
     // 刷新自选列表数据
-    [types.MARKET_UPDATE_MINE_DATA](state,{data}){
+    [types.MARKET_UPDATE_MINE_DATA](state=initialState,{data}){
         if(!Array.isArray(state.mine.list)) return {...state}
         let newList = []
         state.mine.list.forEach((item)=>{
@@ -90,24 +94,26 @@ export const createMarketReducer = createReducer({}, {
             }
             newList.push(item)
         })        
-        state.mine = {
+        return {...state,mine:{
             ...state.mine,
             list: newList
-        }
-        return {...state}
+        }}
     },
     // append list
-    [types.MARKET_APPEND_LIST](state,{category,list,read_tag='',}){
-        state[category] = {
-            ...state[category],
-            list: [
-                ...state[category].list,
-                ...list
-            ],
+    [types.MARKET_APPEND_LIST](state=initialState,{category,list,read_tag='',no_more}){
+        let categoryObj = {
+            [category]:{
+                ...state[category],
+                list:[
+                    ...state[category].list,
+                    ...list
+                ],
+                no_more
+            }
         }
+        let mineObj = {}
         if(list.length&&read_tag){
-            state[category].read_tag = read_tag
-            state[category].no_more = true
+            categoryObj[category].read_tag = read_tag
         }
         if(category === 'mine'){
             let new_mineID = [], new_is_pairID = [], new_not_pairID = []
@@ -119,87 +125,68 @@ export const createMarketReducer = createReducer({}, {
                     new_not_pairID.push(item.id)
                 }
             })
-            state.mineID = new_mineID
-            state.is_pairID = new_is_pairID
-            state.not_pairID = new_not_pairID
+            mineObj.mineID = [...state.mineID,...new_mineID]
+            mineObj.is_pairID = [...state.is_pairID,...new_is_pairID]
+            mineObj.not_pairID = [...state.not_pairID,...new_not_pairID]
+        }
+        return {...state,...categoryObj,...mineObj}
+    },
+    [types.MARKET_SET_SEARCH_LIST](state=initialState,{list,read_tag,no_more,page}){
+        // let newSearch = Object.assign({},list,read_tag,no_more,page)
+        // newSearch.no_search_res = list.length === 0
+        state.search = {
+            list,
+            read_tag,
+            no_more,
+            page,
+            no_search_res: list.length === 0
         }
         return {...state}
     },
-    [types.MARKET_INIT_SEARCH_LIST](state){
+    [types.MARKET_APPEND_SEARCH_LIST](state=initialState,{list,read_tag,no_more,page}){
+        state.search = {
+            list: [
+                ...state.search.list,
+                ...list
+            ],
+            read_tag,
+            no_more,
+            page,
+        }
+        return {...state}
+    },
+    [types.MARKET_INIT_SEARCH_LIST](state=initialState){
         state.search = {
             list: [],
             read_tag: '',
             no_search_res: false
-        }
+        };
         return {...state}
     },
-    //coin 详情
-    // [types.MARKET_SET_COIN_DETAIL](state,{res}){
-    //     state.coinDetail = res
-    //     return {...state}
-    // },
+    // 更新list
+    [types.MARKET_UPDATE_MARKET_LIST](state=initialState,{cate,list}){
+        let cateObj = {}
+        cateObj[cate] = {
+            ...state[cate],
+            list
+        }
+        return {...state,...cateObj}
+    },
     // 添加自选
-    [types.MARKET_ADD_ID](state, {list, category}) {
+    [types.MARKET_ADD_ID](state=initialState, {list, category}) {
         state[category] = list;
-        return {...state};
+        let listObj = {
+            [category]: list
+        }
+        return {...state,...listObj};
     },
 
     // 取消自选
     [types.MARKET_REMOVE_ID](state, {list, category}) {
         state[category] = list;
-        return {...state};
+        let listObj = {
+            [category]: list
+        }
+        return {...state,...listObj};
     },
-
-    // 讨论列表
-    // [types.MARKET_SET_DISCUSS_LIST](state, {list,read_tag}) {
-    //     state.discussList = {
-    //         list,
-    //         read_tag
-    //     }
-    //     return {...state}
-    // },
-    // // append discuss list
-    // [types.MAARKET_APPEND_DISCUSS_LIST](state,{list,read_tag=''}){
-    //     state.discussList = {
-    //         list: [
-    //             ...state.discussList.list,
-    //             ...list
-    //         ],
-    //         read_tag
-    //     }
-    //     return {...state}
-    // },
-    //讨论详情
-    // [types.MARKET_SET_DISCUSS_DETAIL](state,{discuss_id,info}){
-    //     state.discussDetail = {
-    //         discuss_id,
-    //         info
-    //     }
-    //     return {...state}
-    // },
-    // [types.MARKET_SET_MARKET_PAIR_LIST_BY_COINID](state,{list,read_tag}){
-    //     state.coin_market_pair_list = {
-    //         list,
-    //         read_tag
-    //     }
-    //     return {...state}
-    // },
-    // [types.MARKET_APPEND_MARKET_PAIR_LIST_BY_COINID](state,{list,read_tag}){
-    //     state.coin_market_pair_list = {
-    //         ...state.coin_market_pair_list,
-    //         list: [
-    //             ...state.coin_market_pair_list.list,
-    //             ...list
-    //         ],
-    //         read_tag,
-    //     }
-    //     return {...state}   
-    // },
-    // [types.MARKET_SET_AVG_PRICE_DATA](state,{id,data}){
-    //     state.avgPrice = {
-    //         id,
-    //         data
-    //     }
-    //     return {...state}
-    // }
 });
