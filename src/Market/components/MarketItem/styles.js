@@ -61,14 +61,18 @@ const styles = StyleSheet.create({
         width: 85*PX
 
     },
-    pair_name: {
+    divider: {
+        color: '#666666',
         marginLeft: 5*PX,
+    },
+    pair_name: {
         color: '#666666',
         fontSize: 13*PX,
+        alignSelf: 'auto'
     },
     exchange_name:{
         flexDirection: 'row',
-        width: 85*PX
+        width: 85*PX,
     },
     exchange_name_text: {
         // width: viewportWidth/5,

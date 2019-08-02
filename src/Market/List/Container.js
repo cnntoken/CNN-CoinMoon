@@ -11,17 +11,23 @@ function mapDispatchToProps(dispatch) {
         getList: (...args) => {
             dispatch(marketActions.getList(...args))
         },
-        sortList: (...args) => {
-            dispatch(marketActions.sortList(...args))
+        getRankList: (...args) => {
+            dispatch(marketActions.getRankList(...args))  
         },
+        sortRankList: (...args) => {
+            dispatch(marketActions.sortRankList(...args))
+        },
+        // sortList: (...args) => {
+        //     dispatch(marketActions.sortList(...args))
+        // },
         addCollection: (...args) => {
             dispatch(marketActions.addCollection(...args))
         },
         removeCollection: (...args) => {
             dispatch(marketActions.removeCollection(...args))
         },
-        getDatabyMineID: (...args) => {
-            dispatch(marketActions.getDatabyMineID(...args))
+        getDataByPairKey: (...args) => {
+            dispatch(marketActions.getDataByPairKey(...args))
         }
     };
 }

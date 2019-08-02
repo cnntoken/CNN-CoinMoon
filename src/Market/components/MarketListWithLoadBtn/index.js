@@ -206,7 +206,7 @@ class MarketList extends Component {
                     && this.state.refreshState !== RefreshState.NoMoreData
                     && this.state.refreshState !== RefreshState.Failure
                     && this.props.data.length !== 0
-                    ?   <Button style={styles.loadmore_btn} onPress={()=>this.handleLoadMore(type)}><Text style={styles.loadmore_text}>{i18n.t('page_market_detail.load_more')}</Text></Button>
+                    ?   <Button style={styles.loadmore_btn} onPress={()=>this.handleLoadMore(type)}><Text style={styles.loadmore_text}>{i18n.t('page_market_detail.coinpair_load_more')}</Text></Button>
                     :   null
                 }
                 {this.state.refreshState === RefreshState.FooterRefreshing && <ActivityIndicator size="small" color="#888888"/>}
