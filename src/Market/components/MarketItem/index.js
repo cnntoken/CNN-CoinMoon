@@ -75,18 +75,7 @@ class MarketItem extends PureComponent {
         operating: false,
       });
     });
-
-    // this.setState({
-    //     selected: !selected
-    // },()=>{
-    //     this.props.removeCollection(item.id,index,type,item)
-    // })
   };
-
-  onError = () => {
-    console.log('image load fail');
-  };
-
   handleItemPress = () => {
     let { type, item } = this.props;
     let currency = '' + item.fcoin + item.tcoin + item.exchange;
@@ -94,15 +83,19 @@ class MarketItem extends PureComponent {
       from: type, // all,mine
       currency,
     });
+    // goNativePage({
+    //   moduleName: 'stark_market_detail',
+    //   params: {
+    //     avatar: item.icon,
+    //     coin_id: item.id,
+    //     fcoin: item.fcoin,
+    //     tcoin: item.tcoin,
+    //     exchange: item.exchange,
+    //   },
+    // });
     goNativePage({
       moduleName: 'stark_market_detail',
-      params: {
-        avatar: item.icon,
-        coin_id: item.id,
-        fcoin: item.fcoin,
-        tcoin: item.tcoin,
-        exchange: item.exchange,
-      },
+      params: item
     });
   };
   UNSAFE_componentWillReceiveProps = nextProps => {

@@ -6,7 +6,7 @@ import i18n from '@i18n';
 import styles from './styles';
 import { getCurrentUser, isRNRootPage } from '@utils/CNNBridge';
 import {
-  NoticeMarketUpdate,
+  eventEmitterFromRNSelf,
   adaptUserInfo,
   cnnLogger,
   debounce_next,
@@ -103,7 +103,7 @@ export default class SearchControl extends PureComponent {
     });
     this.props.addCollection({ id, index, type, info }, () => {
       successCallback && successCallback();
-      NoticeMarketUpdate('collectionAction', { id, action: 'add' });
+      eventEmitterFromRNSelf('collectionAction', { id, action: 'add' });
     });
   };
   removeCollection = ({ id, index, type, info }, successCallback) => {
@@ -114,7 +114,7 @@ export default class SearchControl extends PureComponent {
     });
     this.props.removeCollection({ id, index, type, info }, () => {
       successCallback && successCallback();
-      NoticeMarketUpdate('collectionAction', { id, action: 'remove' });
+      eventEmitterFromRNSelf('collectionAction', { id, action: 'remove' });
     });
   };
   goBack = () => {
@@ -128,6 +128,7 @@ export default class SearchControl extends PureComponent {
   };
   componentDidMount = async () => {
     await this.asyncUser();
+    eventEmitterFromRNSelf('whichRNPageShowing',{page: 'market_search'})
     this.userStateListener = getUserStateChangeEventEmitter().addListener(
       'CNN_USER_STATUS_CHANGE',
       async data => {
@@ -149,6 +150,7 @@ export default class SearchControl extends PureComponent {
     );
   };
   componentWillUnmount = () => {
+    eventEmitterFromRNSelf('whichRNPageShowing',{page: 'market_index'})
     isRNRootPage({
       moduleName: 'stark_market',
       isRoot: true,

@@ -51,9 +51,10 @@ class MarketList extends Component {
       () => {
         this.props.handleRefresh(
           category,
-          () => {
+          (no_more) => {
             cb && cb();
-            this.setRefreshState(RefreshState.Idle);
+            let refreshState = no_more ? RefreshState.NoMoreData : RefreshState.Idle
+            this.setRefreshState(refreshState);
           },
           () => {
             cb && cb();

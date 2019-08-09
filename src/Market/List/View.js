@@ -3,12 +3,13 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ListTabBar from '../components/ListTabBar';
 import MarketList from '../components/MarketList';
 import i18n from '@i18n';
-import { DeviceEventEmitter, View } from 'react-native';
+import { DeviceEventEmitter, View, AppState } from 'react-native';
 import { getCurrentUser, isRNRootPage } from '@utils/CNNBridge';
 import {
   cnnLogger,
   adaptUserInfo,
   getUserStateChangeEventEmitter,
+  marketCollectionEventEmitter,
   debounce_next,
 } from '@utils/index';
 
@@ -18,12 +19,11 @@ class ViewControl extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      all_netError: false,
-      mine_netError: false,
-      netError: false,
       user: props.user,
       updateKeys: [],
-      activeTab: 0
+      activeTab: 0,
+      currentAppState: 'active',
+      isPageShowing: true
     };
     this.interval = null;
   }
@@ -34,11 +34,30 @@ class ViewControl extends Component {
       page: 0,
       sort_key: '-cap',
     });
-    this.refreshMineData()
-    // 监听详情页发起的自选操作事件
-    this.collectionListener = DeviceEventEmitter.addListener('collectionAction', () => {
+    AppState.addEventListener('change', this._handleAppStateChange);
+    this.pageShowing = DeviceEventEmitter.addListener('whichRNPageShowing', ({page}) => {
+      if(page === 'market_index'){
+        this.setState({
+          isPageShowing: true
+        })
+      } else {
+        this.setState({
+          isPageShowing: false
+        })
+      }
+    });
+    this.refreshMineData();
+    // 监听搜索页面发起的自选操作事件
+    this.collectionListenerForRN = DeviceEventEmitter.addListener('collectionAction', () => {
       this.getList({ count: LIMIT, category: 'mine', page: 0 });
     });
+    // 监听详情页发起的自选操作事件
+    this.collectionListenerForNative = marketCollectionEventEmitter().addListener(
+      'refresh_self_selected_list',
+      () => {
+        this.getList({ count: LIMIT, category: 'mine', page: 0 });
+      },
+    );
     this.userStateListener = getUserStateChangeEventEmitter().addListener(
       'CNN_USER_STATUS_CHANGE',
       async data => {
@@ -56,30 +75,29 @@ class ViewControl extends Component {
     );
   }
   componentWillUnmount() {
-    this.collectionListener.remove();
+    this.collectionListenerForRN.remove();
+    this.collectionListenerForNative.remove();
     this.userStateListener.remove();
+    AppState.removeEventListener('change', this._handleAppStateChange);
     if (this.interval) {
       clearInterval(this.interval);
       this.interval = null;
     }
   }
+  _handleAppStateChange = nextAppState => {
+    this.setState({ currentAppState: nextAppState });
+  };
   getRankList = (params, successCallback, failCallback) => {
     cnnLogger('currency_refresh', {
       tab: 'all', // all
     });
     this.props.getRankList(
       params,
-      data => {
-        this.setState({
-          [`all_netError`]: false,
-        });
-        successCallback && successCallback(data);
+      no_more => {
+        successCallback && successCallback(no_more);
       },
       () => {
         // 网络错误
-        this.setState({
-          [`all_netError`]: true,
-        });
         failCallback && failCallback();
       },
     );
@@ -92,22 +110,20 @@ class ViewControl extends Component {
       obj,
       ({ no_more, list }) => {
         successCallback && successCallback(no_more);
-        let { updateKeys } = this.state
-        if(!obj.is_loadmore){
+        let { updateKeys } = this.state;
+        if (!obj.is_loadmore) {
           updateKeys = list.slice(0, 10).map(coin => {
             return `${coin.exchange}/${coin.fcoin}/${coin.tcoin}`;
           });
         }
         this.setState({
-          [`${obj.category}_netError`]: false,
           updateKeys,
         });
       },
       () => {
         // 网络错误
         this.setState({
-          [`${obj.category}_netError`]: true,
-          updateKeys: []
+          updateKeys: [],
         });
         failCallback && failCallback();
       },
@@ -128,7 +144,12 @@ class ViewControl extends Component {
   refreshMineData = () => {
     this.interval = setInterval(() => {
       let { updateKeys } = this.state;
-      if (updateKeys.length && this.state.activeTab === 0) {
+      if (
+        updateKeys.length &&                              // 自选列表不为空
+        this.state.activeTab === 0 &&                     // 处于自选列表的tab下
+        this.state.currentAppState === 'active' &&        // 如果进入后台则停止刷新
+        this.state.isPageShowing                          // 如果跳转到搜索页则停止自动刷新
+      ) {
         this.getDataByPairKey(updateKeys);
       }
     }, 5 * 1000);
@@ -178,26 +199,26 @@ class ViewControl extends Component {
       isRoot: false,
     });
   };
-  handleTabChange = ({i}) => {
+  handleTabChange = ({ i }) => {
     this.setState({
-      activeTab: i
-    })
-  }
+      activeTab: i,
+    });
+  };
   render() {
     console.disableYellowBox = true;
     return (
       <View style={{ flex: 1 }}>
         <ScrollableTabView
+          initialPage={1}
           onChangeTab={this.handleTabChange}
-          renderTabBar={() => <ListTabBar goSeach={this.goSearch} />}>
+          renderTabBar={() => <ListTabBar goSeach={this.goSearch} />}
+        >
           {['mine', 'all'].map(cate => {
             return (
               <MarketList
                 LIMIT={LIMIT}
                 key={cate}
-                data={
-                  this.props[cate].list
-                }
+                data={this.props[cate].list}
                 supportSort={false} // 不支持排序
                 sort_key={this.props[cate].sort_key}
                 type={cate}
@@ -208,7 +229,6 @@ class ViewControl extends Component {
                 handleLoadMore={this.handleLoadMore}
                 goMarketDetail={item => this.goMarketDetail(item, cate)}
                 user={this.state.user}
-                netError={this.state[`${cate}_netError`]}
                 listenViewableItem={this.listenViewableItem}
               />
             );

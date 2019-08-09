@@ -58,10 +58,6 @@ class MarketList extends Component {
         this.props.removeCollection({id,index,type,info},successCallback)
     };
 
-    onError = () => {
-        console.log('image load fail');
-    }
-
     // 下拉刷新
     _onRefresh = (category) => {
         if(!this.props.handleRefresh) return false
@@ -93,15 +89,6 @@ class MarketList extends Component {
     };
     //上拉加载更多
     _onLoading = (category) => {
-        // let thisTime = new Date().getTime()
-        // let {lastTime} = this.state
-        // this.setState({
-        //     lastTime: new Date().getTime()
-        // })
-        // console.log('thisTime:',thisTime,'lastTime',lastTime)
-        // if(thisTime - lastTime < 500) return false
-
-        // return false
         if(!this.props.handleLoadMore){
             return null
         }
