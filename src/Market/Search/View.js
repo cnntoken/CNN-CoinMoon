@@ -226,6 +226,7 @@ export default class SearchControl extends PureComponent {
                 autoFocus={true}
                 placeholder={i18n.t('page_market_search.search_placeholder')}
                 placeholderTextColor="#979797"
+                selectionColor="#215DFF"
                 // value={inputVal}
                 onChangeText={this.handleSearch}
               />

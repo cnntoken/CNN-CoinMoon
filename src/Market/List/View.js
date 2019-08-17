@@ -23,7 +23,7 @@ class ViewControl extends Component {
       updateKeys: [],
       activeTab: 0,
       currentAppState: 'active',
-      isPageShowing: true
+      isPageShowing: true,
     };
     this.interval = null;
   }
@@ -34,16 +34,17 @@ class ViewControl extends Component {
       page: 0,
       sort_key: '-cap',
     });
+    // 监听RN页面的状态
     AppState.addEventListener('change', this._handleAppStateChange);
-    this.pageShowing = DeviceEventEmitter.addListener('whichRNPageShowing', ({page}) => {
-      if(page === 'market_index'){
+    this.pageShowing = DeviceEventEmitter.addListener('whichRNPageShowing', ({ page }) => {
+      if (page === 'market_index') {
         this.setState({
-          isPageShowing: true
-        })
+          isPageShowing: true,
+        });
       } else {
         this.setState({
-          isPageShowing: false
-        })
+          isPageShowing: false,
+        });
       }
     });
     this.refreshMineData();
@@ -142,17 +143,18 @@ class ViewControl extends Component {
     this.props.getDataByPairKey(updateKeys);
   };
   refreshMineData = () => {
+    let { market_refresh_frequency } = this.props.params; // 原生从firebase上获取刷新时间配置后，传给RN
     this.interval = setInterval(() => {
       let { updateKeys } = this.state;
       if (
-        updateKeys.length &&                              // 自选列表不为空
-        this.state.activeTab === 0 &&                     // 处于自选列表的tab下
-        this.state.currentAppState === 'active' &&        // 如果进入后台则停止刷新
-        this.state.isPageShowing                          // 如果跳转到搜索页则停止自动刷新
+        updateKeys.length  &&// 自选列表不为空
+        this.state.activeTab === 0 && // 处于自选列表的tab下
+        this.state.currentAppState === 'active' && // 如果进入后台则停止刷新
+        this.state.isPageShowing // 如果跳转到搜索页则停止自动刷新
       ) {
         this.getDataByPairKey(updateKeys);
       }
-    }, 5 * 1000);
+    }, market_refresh_frequency || 5 * 1000);
   };
   handleSort = ({ sort_key }, successCallback, failCallback) => {
     this.getRankList(

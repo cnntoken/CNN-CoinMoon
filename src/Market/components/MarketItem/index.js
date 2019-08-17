@@ -80,7 +80,7 @@ class MarketItem extends PureComponent {
     let { type, item } = this.props;
     let currency = '' + item.fcoin + item.tcoin + item.exchange;
     cnnLogger('enter_pairs_detail', {
-      from: type, // all,mine
+      from: type, // all,mine,search
       currency,
     });
     // goNativePage({
@@ -112,7 +112,7 @@ class MarketItem extends PureComponent {
     const price_KRW = item.price_krw;
     const change = item.change_pct_24_hour;
     const change_status = Number(change) > 0 ? 'go_up' : 'go_down';
-    item.is_pair = item.exchange === 'CMAGG' ? false : true;
+    // item.is_pair = item.exchange === 'CMAGG' ? false : true;
     return (
       <TouchableOpacity
         key={item.id}
@@ -127,7 +127,7 @@ class MarketItem extends PureComponent {
         <FastImage style={[styles.coin_icon]} source={{ uri: item.icon }} />
         <View style={styles.middle_box}>
           <View styles={styles.coin_name}>
-            {item.is_pair ? (
+            {item.exchange !== 'CMAGG' ? (
               <View style={styles.pair_title}>
                 <Text numberOfLines={1} style={styles.symbol}>
                   {item.fcoin}
@@ -143,7 +143,7 @@ class MarketItem extends PureComponent {
               </Text>
             )}
             <View style={styles.exchange_name}>
-              {item.is_pair ? (
+              {item.exchange !== 'CMAGG' ? (
                 <Text style={styles.exchange_name_text} numberOfLines={1}>
                   {item.exchange}
                 </Text>
@@ -160,7 +160,7 @@ class MarketItem extends PureComponent {
                   change_status === 'go_up' ? styles.price_text_up : styles.price_text_down,
                 ]}
               >
-                {item.is_pair ? splitNum(price_USD) : `$${splitNum(price_USD)}`}
+                {item.exchange !== 'CMAGG' ? splitNum(price_USD) : `$${splitNum(price_USD)}`}
               </Text>
               <Text style={styles.price_trans}>≈₩{`${splitNum(price_KRW)}`}</Text>
             </View>

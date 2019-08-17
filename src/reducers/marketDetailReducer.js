@@ -4,22 +4,6 @@ import createReducer from '@lib/createReducer';
 import * as types from '../actions/types';
 
 export const initialState ={
-    // 自选列表
-    // mine: {
-    //     list: null,
-    // },
-    // // 我的自选ID集合
-    // mineID: [],
-    // // 所有币种
-    // all: {
-    //     list: null,
-    //     sort_by: '-market_cap',
-    // },
-    // // 搜索列表数据
-    // search: {
-    //     list: [],
-    //     read_tag: ''
-    // },
     discussList: {
         list: null,
         read_tag: ''
@@ -116,4 +100,11 @@ export const createMarketDetailReducer = createReducer(initialState, {
         }
         return {...state,coin_market_pair_list}   
     },
+    // [types.MARKET_SET_AVG_PRICE_DATA](state,{id,data}){
+    //     state.avgPrice = {
+    //         id,
+    //         data
+    //     }
+    //     return {...state}
+    // }
 });
