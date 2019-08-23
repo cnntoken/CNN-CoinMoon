@@ -11,6 +11,7 @@ import {
   getUserStateChangeEventEmitter,
   marketCollectionEventEmitter,
   debounce_next,
+  appTabChangeEventEmitter,
 } from '@utils/index';
 
 const LIMIT = 20;
@@ -24,18 +25,29 @@ class ViewControl extends Component {
       activeTab: 0,
       currentAppState: 'active',
       isPageShowing: true,
+      market_tab_showing: true,
     };
     this.interval = null;
   }
   componentDidMount() {
-    this.getList({ count: LIMIT, page: 0 });
-    this.getRankList({
-      count: LIMIT,
-      page: 0,
-      sort_key: '-cap',
+    // 监听APP当前是否在行情tab
+    this.tabShowingListener = appTabChangeEventEmitter().addListener('CNN_PAGE_VISIABLE', data => {
+      if (data.current_page === 'stark_market') {
+        this.setState({
+          market_tab_showing: true,
+        });
+      }
+    });
+    this.tabHideListener = appTabChangeEventEmitter().addListener('CNN_PAGE_GONE', data => {
+      if (data.current_page === 'stark_market') {
+        this.setState({
+          market_tab_showing: false,
+        });
+      }
     });
     // 监听RN页面的状态
     AppState.addEventListener('change', this._handleAppStateChange);
+    // 监听是否跳到了搜索页面
     this.pageShowing = DeviceEventEmitter.addListener('whichRNPageShowing', ({ page }) => {
       if (page === 'market_index') {
         this.setState({
@@ -78,6 +90,8 @@ class ViewControl extends Component {
   componentWillUnmount() {
     this.collectionListenerForRN.remove();
     this.collectionListenerForNative.remove();
+    this.tabShowingListener.remove();
+    this.tabHideListener.remove();
     this.userStateListener.remove();
     AppState.removeEventListener('change', this._handleAppStateChange);
     if (this.interval) {
@@ -147,10 +161,11 @@ class ViewControl extends Component {
     this.interval = setInterval(() => {
       let { updateKeys } = this.state;
       if (
-        updateKeys.length  &&// 自选列表不为空
+        updateKeys.length && // 自选列表不为空
         this.state.activeTab === 0 && // 处于自选列表的tab下
         this.state.currentAppState === 'active' && // 如果进入后台则停止刷新
-        this.state.isPageShowing // 如果跳转到搜索页则停止自动刷新
+        this.state.isPageShowing && // 如果跳转到搜索页则停止自动刷新
+        this.state.market_tab_showing // 如果APP不在行情tab下则停止刷新
       ) {
         this.getDataByPairKey(updateKeys);
       }
