@@ -1,13 +1,13 @@
 import * as types from './types';
 
-export const getCoinDetail = (payload, onSuccess, onFail) => {
-    return {
-        type: types.MARKET_GET_COIN_DETAIL,
-        payload,
-        onSuccess,
-        onFail
-    }
-}
+// export const getCoinDetail = (payload, onSuccess, onFail) => {
+//     return {
+//         type: types.MARKET_GET_COIN_DETAIL,
+//         payload,
+//         onSuccess,
+//         onFail
+//     }
+// }
 // export const getList = (payload, onSuccess, onFail) => {
 //     return {
 //         type: types.MARKET_GET_LIST,
@@ -32,22 +32,22 @@ export const getCoinDetail = (payload, onSuccess, onFail) => {
 //         onFail
 //     }
 // }
-export const getDiscussList = (payload, onSuccess, onFail) => {
-    return {
-        type: types.MARKET_GET_DISCUSS_LIST,
-        payload,
-        onSuccess,
-        onFail
-    }
-}
-export const getAvgPriceData = (payload, onSuccess, onFail) => {
-    return {
-        type: types.MARKET_GET_AVG_PRICE_DATA,
-        payload,
-        onSuccess,
-        onFail
-    }
-}
+// export const getDiscussList = (payload, onSuccess, onFail) => {
+//     return {
+//         type: types.MARKET_GET_DISCUSS_LIST,
+//         payload,
+//         onSuccess,
+//         onFail
+//     }
+// }
+// export const getAvgPriceData = (payload, onSuccess, onFail) => {
+//     return {
+//         type: types.MARKET_GET_AVG_PRICE_DATA,
+//         payload,
+//         onSuccess,
+//         onFail
+//     }
+// }
 // export const initSearchList = (payload, onSuccess, onFail) => {
 //     return {
 //         type: types.MARKET_INIT_SEARCH_LIST,
@@ -55,14 +55,14 @@ export const getAvgPriceData = (payload, onSuccess, onFail) => {
 //         onFail
 //     }
 // }
-export const getMarketPairList = (payload, onSuccess, onFail) => {
-    return {
-        type: types.MARKET_GET_MARKET_PAIR_LIST_BY_COINID,
-        payload,
-        onSuccess,
-        onFail
-    }
-}
+// export const getMarketPairList = (payload, onSuccess, onFail) => {
+//     return {
+//         type: types.MARKET_GET_MARKET_PAIR_LIST_BY_COINID,
+//         payload,
+//         onSuccess,
+//         onFail
+//     }
+// }
 export const getDiscussDetail = (payload, onSuccess, onFail) => {
     return {
         type: types.MARKET_GET_DISCUSS_DETAIL,
@@ -71,9 +71,9 @@ export const getDiscussDetail = (payload, onSuccess, onFail) => {
         onFail
     }
 }
-export const updateDiscussList = (payload, onSuccess, onFail) => {
+export const initDiscussDetail = (payload, onSuccess, onFail) => {
     return {
-        type: types.MARKET_UPDATE_DISCUSS_LIST,
+        type: types.MARKET_INIT_DISCUSS_DETAIL,
         payload,
         onSuccess,
         onFail
@@ -103,14 +103,14 @@ export const deleteDiscuss = (payload,onSuccess,onFail) => {
         onFail
     }
 }
-export const discussCoin = (payload,onSuccess,onFail) => {
-    return {
-        type: types.MARKET_DISCUSS_COIN,
-        payload,
-        onSuccess,
-        onFail
-    }
-}
+// export const discussCoin = (payload,onSuccess,onFail) => {
+//     return {
+//         type: types.MARKET_DISCUSS_COIN,
+//         payload,
+//         onSuccess,
+//         onFail
+//     }
+// }
 export const discussReply = (payload,onSuccess,onFail) => {
     return{
         type: types.MARKET_DISCUSS_REPLY,
@@ -119,21 +119,21 @@ export const discussReply = (payload,onSuccess,onFail) => {
         onFail
     }
 }
-export const addCollection = (payload,onSuccess,onFail) => {
-    return {
-        type: types.MARKET_ADD_COLLECTION,
-        payload,
-        onSuccess,
-        onFail
-    }
-}
+// export const addCollection = (payload,onSuccess,onFail) => {
+//     return {
+//         type: types.MARKET_ADD_COLLECTION,
+//         payload,
+//         onSuccess,
+//         onFail
+//     }
+// }
 
-export const removeCollection = (payload,onSuccess,onFail) => {
-    return {
-        type: types.MARKET_REMOVE_COLLECTION,
-        payload,
-        onSuccess,
-        onFail
-    }
-}
+// export const removeCollection = (payload,onSuccess,onFail) => {
+//     return {
+//         type: types.MARKET_REMOVE_COLLECTION,
+//         payload,
+//         onSuccess,
+//         onFail
+//     }
+// }
 
