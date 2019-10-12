@@ -3,13 +3,40 @@ import { View, ActivityIndicator,Image,Text} from 'react-native';
 import Header from '@components/NDLayout/Header'
 import WebContent from '../components/WebContent';
 import {closeRNPage} from '../utils/CNNBridge'
+import {resetCurrentLocale} from '@i18n';
 import i18n from '../i18n';
 
+const urlObj = {
+    privacy : {
+        en: 'http://a.fslk.co/cnn/h5/privacyPolicy.html',
+        ko: 'http://a.fslk.co/cnn/h5/personalInfoCollecttion.html'
+    },
+    terms: {
+        en: 'http://a.fslk.co/cnn/h5/userAgreement.html',
+        ko: 'http://a.fslk.co/cnn/h5/radius.html'
+    }
+}
 class Page extends Component {
 
     constructor(props) {
         super(props);
-        const url = props.params.policy === 'privacy' ? 'http://a.fslk.co/cnn/h5/personalInfoCollecttion.html' : 'http://a.fslk.co/cnn/h5/radius.html';
+        
+        const lang = props.baseInfo.currentLang || 'en';
+        resetCurrentLocale(lang)
+        let url = '';
+       if(props.params.policy === 'privacy'){
+            if(lang === 'ko'){
+                url = urlObj.privacy.ko
+            }else{
+                url = urlObj.privacy.en
+            }
+       }else{
+            if(lang === 'ko'){
+                url = urlObj.terms.ko
+            }else{
+                url = urlObj.terms.en
+            }
+       }
         this.state = {
             url,
             loading: true
