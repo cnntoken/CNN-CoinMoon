@@ -531,7 +531,7 @@ class ViewControl extends Component {
                             <View style={styles.userBox}>
                                 <FastImage source={source} style={styles.cavatar}/>
                                 <Text style={styles.uname}>{info.user.name}</Text>
-                                <Text style={styles.ctime}>{moment(info.updatedAt).format('YYYY.MM.DD HH:mm')}  </Text>
+                                <Text style={styles.ctime}>{moment(info.created_at).format('YYYY.MM.DD HH:mm')}  </Text>
                             </View>
                             <FeedDetail html={info.content}
                                         cover={info.cover}

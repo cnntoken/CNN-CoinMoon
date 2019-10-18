@@ -9,7 +9,7 @@ import {
 import DiscussList from '@components/DiscussList'
 import DiscussItem from '@components/DiscussItem'
 import DiscussFooterInput from '@components/DiscussFooterInput'
-import { goRNPage,closeRNPage, getCurrentUser } from '@utils/CNNBridge';
+import { goNativePage,closeRNPage, getCurrentUser } from '@utils/CNNBridge';
 
 import {
     Container,
@@ -99,7 +99,7 @@ class ViewControl extends Component {
     clickComment = (item) => {
         let {user} = this.state
         if(!user.isLogin){
-            goRNPage({
+            goNativePage({
                 moduleName: 'stark_login',
             })
             return
