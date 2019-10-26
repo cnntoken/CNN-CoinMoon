@@ -75,9 +75,9 @@ export default class NormalFooter extends LoadingFooter {
         //     return "No more data";
         // }
         if(s === 'loading'){
-            return i18n.t('disclose.refreshControlLoadingText')
+            return i18n.t('list_loading')
         } else if(s === 'allLoaded'){
-            return i18n.t('disclose.list_nomore_tip')
+            return i18n.t('list_nomore_tip')
         }
     }
     render() {

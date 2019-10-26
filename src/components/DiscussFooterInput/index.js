@@ -14,7 +14,7 @@ import {
 import {
     Button,
 } from '@components/NDLayout'
-import {goRNPage} from "@utils/CNNBridge";
+import {goRNPage,goNativePage} from "@utils/CNNBridge";
 import { calculateStyleVariable, cnnLogger, isIphoneX} from '@utils/index'
 
 const PX = calculateStyleVariable()
@@ -196,7 +196,7 @@ class DiscussFooterInput extends PureComponent {
             //     from:'个人中心',
             //     trigger:'report'
             // });
-            goRNPage({
+            goNativePage({
                 moduleName: 'stark_login',
             })
             return
@@ -296,7 +296,7 @@ class DiscussFooterInput extends PureComponent {
     removeCollection = () => {
         const { user,coin_id, type } = this.props
         if(!user.isLogin){
-            goRNPage({
+            goNativePage({
                 moduleName: 'stark_login',
             });
         } else {
@@ -309,7 +309,7 @@ class DiscussFooterInput extends PureComponent {
     addCollection = () => {
         const { user, coin_id, type } = this.props
         if(!user.isLogin){
-            goRNPage({
+            goNativePage({
                 moduleName: 'stark_login',
             });
         } else {

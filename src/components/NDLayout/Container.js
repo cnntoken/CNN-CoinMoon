@@ -7,6 +7,7 @@ import {
     SafeAreaView,
     // Platform,
 } from "react-native";
+
 const {height: viewHeight,width: viewWidth} = Dimensions.get('window')
 
 
@@ -20,7 +21,7 @@ export default class Container extends PureComponent {
 
     render() {
         return (
-            <SafeAreaView style={[styles.containerBox, this.props.style]}>
+            <SafeAreaView style={[styles.containerBox, this.props.style]} onLayout={()=>console.log('layout')}>
                 {this.props.children}
             </SafeAreaView>
         )

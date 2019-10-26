@@ -141,7 +141,6 @@ class Index extends PureComponent<Props, State> {
             refreshing: true,
             loadingText: this.props.refreshControlLoadingText
         }, () => {
-            // console.log('--------------  开始请求加载 --------------')
             this.onHeaderRefresh();
         })
     }
@@ -171,7 +170,6 @@ class Index extends PureComponent<Props, State> {
 
     render() {
         log('[RefreshListView]  render  refreshState:' + this.props.refreshState)
-
         let {renderItem, ListHeaderComponent, renderSeparator, ...rest} = this.props;
 
         return (
@@ -179,6 +177,7 @@ class Index extends PureComponent<Props, State> {
                 style={{
                     flex: 1
                 }}
+                onLayout={()=>console.log('layout')}
                 ListHeaderComponent={ListHeaderComponent || null}
                 ref={this.props.listRef}
                 onEndReached={this.onEndReached}
@@ -293,7 +292,7 @@ const styles = StyleSheet.create({
     },
     footerText_error: {
         fontSize: 14,
-        color: '#408EF5'
+        color: '#555555'
     },
 })
 

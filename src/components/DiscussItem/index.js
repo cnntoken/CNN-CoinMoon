@@ -9,7 +9,7 @@ import styles from './styles'
 import {
     Button 
 } from '@components/NDLayout'
-import {goRNPage} from '@utils/CNNBridge'
+import {goRNPage,goNativePage} from '@utils/CNNBridge'
 import { formatDate } from '@utils/index'
 import i18n from '@i18n'
 import FastImage from 'react-native-fast-image';
@@ -63,7 +63,7 @@ export default class Item extends Component {
         if(this.state.liking) return false
         let {user,index} = this.props
         if(!user.isLogin){
-            goRNPage({
+            goNativePage({
                 moduleName: 'stark_login',
             })
             return
