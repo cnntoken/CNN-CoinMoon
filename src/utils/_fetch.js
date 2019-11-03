@@ -28,13 +28,14 @@
         }
     }
  */
-import { $toast } from './index';
+import { $toast,qsStringify } from './index';
 import i18n from '@i18n';
 import { NetInfo } from 'react-native';
 import { getCurrentUser, deviceInfo } from './CNNBridge';
 
-const apiTimeout = 30 * 1000;
 
+const apiTimeout = 30 * 1000;
+const baseURL = __DEV__ ? 'https://app.cnntoken.io' : 'https://app.cnntoken.io';
 const checkNetInfo = async () => {
     let isConnected = await NetInfo.isConnected.fetch();
     return isConnected;
@@ -58,24 +59,28 @@ export const _fetch = (fetch => (url, { timeout = apiTimeout, ...rest }) => {
         let isConnected = checkNetInfo();
         if (!isConnected) {
             $toast(i18n.t('net_error'));
-            Promise.reject({
+            reject({
                 error_type: 'disconnected',
                 msg: i18n.t('net_error'),
             });
         } else {
+            if(!url.startsWith('http')){
+                url = `${baseURL}${url}`
+            }
             fetch(url, rest)
                 .then(response => {
                     console.log(
                         `==========*******response ${
                             rest.method
-                        } from ${url}*******=======`,
+                        } from ${url} *******=======`,
                     );
                     console.log('response: ', response);
+                    const response2json = response.json();
                     if (response.status >= 200 && response.status < 300) {
-                        console.log('response2json: ', response.json());
-                        resolve(response.json());
+                        console.log('response2json: ', response2json);
+                        resolve(response2json);
                     } else {
-                        reject(response);
+                        reject(response2json);
                     }
                 })
                 .catch(error => {
@@ -98,6 +103,7 @@ export const generateConfig = async (method, params, config) => {
         Accept: 'application/json',
         'Content-Type': 'application/json',
     };
+    config.mode = 'cors';
     const userReducer = await getCurrentUser();
     if (
         !['ios', 'android'].includes(userReducer.account_type) &&
@@ -110,7 +116,7 @@ export const generateConfig = async (method, params, config) => {
         ...params,
     };
     if (method === 'GET') {
-        finalConfig = Object.assign({}, { method: 'GET' }, config);
+        finalConfig = Object.assign({}, { method }, config);
     } else if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
         const body = JSON.stringify(params);
         finalConfig = Object.assign({}, { method }, { body }, config);
@@ -145,6 +151,7 @@ export const generateConfig = async (method, params, config) => {
 };
 
 export const $get = async (url, params = {}, config = {}) => {
+    url = `${url}?${qsStringify(params)}`;
     const finalConfig = await generateConfig('GET', params, config);
     return _fetch(url, finalConfig);
 };

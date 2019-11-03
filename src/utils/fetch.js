@@ -3,7 +3,7 @@ import i18n from '@i18n';
 import { NetInfo } from 'react-native';
 import { getCurrentUser, deviceInfo } from './CNNBridge';
 
-const timeoutSeconds = 100;
+const timeoutSeconds = 20;
 const generateConfig = async (method, params = {}, config = {}) => {
     let finalConfig;
     config.headers = {
@@ -30,7 +30,10 @@ const generateConfig = async (method, params = {}, config = {}) => {
 const requestTimeout = () => {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
-            reject('request timeout');
+            return reject({
+                error_type: 'time_out',
+                msg: i18n.t('net_error'),
+            });
         }, timeoutSeconds * 1000);
     });
 };
@@ -40,7 +43,7 @@ const checkNetInfo = async () => {
     return isConnected;
 };
 
-const generateRequest = (method, url, config) => {
+const generateRequest = async (method, url, config) => {
     let p1 = new Promise(async (resolve, reject) => {
         console.log(
             `========*****request ${method}******========`,
@@ -48,7 +51,15 @@ const generateRequest = (method, url, config) => {
             config,
         );
         fetch(url, config)
-            .then(response => response.json())
+            .then(response =>{
+                if(response.status>=200&&response.status<300){
+                    return response.json()
+                } else {
+                    var error = new Error(response.statusText)
+                    error.response = response
+                    throw error
+                }
+            })
             .then(responseJson => {
                 console.log(
                     `==========*******response ${method} from ${url}*******=======`,
@@ -63,7 +74,7 @@ const generateRequest = (method, url, config) => {
             });
     });
     let p2 = requestTimeout();
-    let isConnected = checkNetInfo();
+    let isConnected = await checkNetInfo();
     if (!isConnected) {
         $toast(i18n.t('net_error'));
         return Promise.reject({
@@ -82,6 +93,10 @@ export const $get = async (url, params = {}, config = {}) => {
 export const $post = async (url, params = {}, config = {}) => {
     let finalConfig = await generateConfig('POST', params, config);
     return generateRequest('POST', url, finalConfig);
+};
+export const $put = async (url, params = {}, config = {}) => {
+    let finalConfig = await generateConfig('PUT', params, config);
+    return generateRequest('PUT', url, finalConfig);
 };
 export const $delete = async (url, params = {}, config = {}) => {
     let finalConfig = await generateConfig('DELETE', params, config);

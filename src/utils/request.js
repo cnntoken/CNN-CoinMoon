@@ -11,36 +11,38 @@ let instance = axios.create({
     // baseURL: __DEV__ ? 'http://staging.app.cnntoken.io' : 'https://app.cnntoken.io',
     // baseURL: 'http://staging.app.cnntoken.io',
     baseURL: 'https://app.cnntoken.io',
-    timeout: 1000000,  // 100s,
+    timeout: 15000,  // 15s
 });
 
 // 请求队列：token-标志，cancel-取消函数
 const pending = [];
 const cancelToken = axios.CancelToken;
 
-export const cancelRequest = (config)=>{
+export const cancelRequest = (config) => {
     for (const i in pending) {
-        if(pending[i].token === `${config.method}:${config.url}`){
+        if (pending[i].token === `${config.method}:${config.url}`) {
             // 执行取消请求
             pending[i].cancel();
             // 队列中移除该请求
-            pending.splice(i,1)
+            pending.splice(i, 1)
         }
     }
 }
 
 // Add a request interceptor
 instance.interceptors.request.use(async (config) => {
+    // console.log(config.url);
     try {
-        let isConnected = await NetInfo.isConnected.fetch();
-        // 检测网络状态，如果不是联网状态则给提示
-        if (!isConnected) {
-            $toast(i18n.t('net_error'));
-            return Promise.reject({
-                error_type: 'disconnected',
-                msg: i18n.t('net_error')
-            });
-        }
+        // let isConnected = await NetInfo.isConnected.fetch();
+        // // 检测网络状态，如果不是联网状态则给提示
+
+        // if (!isConnected) {
+        //     $toast(i18n.t('net_error'));
+        //     return Promise.reject({
+        //         error_type: 'disconnected',
+        //         msg: i18n.t('net_error')
+        //     });
+        // }
 
         // 获取当前登录用户信息
         const userReducer = await getCurrentUser();
@@ -53,18 +55,16 @@ instance.interceptors.request.use(async (config) => {
         config.params = Object.assign(config.params || {}, {...deviceInfo});
 
         // 发送请求前先取消该请求
-        cancelRequest(config)
-        config.cancelToken = new cancelToken((c)=>{
-            pending.push({
-                token: `${config.method}:${config.url}`,
-                cancel: c
-            })
-        })
+        // cancelRequest(config)
+        // config.cancelToken = new cancelToken((c)=>{
+        //     pending.push({
+        //         token: `${config.method}:${config.url}`,
+        //         cancel: c
+        //     })
+        // })
 
     } catch (e) {
-
         console.log("设置header Authorization token失败", e);
-
     }
 
     console.log(`*************************************** axios request , ${config.method} , ${config.url} : *************************************** \n`, config);
@@ -79,7 +79,7 @@ instance.interceptors.request.use(async (config) => {
 instance.interceptors.response.use(function (response) {
     console.log(`*************************************** ${response.config.method} , ${response.config.url} : axios response: *************************************** \n`, response);
     // 完成响应后取消请求，将其从pending队列中移除
-    cancelRequest(response.config);
+    // cancelRequest(response.config);
     return response;
 }, function (error) {
     console.log('response 失败:', error);
