@@ -30,7 +30,7 @@ import {
 import i18n from '@i18n';
 import service from '@services/wallet/index';
 import FastImage from 'react-native-fast-image';
-import {closeRNPage} from '@utils/CNNBridge';
+import {closeRNPage,setStatusColor} from '@utils/CNNBridge';
 import {cnnLogger,$toast} from '@utils/index';
 
 const {width: viewWidth} = Dimensions.get('window');
@@ -49,15 +49,17 @@ export default class MainControl extends PureComponent {
     }
     componentDidMount(){
         // 从其他页面返回来时请求数据，重新渲染
-        this.reRender = this.props.navigation.addListener('willFocus', () => {
+        this.willFocusSubscription = this.props.navigation.addListener('willFocus', () => {
             this.initWallet();
+            setStatusColor('#408EF5')
+        });
+        this.willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
+            setStatusColor('#ffffff')
         })
     }
     componentWillUnmount() {
-        this.reRender;
-        this.setState = () => {
-            return;
-        };
+        this.willFocusSubscription.remove();
+        this.willBlurSubscription.remove();
     }
     // 退出rn页面
     goBack = () => {
@@ -75,6 +77,11 @@ export default class MainControl extends PureComponent {
     };
     // 进入添加币种的搜索页面
     goWalletSearch = () => {
+        const {showImport} = this.state;
+        if(showImport === 'eth'){ // 没有eth钱包
+            $toast(i18n.t('page_wallet.import_wallet_eth'));
+            return false;
+        }
         // 点击添加加密货币按钮
         cnnLogger('click_add_cryptocurr')
         this.props.navigation.navigate('WalletSearch', {
@@ -168,7 +175,7 @@ export default class MainControl extends PureComponent {
     verify = pwd => {
         pwd = pwd.trim();
         if (pwd.length < 8) {
-            console.log(pwd, i18n.t('page_register.pwd_len_invalid'));
+            console.log(pwd, i18n.t('page_wallet.pwd_len_invalid'));
             this.setState({
                 err_txt: true,
             });
@@ -412,7 +419,7 @@ export default class MainControl extends PureComponent {
                     <View style={styles.modal_open2}>
                         <Title
                             style={{ textAlign: 'center' }}
-                            txt={i18n.t('page_register.password')}
+                            txt={i18n.t('page_wallet.password')}
                         />
                         <View style={styles.modal_form}>
                             <InputFocus
@@ -420,7 +427,7 @@ export default class MainControl extends PureComponent {
                                 autoFocus={true}
                                 style={styles.form_pwd}
                                 placeholder={i18n.t(
-                                    'page_register.password',
+                                    'page_wallet.password',
                                 )}
                                 value={pwd}
                                 onChangeText={this.inputChange}
@@ -428,7 +435,7 @@ export default class MainControl extends PureComponent {
                             <Text style={styles.err_txt}>
                                 {err_txt
                                     ? i18n.t(
-                                            'page_register.pwd_len_invalid',
+                                            'page_wallet.pwd_len_invalid',
                                         )
                                     : ' '}
                             </Text>
@@ -648,7 +655,8 @@ const styles = StyleSheet.create({
         height: 30,
     },
     security_btn: {
-        width: 100,
+        // width: 100,
+        paddingHorizontal: 10,
         backgroundColor: '#408EF5',
         borderRadius: 8,
     },

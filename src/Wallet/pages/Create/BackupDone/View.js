@@ -55,7 +55,7 @@ export default class ViewControl extends PureComponent {
             this.goWalletMain()
 
         }else{
-            $toast(i18n.t('page_verify.verify_fail'))
+            $toast(i18n.t('page_wallet.verify_fail'))
         }
     }
     clickRemove = (index,item)=>{

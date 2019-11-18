@@ -46,11 +46,11 @@ export default class ViewControl extends PureComponent {
         pwd = pwd.trim()
         pwd2 = pwd2.trim()
         if(pwd !== pwd2){
-            $toast(i18n.t('page_register.pwd_eq_invalid'));
+            $toast(i18n.t('page_wallet.pwd_eq_invalid'));
             return false;
         }
         if(pwd.length < 8){
-            $toast(i18n.t('page_register.pwd_len_invalid'));
+            $toast(i18n.t('page_wallet.pwd_len_invalid'));
             return false;
         }
         return pwd;
@@ -81,7 +81,7 @@ export default class ViewControl extends PureComponent {
         cnnLogger('submit_wallet')
         const checked = this.checkPwd(pwd, pwd2)
         if (!checked) {
-            $toast(i18n.t('page_register.pwd_eq_invalid'))
+            $toast(i18n.t('page_wallet.pwd_eq_invalid'))
             // 创建失败
             cnnLogger('create_wallet_failed',{
                 reason: 'entered passwords diff',
@@ -143,7 +143,7 @@ export default class ViewControl extends PureComponent {
                             <InputFocus
                                 secureTextEntry={true}
                                 style={styles.form_pwd}
-                                placeholder={i18n.t('page_register.password')}
+                                placeholder={i18n.t('page_wallet.password')}
                                 value={pwd}
                                 onChangeText={value => this.pwdChange('pwd', value)}
                                 handleFocus={this.handleFocus}
@@ -153,7 +153,7 @@ export default class ViewControl extends PureComponent {
                             <InputFocus
                                 secureTextEntry={true}
                                 style={styles.form_pwd}
-                                placeholder={i18n.t('page_register.re_password')}
+                                placeholder={i18n.t('page_wallet.re_password')}
                                 value={pwd2}
                                 onChangeText={value => this.pwdChange('pwd2', value)}
                                 handleFocus={this.handleFocus}

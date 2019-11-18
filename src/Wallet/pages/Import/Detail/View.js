@@ -136,7 +136,7 @@ export default class ViewControl extends PureComponent {
                             onLayout={this.handleLayout}
                         />
                         <View style={styles.relative}>
-                            <Text style={styles.suffix}>{i18n.t('default')}</Text>
+                            <Text style={styles.suffix}>{i18n.t('page_wallet.default')}</Text>
                         </View>
                         <Text style={styles.label}>{i18n.t('page_wallet.setting_pwd')}</Text>
                         <InputFocus 
@@ -151,7 +151,7 @@ export default class ViewControl extends PureComponent {
                         <InputFocus 
                             style={[styles.form_item,styles.br_16]} 
                             secureTextEntry={true}
-                            placeholder={i18n.t('page_register.re_password')}
+                            placeholder={i18n.t('page_wallet.re_password')}
                             // onBlur={()=>this.checkPwd()}
                             value={content['mnemonic']['pwd2']}
                             onChangeText={(text)=>this.formChange('pwd2',text)}
@@ -187,7 +187,7 @@ export default class ViewControl extends PureComponent {
                         <InputFocus 
                             style={[styles.form_item,styles.br_16]} 
                             secureTextEntry={true}
-                            placeholder={i18n.t('page_register.re_password')}
+                            placeholder={i18n.t('page_wallet.re_password')}
                             value={content['privateKey']['pwd2']}
                             onChangeText={(text)=>this.formChange('pwd2',text)}
                             handleFocus={this.handleFocus}
@@ -226,7 +226,7 @@ export default class ViewControl extends PureComponent {
                         <InputFocus 
                             style={[styles.form_item,styles.br_16]} 
                             secureTextEntry={true}
-                            placeholder={i18n.t('page_register.re_password')} 
+                            placeholder={i18n.t('page_wallet.re_password')} 
                             placeholderTextColor='#999'
                             value={content['mnemonic']['pwd2']}
                             onChangeText={(text)=>this.formChange('pwd2',text)}
@@ -268,7 +268,7 @@ export default class ViewControl extends PureComponent {
                         <InputFocus 
                             style={[styles.form_item,styles.br_16]} 
                             secureTextEntry={true}
-                            placeholder={i18n.t('page_register.re_password')} 
+                            placeholder={i18n.t('page_wallet.re_password')} 
                             value={content['privateKey']['pwd2']}
                             onChangeText={(text)=>this.formChange('pwd2',text)}
                             handleFocus={this.handleFocus}
@@ -355,10 +355,11 @@ export default class ViewControl extends PureComponent {
         }
         if(obj.pwd && obj.pwd2){
             if(obj.pwd !== obj.pwd2){
-                $toast(i18n.t('page_register.pwd_eq_invalid'))
+                $toast(i18n.t('page_wallet.pwd_eq_invalid'))
                 return false
             }
         }
+        console.log('params: ',obj)
         return obj
     }
     handleSubmit = async ()=>{
