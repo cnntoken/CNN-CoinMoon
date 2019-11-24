@@ -191,7 +191,7 @@ export default class ViewControl extends PureComponent {
         ? (new BigNumber(1e-8)).times(item.value)
         : token_type === 'eth'
         ? (new BigNumber(1e-18)).times(item.value)
-        : (new BigNumber(1e-9)).times(item.value);
+        : (new BigNumber(1e-18)).times(item.value);
     return (
       <TouchableOpacity onPress={() => this.goDetail(item)}>
         <View style={[styles.list_item]}>
@@ -209,7 +209,7 @@ export default class ViewControl extends PureComponent {
                 ellipsizeMode="middle"
                 style={styles.list_item_left_t1}
               >
-                {item.from[0]}
+                {item.isSent?item.to[0]:item.from[0]}
               </Text>
               <Text style={styles.list_item_left_t2}>
                 {moment(item.timeStamp * 1000).fromNow()}
@@ -225,7 +225,7 @@ export default class ViewControl extends PureComponent {
               }
             >
 
-            {['btc','eth'].includes(token_type)?`${item.type === 'Received' ? '+' : '-'}${value.toString(10)} ${item.tokenSymbol}`:null}
+            {['btc','eth','erc20'].includes(token_type)?`${item.type === 'Received' ? '+' : '-'}${value.toString(10)} ${item.tokenSymbol}`:null}
             </Text>
             {item.confirmations > 0 ? (
                 null

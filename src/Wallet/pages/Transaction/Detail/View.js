@@ -50,7 +50,7 @@ export default class ViewControl extends PureComponent {
         }
     };
     renderItem = (Transactionid, item) => {
-        console.log(item);
+        // console.log(item);
         let elem = null;
         let value = Transactionid[item.key];
         if(item.key === 'timeStamp'){

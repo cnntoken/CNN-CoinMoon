@@ -4,7 +4,7 @@ import {
     Container,
     Header,
     Content,
-    Footer,
+    // Footer,
     Underline,
     // List,
     Button,
@@ -32,6 +32,7 @@ import services from '@services/wallet/index';
 import { MyError } from '@services/wallet/util';
 import BigNumber from 'bignumber.js';
 import { cnnLogger,$toast } from '@utils/index';
+import {ETH_GASLIMIT,ERC20_GASLIMIT} from '@data/constants'
 
 export default class ViewControl extends Component {
     constructor(props){
@@ -84,11 +85,14 @@ export default class ViewControl extends Component {
             loading: false
         })
     }
-    gwei2eth = (gwei)=>{
-        return (new BigNumber(gwei)).times(1e-9).toString(10)
+    fee4erc = (gwei)=>{
+        return (new BigNumber(gwei)).times(new BigNumber(1e-9)).toString(10)
+    }
+    fee4eth = (gwei)=>{
+        return (new BigNumber(gwei)).times(new BigNumber(1e-9)).times(new BigNumber(ETH_GASLIMIT)).toString(10)
     }
     satoshi2btc = (satoshi)=>{
-        return (new BigNumber(satoshi)).times(1e-9).toString(10)
+        return (new BigNumber(satoshi)).times(new BigNumber(1e-9)).toString(10)
     }
     renderRadioChild = (item,checked)=>{
         const { token } = this.state
@@ -106,7 +110,7 @@ export default class ViewControl extends Component {
                 <Text 
                     style={[styles.radio_name_sub,(item.key === checked.key)&&styles.radio_name_active]}
                 >
-                    {token.token_type === 'btc' ? `${this.satoshi2btc(item.name.sub)}BTC` : `${this.gwei2eth(item.name.sub)}ETH`}
+                    {token.token_type === 'btc' ? `${this.satoshi2btc(item.name.sub)}BTC` : token.token_type === 'eth'? `${this.fee4eth(item.name.sub)}ETH` : `${this.fee4erc(item.name.sub)}ETH`}
                 </Text>
             </View>
         )
@@ -127,7 +131,6 @@ export default class ViewControl extends Component {
         })
     }
     isNotEnough = (type,balance,amount,fee,ethBalance)=>{
-        const gasLimit = 60000;
         
         if(type === 'btc'){
             balance = new BigNumber(balance);
@@ -137,13 +140,13 @@ export default class ViewControl extends Component {
         }else if(type === 'eth'){
             balance = new BigNumber(balance);
             amount = new BigNumber(amount);
-            fee = (new BigNumber(fee)).times(1e-9).times(gasLimit);
+            fee = (new BigNumber(fee)).times(1e-9).times(ETH_GASLIMIT);
             return (balance.minus(amount).minus(fee)).toFixed() < 0
         }else{
             balance = new BigNumber(balance);
             amount = new BigNumber(amount);
 
-            fee = (new BigNumber(fee)).times(1e-9).times(gasLimit);
+            fee = (new BigNumber(fee)).times(1e-9).times(ERC20_GASLIMIT);
             ethBalance = (new BigNumber(ethBalance));
             return (balance.minus(amount)).toFixed() < 0 || (ethBalance.minus(fee)).toFixed() < 0;
         }
@@ -395,7 +398,7 @@ export default class ViewControl extends Component {
                                         autoFocus={true}
                                         secureTextEntry={true}
                                         style={styles.modal_pwd}
-                                        placeholder={i18n.t('page_register.password')}
+                                        placeholder={i18n.t('page_wallet.password')}
                                         value={pwd}
                                         onChangeText={this.pwdChange}
                                     />

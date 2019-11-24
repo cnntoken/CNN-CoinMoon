@@ -55,7 +55,7 @@ export default class SearchControl extends PureComponent {
     }
     _largeList = null;
     componentDidMount(){
-        this.reRender = this.props.navigation.addListener('willFocus', async () => {
+        this.willFocusSubscription = this.props.navigation.addListener('willFocus', async () => {
             const importedList = await services.getErc20TokenList();
             this.setState({
                 importedList
@@ -63,7 +63,7 @@ export default class SearchControl extends PureComponent {
         })
     }
     componentWillUnmount() {
-        this.reRender;
+        this.willFocusSubscription.remove();
         this.setState = () => {
             return;
         };
